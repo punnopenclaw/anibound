@@ -1,0 +1,1772 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Anibound — 縁 สายใยระหว่างคนกับสัตว์</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Noto+Serif+JP:wght@300;400;500;600;700&family=Noto+Serif+Thai:wght@300;400;500;600&family=DM+Serif+Display&family=Inter:wght@300;400;500;600&family=Noto+Sans+Thai:wght@300;400;500&display=swap" rel="stylesheet">
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="image-slot.js"></script>
+
+<style>
+  :root {
+    /* Sage tea palette (default) */
+    --bg:        #f0ebe0;
+    --bg-deep:   #e7dfd0;
+    --paper:    #faf6ec;
+    --ink:       #2b2820;
+    --ink-soft:  #5a5448;
+    --rule:      #c8bfac;
+    --sage:      #d8e8d0;
+    --sage-deep: #a8c4a0;
+    --peach:     #f5d8b8;
+    --terracotta:#e8a878;
+    --accent:    #c97a4a;
+
+    /* Type */
+    --serif:    "Shippori Mincho", "Noto Serif Thai", "Noto Serif JP", serif;
+    --sans:     "Inter", "Noto Sans Thai", system-ui, sans-serif;
+
+    --max: 1380px;
+    --pad: clamp(20px, 4vw, 72px);
+  }
+
+  * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--sans);
+    color: var(--ink);
+    background: var(--bg);
+    font-size: 15px;
+    line-height: 1.55;
+    overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+
+  .jp { font-family: "Shippori Mincho", "Noto Serif JP", serif; }
+  .serif { font-family: var(--serif); font-weight: 400; }
+  .eyebrow {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 500;
+  }
+  .eyebrow .dot { display: inline-block; width: 4px; height: 4px; border-radius: 50%; background: var(--accent); vertical-align: middle; margin: 0 10px 2px; }
+
+  /* ───── Utility bar ───── */
+  .util {
+    background: var(--ink);
+    color: #d9d2c0;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .util .row {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 9px var(--pad);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+  }
+  .util .marquee { display: flex; gap: 28px; align-items: center; opacity: 0.9; }
+  .util .marquee .sep { opacity: 0.5; }
+  .util .marquee .jpn { font-family: var(--serif); letter-spacing: 0.08em; text-transform: none; font-size: 12px; }
+  .util .lang { display: flex; gap: 14px; align-items: center; }
+  .util .lang span { cursor: pointer; opacity: 0.55; }
+  .util .lang span.on { opacity: 1; border-bottom: 1px solid currentColor; padding-bottom: 1px; }
+
+  /* ───── Nav ───── */
+  nav.main {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in oklab, var(--bg) 92%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+  }
+  nav.main .row {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 18px var(--pad);
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 24px;
+  }
+  nav .links {
+    display: flex;
+    gap: 32px;
+    font-size: 13.5px;
+    letter-spacing: 0.04em;
+  }
+  nav .links a {
+    position: relative;
+    padding: 4px 0;
+    color: var(--ink);
+  }
+  nav .links a .kanji {
+    font-family: var(--serif);
+    font-size: 11px;
+    color: var(--ink-soft);
+    margin-right: 6px;
+    opacity: 0.7;
+  }
+  nav .links a:hover { color: var(--accent); }
+  nav .brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+  }
+  nav .brand .mark { width: 38px; height: 38px; }
+  nav .brand .wordmark {
+    font-family: var(--serif);
+    font-size: 15px;
+    letter-spacing: 0.32em;
+    margin-top: 2px;
+  }
+  nav .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 22px;
+    align-items: center;
+    font-size: 13px;
+  }
+  nav .actions .icon {
+    width: 20px; height: 20px;
+    stroke: var(--ink);
+    fill: none; stroke-width: 1.4;
+  }
+  nav .actions .cart {
+    display: inline-flex; gap: 8px; align-items: center;
+    border: 1px solid var(--ink);
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  nav .actions .cart .count {
+    background: var(--accent);
+    color: #fff;
+    border-radius: 999px;
+    font-size: 10px;
+    padding: 1px 6px;
+    margin-left: 2px;
+  }
+
+  /* ───── Hero ───── */
+  .hero {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: clamp(40px, 8vw, 100px) var(--pad) clamp(60px, 10vw, 120px);
+    position: relative;
+  }
+  .hero .grid {
+    display: grid;
+    grid-template-columns: 1fr 1.05fr;
+    gap: clamp(40px, 6vw, 100px);
+    align-items: center;
+  }
+  .hero .left .vertical-label {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    position: absolute;
+    left: calc(var(--pad) * 0.35);
+    top: 80px;
+    font-family: var(--serif);
+    font-size: 11px;
+    letter-spacing: 0.5em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+  }
+  .hero .left .vertical-label .jpn { font-size: 14px; letter-spacing: 0.3em; }
+  .hero h1 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(40px, 6.4vw, 92px);
+    line-height: 1.02;
+    margin: 18px 0 28px;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+  .hero h1 em {
+    font-style: normal;
+    font-family: "Shippori Mincho", "Noto Serif JP", serif;
+    font-weight: 600;
+  }
+  .hero h1 .accent {
+    color: var(--accent);
+    font-style: italic;
+    font-weight: 500;
+  }
+  .hero .lede {
+    max-width: 440px;
+    color: var(--ink-soft);
+    font-size: 15.5px;
+    line-height: 1.7;
+  }
+  .hero .ctas {
+    margin-top: 40px;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 12px;
+    padding: 16px 26px;
+    border-radius: 999px;
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    transition: all .25s ease;
+  }
+  .btn-primary { background: var(--ink); color: var(--paper); }
+  .btn-primary:hover { background: var(--accent); }
+  .btn-ghost { background: transparent; color: var(--ink); padding: 12px 4px; border-bottom: 1px solid var(--ink); border-radius: 0; }
+  .btn-ghost:hover { color: var(--accent); border-color: var(--accent); }
+  .btn .arr { width: 14px; height: 10px; }
+
+  /* Hero right column: enso + pet portrait */
+  .hero .right {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    max-width: 600px;
+    justify-self: end;
+    width: 100%;
+  }
+  .hero .enso-wrap {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+  }
+  .hero .enso-wrap svg.enso {
+    width: 95%;
+    height: 95%;
+    color: var(--ink);
+  }
+  .hero .portrait {
+    position: absolute;
+    inset: 14% 14% 14% 14%;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--sage);
+  }
+  .hero .portrait image-slot {
+    width: 100%;
+    height: 100%;
+  }
+  .hero .kanji-floater {
+    position: absolute;
+    font-family: var(--serif);
+    color: var(--ink);
+    font-weight: 500;
+    opacity: 0.9;
+    user-select: none;
+  }
+  .hero .kanji-floater.tl { top: -8px; left: -4px; font-size: 64px; color: var(--accent); }
+  .hero .kanji-floater.br { bottom: -10px; right: 10px; font-size: 88px; }
+  .hero .meta-tag {
+    position: absolute;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    padding: 10px 14px;
+    border-radius: 999px;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    box-shadow: 0 8px 24px -16px rgba(0,0,0,0.15);
+  }
+  .hero .meta-tag .swatch { width: 8px; height: 8px; border-radius: 50%; background: var(--sage-deep); }
+  .hero .tag-1 { top: 8%; right: -4%; }
+  .hero .tag-2 { bottom: 12%; left: -6%; }
+  .hero .tag-2 .swatch { background: var(--accent); }
+
+  /* Stats strip under hero */
+  .hero-foot {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 0 var(--pad) 0;
+    border-top: 1px solid var(--rule);
+  }
+  .hero-foot .row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+  }
+  .hero-foot .cell {
+    padding: 32px 28px;
+    border-right: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .hero-foot .cell:last-child { border-right: none; }
+  .hero-foot .cell .n {
+    font-family: var(--serif);
+    font-size: 38px;
+    line-height: 1;
+    color: var(--ink);
+  }
+  .hero-foot .cell .n .small { font-size: 18px; vertical-align: super; color: var(--accent); }
+  .hero-foot .cell .l {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .hero-foot .cell .jpn { font-family: var(--serif); font-size: 11px; color: var(--accent); letter-spacing: 0.3em; }
+
+  /* ───── Section heading ───── */
+  .sect {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: clamp(80px, 10vw, 140px) var(--pad);
+  }
+  .sect-head {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: end;
+    gap: 40px;
+    padding-bottom: 36px;
+    margin-bottom: 48px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .sect-head .label { display: flex; flex-direction: column; gap: 8px; }
+  .sect-head .num {
+    font-family: var(--serif);
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+  }
+  .sect-head h2 {
+    font-family: var(--serif);
+    font-size: clamp(28px, 4vw, 52px);
+    font-weight: 400;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .sect-head .h-right {
+    text-align: right;
+    color: var(--ink-soft);
+    max-width: 320px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .sect-head .h-right .jpn { display: block; font-family: var(--serif); font-size: 16px; color: var(--ink); margin-bottom: 6px; }
+
+  /* ───── Noren divider ───── */
+  .noren {
+    background: var(--ink);
+    color: var(--paper);
+    position: relative;
+    overflow: hidden;
+  }
+  .noren .inner {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: clamp(50px, 7vw, 90px) var(--pad);
+    display: grid;
+    grid-template-columns: 2fr 3fr;
+    gap: 60px;
+    align-items: center;
+  }
+  .noren::before, .noren::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0;
+    height: 22px;
+    background:
+      radial-gradient(circle at 12px 0, transparent 12px, var(--ink) 12.5px);
+    background-size: 24px 22px;
+  }
+  .noren::before { top: 0; transform: rotate(180deg); background-color: var(--bg); background-image: radial-gradient(circle at 12px 22px, var(--bg) 12px, var(--ink) 12.5px); }
+  .noren::after { bottom: 0; background-color: var(--bg); background-image: radial-gradient(circle at 12px 0, var(--bg) 12px, var(--ink) 12.5px); }
+  .noren h3 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(28px, 3.4vw, 46px);
+    line-height: 1.15;
+    margin: 0;
+    color: var(--paper);
+  }
+  .noren h3 .accent { color: var(--terracotta); }
+  .noren .jpn-vert {
+    font-family: var(--serif);
+    writing-mode: vertical-rl;
+    font-size: 20px;
+    letter-spacing: 0.4em;
+    color: var(--terracotta);
+    margin-bottom: 16px;
+  }
+  .noren p {
+    color: #c8c0aa;
+    font-size: 15px;
+    line-height: 1.8;
+    max-width: 520px;
+  }
+  .noren .seal {
+    display: inline-flex;
+    margin-top: 24px;
+    width: 64px;
+    height: 64px;
+    border-radius: 8px;
+    background: var(--terracotta);
+    color: var(--ink);
+    align-items: center;
+    justify-content: center;
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 600;
+    transform: rotate(-4deg);
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+  }
+
+  /* ───── Categories ───── */
+  .cats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  .cat {
+    display: flex;
+    flex-direction: column;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: transform .35s ease, box-shadow .35s ease;
+    cursor: pointer;
+  }
+  .cat:hover { transform: translateY(-4px); box-shadow: 0 18px 40px -28px rgba(0,0,0,0.18); }
+  .cat .vis {
+    aspect-ratio: 4 / 5;
+    background: var(--sage);
+    position: relative;
+    overflow: hidden;
+  }
+  .cat:nth-child(1) .vis { background: linear-gradient(180deg, #e6efdd, #c9dbbc); }
+  .cat:nth-child(2) .vis { background: linear-gradient(180deg, #f8e8d2, #eccda6); }
+  .cat:nth-child(3) .vis { background: linear-gradient(180deg, #eee0d2, #d9c2a8); }
+  .cat:nth-child(4) .vis { background: linear-gradient(180deg, #f0e6da, #d7c3b0); }
+  .cat .vis image-slot { position: absolute; inset: 8% 12% 18% 12%; }
+  .cat .vis .ksuke {
+    position: absolute;
+    bottom: 12px; left: 16px;
+    font-family: var(--serif);
+    font-size: 64px;
+    color: rgba(43,40,32,0.18);
+    line-height: 1;
+  }
+  .cat .vis .num {
+    position: absolute;
+    top: 14px; right: 16px;
+    font-family: var(--serif);
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    color: var(--ink);
+    opacity: 0.6;
+  }
+  .cat .body {
+    padding: 20px 22px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border-top: 1px solid var(--rule);
+    background: var(--paper);
+  }
+  .cat .body .jp-name {
+    font-family: var(--serif);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.25em;
+  }
+  .cat .body .name {
+    font-family: var(--serif);
+    font-size: 22px;
+    color: var(--ink);
+  }
+  .cat .body .meta {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    letter-spacing: 0.06em;
+  }
+  .cat .body .meta .arr { font-family: var(--serif); }
+
+  /* ───── Featured products ───── */
+  .products {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px 24px;
+  }
+  .prod { display: flex; flex-direction: column; cursor: pointer; }
+  .prod .vis {
+    aspect-ratio: 4 / 5;
+    background: var(--bg-deep);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .prod .vis image-slot { position: absolute; inset: 12% 12% 16% 12%; }
+  .prod .vis .badge {
+    position: absolute;
+    top: 14px; left: 14px;
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    border-radius: 999px;
+    padding: 5px 11px;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .prod .vis .badge.new { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .prod .vis .badge.best { background: var(--terracotta); color: var(--ink); border-color: var(--ink); }
+  .prod .vis .wish {
+    position: absolute;
+    top: 12px; right: 12px;
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    display: grid; place-items: center;
+    transition: background .2s;
+  }
+  .prod .vis .wish:hover { background: var(--peach); }
+  .prod .vis .wish svg { width: 16px; height: 16px; stroke: var(--ink); fill: none; stroke-width: 1.4; }
+  .prod .vis .add {
+    position: absolute;
+    left: 12px; right: 12px; bottom: 12px;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 11px 0;
+    text-align: center;
+    border-radius: 999px;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all .3s ease;
+  }
+  .prod:hover .vis .add { opacity: 1; transform: translateY(0); }
+  .prod .vis::after {
+    content: attr(data-kanji);
+    position: absolute;
+    bottom: -8px; right: -2px;
+    font-family: var(--serif);
+    font-size: 110px;
+    color: rgba(43,40,32,0.06);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .prod .info {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .prod .info .cat-tag {
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .prod .info .name {
+    font-family: var(--serif);
+    font-size: 19px;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .prod .info .name .jp { display: block; font-size: 12px; color: var(--accent); letter-spacing: 0.16em; margin-top: 2px; }
+  .prod .info .price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    font-size: 14px;
+  }
+  .prod .info .price { font-family: var(--serif); font-size: 17px; }
+  .prod .info .price .was { color: var(--ink-soft); text-decoration: line-through; margin-right: 8px; font-size: 13px; }
+  .prod .info .stars { color: var(--accent); font-size: 11px; letter-spacing: 0.1em; }
+
+  /* ───── Story / Bond section ───── */
+  .bond {
+    background: var(--paper);
+  }
+  .bond .inner {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: clamp(80px, 10vw, 140px) var(--pad);
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: clamp(40px, 6vw, 100px);
+    align-items: center;
+  }
+  .bond .vis {
+    position: relative;
+    aspect-ratio: 4 / 5;
+  }
+  .bond .vis .frame {
+    position: absolute;
+    inset: 0;
+    background: var(--bg-deep);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .bond .vis .frame image-slot { width: 100%; height: 100%; }
+  .bond .vis .stamp {
+    position: absolute;
+    bottom: -22px; right: -22px;
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background: var(--terracotta);
+    color: var(--ink);
+    display: grid; place-items: center;
+    text-align: center;
+    transform: rotate(-8deg);
+    box-shadow: 0 12px 30px -16px rgba(0,0,0,0.3);
+  }
+  .bond .vis .stamp .top {
+    font-family: var(--serif);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+  }
+  .bond .vis .stamp .big {
+    font-family: var(--serif);
+    font-size: 42px;
+    line-height: 1;
+    margin: 4px 0 2px;
+  }
+  .bond .vis .stamp .bot {
+    font-family: var(--serif);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+  }
+  .bond .vis .corner-kanji {
+    position: absolute;
+    top: -36px; left: -10px;
+    font-family: var(--serif);
+    font-size: 160px;
+    color: var(--accent);
+    line-height: 1;
+    opacity: 0.85;
+  }
+  .bond .text h2 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(28px, 4vw, 50px);
+    line-height: 1.15;
+    margin: 14px 0 24px;
+    letter-spacing: -0.01em;
+  }
+  .bond .text h2 em { font-style: normal; color: var(--accent); }
+  .bond .text p {
+    color: var(--ink-soft);
+    font-size: 16px;
+    line-height: 1.85;
+    margin: 0 0 16px;
+    max-width: 500px;
+  }
+  .bond .text .pillars {
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 26px 24px;
+  }
+  .bond .text .pillar { display: flex; gap: 14px; align-items: flex-start; }
+  .bond .text .pillar .pn {
+    font-family: var(--serif);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+  .bond .text .pillar h4 {
+    margin: 0 0 4px;
+    font-family: var(--serif);
+    font-size: 17px;
+    font-weight: 500;
+  }
+  .bond .text .pillar p {
+    font-size: 13.5px;
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* ───── Matching merch ───── */
+  .merch {
+    background: var(--bg-deep);
+    position: relative;
+    overflow: hidden;
+  }
+  .merch .inner {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: clamp(80px, 10vw, 140px) var(--pad);
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: clamp(40px, 6vw, 100px);
+    align-items: center;
+  }
+  .merch .text .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    border-radius: 999px;
+    padding: 7px 16px;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .merch .text .badge .jp { font-family: var(--serif); color: var(--accent); letter-spacing: 0.1em; text-transform: none; font-size: 13px; }
+  .merch h2 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(34px, 5vw, 70px);
+    line-height: 1;
+    margin: 0 0 28px;
+    letter-spacing: -0.015em;
+  }
+  .merch h2 .accent { color: var(--accent); font-style: italic; }
+  .merch .text p { color: var(--ink-soft); font-size: 15.5px; line-height: 1.7; max-width: 420px; }
+  .merch .text ul {
+    list-style: none;
+    padding: 0; margin: 28px 0 36px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .merch .text ul li {
+    display: flex; gap: 12px; align-items: center;
+    font-size: 14px;
+    color: var(--ink);
+  }
+  .merch .text ul li::before { content: "縁"; font-family: var(--serif); color: var(--accent); font-size: 14px; }
+  .merch .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  .merch .grid .card {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+    aspect-ratio: 3 / 4;
+    position: relative;
+  }
+  .merch .grid .card image-slot { position: absolute; inset: 10%; }
+  .merch .grid .card .lbl {
+    position: absolute;
+    bottom: 14px; left: 14px;
+    font-family: var(--serif);
+    font-size: 15px;
+  }
+  .merch .grid .card .price {
+    position: absolute;
+    bottom: 14px; right: 14px;
+    font-family: var(--serif);
+    font-size: 14px;
+    color: var(--accent);
+  }
+  .merch .grid .card.tall { grid-row: span 2; aspect-ratio: 3 / 5.2; }
+  .merch .grid .card .pair {
+    position: absolute;
+    top: 12px; right: 12px;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  /* ───── Journal ───── */
+  .journal-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+  .journal-grid article {
+    cursor: pointer;
+  }
+  .journal-grid .vis {
+    aspect-ratio: 4 / 3;
+    background: var(--bg-deep);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 18px;
+    position: relative;
+  }
+  .journal-grid .vis image-slot { width: 100%; height: 100%; }
+  .journal-grid .tag {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .journal-grid h3 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1.3;
+    margin: 0 0 10px;
+  }
+  .journal-grid p {
+    color: var(--ink-soft);
+    font-size: 13.5px;
+    line-height: 1.6;
+    margin: 0;
+  }
+  .journal-grid .read {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-top: 12px;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 2px;
+  }
+  .journal-grid article:hover .read { color: var(--accent); border-color: var(--accent); }
+
+  /* ───── Newsletter ───── */
+  .news {
+    background: var(--ink);
+    color: var(--paper);
+    position: relative;
+    overflow: hidden;
+  }
+  .news .inner {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: clamp(70px, 9vw, 120px) var(--pad);
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+  .news h2 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(30px, 4.2vw, 56px);
+    line-height: 1.05;
+    margin: 0 0 16px;
+    color: var(--paper);
+  }
+  .news h2 .accent { color: var(--terracotta); }
+  .news .jpn-mini { font-family: var(--serif); font-size: 14px; color: var(--terracotta); letter-spacing: 0.32em; margin-bottom: 16px; }
+  .news p { color: #d4cdb9; font-size: 15px; line-height: 1.7; max-width: 460px; margin: 0; }
+  .news form {
+    display: flex;
+    gap: 0;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 999px;
+    padding: 6px;
+  }
+  .news input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--paper);
+    font-family: inherit;
+    padding: 14px 22px;
+    font-size: 14px;
+  }
+  .news input::placeholder { color: rgba(255,255,255,0.45); }
+  .news button {
+    background: var(--terracotta);
+    color: var(--ink);
+    border: none;
+    border-radius: 999px;
+    padding: 14px 28px;
+    font-family: inherit;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background .25s;
+  }
+  .news button:hover { background: var(--peach); }
+  .news .perks { display: flex; gap: 28px; margin-top: 20px; }
+  .news .perks span { font-size: 12px; color: #b6ae9a; letter-spacing: 0.08em; }
+  .news .perks span::before { content: "○ "; color: var(--terracotta); }
+  .news .big-kanji {
+    position: absolute;
+    font-family: var(--serif);
+    color: rgba(232,168,120,0.08);
+    font-size: 420px;
+    line-height: 1;
+    bottom: -120px;
+    right: -20px;
+    pointer-events: none;
+  }
+
+  /* ───── Footer ───── */
+  footer.site {
+    background: var(--bg);
+    border-top: 1px solid var(--rule);
+  }
+  footer .row {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 70px var(--pad) 30px;
+    display: grid;
+    grid-template-columns: 1.6fr repeat(4, 1fr);
+    gap: 40px;
+  }
+  footer .brand-col .mark { width: 48px; height: 48px; }
+  footer .brand-col .wordmark {
+    font-family: var(--serif);
+    font-size: 22px;
+    letter-spacing: 0.32em;
+    margin-top: 8px;
+    margin-bottom: 18px;
+  }
+  footer .brand-col p { color: var(--ink-soft); font-size: 13.5px; line-height: 1.65; max-width: 280px; margin: 0 0 18px; }
+  footer .brand-col .socials { display: flex; gap: 12px; }
+  footer .brand-col .socials a {
+    width: 36px; height: 36px;
+    border: 1px solid var(--rule);
+    border-radius: 50%;
+    display: grid; place-items: center;
+    transition: background .25s;
+  }
+  footer .brand-col .socials a:hover { background: var(--peach); }
+  footer .brand-col .socials svg { width: 14px; height: 14px; stroke: var(--ink); fill: none; stroke-width: 1.5; }
+
+  footer h5 {
+    font-family: var(--serif);
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0 0 18px;
+    color: var(--ink);
+    letter-spacing: 0.04em;
+  }
+  footer h5 .jp { display: block; font-size: 10.5px; color: var(--accent); letter-spacing: 0.24em; text-transform: uppercase; margin-bottom: 6px; font-weight: 400; }
+  footer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  footer ul a { font-size: 13.5px; color: var(--ink-soft); }
+  footer ul a:hover { color: var(--accent); }
+  footer .bottom {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 22px var(--pad) 30px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11.5px;
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
+  }
+  footer .bottom .pay { display: flex; gap: 10px; align-items: center; }
+  footer .bottom .pay .chip {
+    border: 1px solid var(--rule);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--ink);
+    background: var(--paper);
+  }
+
+  /* Responsive */
+  @media (max-width: 1100px) {
+    nav .links { gap: 22px; font-size: 12.5px; }
+    .cats { grid-template-columns: repeat(2, 1fr); }
+    .products { grid-template-columns: repeat(2, 1fr); }
+    .journal-grid { grid-template-columns: 1fr; }
+    .hero .grid, .bond .inner, .merch .inner, .news .inner, .noren .inner { grid-template-columns: 1fr; }
+    .hero .right { max-width: 480px; justify-self: center; }
+    .hero-foot .row { grid-template-columns: repeat(2, 1fr); }
+    .hero-foot .cell:nth-child(2) { border-right: none; }
+    footer .row { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 640px) {
+    nav .links { display: none; }
+    nav.main .row { grid-template-columns: 1fr auto 1fr; }
+    .sect-head { grid-template-columns: 1fr; gap: 14px; }
+    .sect-head .h-right { text-align: left; }
+    .util .marquee span:not(.jpn) { display: none; }
+  }
+</style>
+</head>
+
+<body>
+
+<!-- ────────────────────────────────  UTILITY  ──────────────────────────────── -->
+<div class="util">
+  <div class="row">
+    <div class="marquee">
+      <span class="jpn">縁</span>
+      <span>ส่งฟรีเมื่อสั่งครบ ฿890</span>
+      <span class="sep">·</span>
+      <span>Free shipping over ฿890</span>
+      <span class="sep">·</span>
+      <span>会員 10% off first order</span>
+    </div>
+    <div class="lang">
+      <a href="login.html" style="display:inline-flex; gap:6px; align-items:center; opacity:0.9;">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        เข้าสู่ระบบ
+      </a>
+      <span style="opacity:0.4;">·</span>
+      <a href="signup.html" style="opacity:0.9;">สมัคร</a>
+      <span style="opacity:0.4; margin: 0 4px;">|</span>
+      <span class="on">TH</span>
+      <span>EN</span>
+      <span>JP</span>
+    </div>
+  </div>
+</div>
+
+<!-- ────────────────────────────────  NAV  ──────────────────────────────── -->
+<nav class="main">
+  <div class="row">
+    <div class="links">
+      <a href="#"><span class="kanji">食</span>อาหาร</a>
+      <a href="#"><span class="kanji">器</span>ของใช้</a>
+      <a href="#"><span class="kanji">遊</span>ของเล่น</a>
+      <a href="#"><span class="kanji">服</span>เสื้อยืด</a>
+      <a href="#"><span class="kanji">読</span>Journal</a>
+    </div>
+    <a href="#" class="brand">
+      <svg class="mark" viewBox="0 0 100 100" aria-hidden="true">
+        <!-- enso brush stroke with gap top-right -->
+        <path d="M 50 12
+                 A 38 38 0 1 0 84 60"
+              fill="none" stroke="currentColor" stroke-width="5.5" stroke-linecap="round"
+              style="color: var(--ink)"/>
+        <!-- small finishing dot -->
+        <circle cx="84" cy="60" r="3.2" fill="var(--ink)"/>
+        <text x="50" y="62" text-anchor="middle" font-family="Shippori Mincho, serif" font-size="30" font-weight="500" fill="var(--ink)">縁</text>
+      </svg>
+      <span class="wordmark">ANIBOUND</span>
+    </a>
+    <div class="actions">
+      <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <a href="login.html" title="เข้าสู่ระบบ / Sign in" style="display:inline-flex; align-items:center;">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </a>
+      <a class="cart" href="#">
+        <svg class="icon" viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        Cart <span class="count">2</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- ────────────────────────────────  HERO  ──────────────────────────────── -->
+<section class="hero">
+  <div class="vertical-label">
+    <span class="jpn">縁 — En</span>　·　EST. 2024 　·　 BANGKOK
+  </div>
+
+  <div class="grid">
+    <div class="left">
+      <div class="eyebrow">縁 <span class="dot"></span> The bond shop for pets &amp; their humans</div>
+      <h1>
+        ของดี<span class="accent">ที่เหมาะ</span>กับ<br/>
+        เจ้าตัวเล็ก<br/>
+        <em>ของคุณ。</em>
+      </h1>
+      <p class="lede">
+        อาหาร ของใช้ ของเล่น และเสื้อยืดคู่เจ้าของ — คัดสรรอย่างพิถีพิถัน
+        ภายใต้แนวคิดเรียบง่ายแบบญี่ปุ่น ให้ทุกชิ้นมีที่มาและความหมาย
+        เพื่อสายสัมพันธ์ที่ดีระหว่างคุณกับน้อง.
+      </p>
+      <div class="ctas">
+        <button class="btn btn-primary">
+          ช้อปเลย Shop now
+          <svg class="arr" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 6h14m0 0L10 1m5 5-5 5"/></svg>
+        </button>
+        <button class="btn btn-ghost">เรื่องราวของเรา</button>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="kanji-floater tl">縁</div>
+      <div class="enso-wrap">
+        <!-- BIG ENSO -->
+        <svg class="enso" viewBox="0 0 400 400" aria-hidden="true">
+          <defs>
+            <filter id="rough">
+              <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="3"/>
+              <feDisplacementMap in="SourceGraphic" scale="2.4"/>
+            </filter>
+          </defs>
+          <g filter="url(#rough)">
+            <!-- main enso arc with variable width feeling: two stacked arcs -->
+            <path d="M 200 40
+                     A 160 160 0 1 0 340 280"
+                  fill="none" stroke="currentColor" stroke-width="22" stroke-linecap="round" opacity="0.92"/>
+            <path d="M 200 40
+                     A 160 160 0 1 0 340 280"
+                  fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round" opacity="0.6"
+                  transform="translate(1.5, 1)"/>
+            <!-- finishing splatters -->
+            <circle cx="340" cy="280" r="6" fill="currentColor"/>
+            <circle cx="350" cy="290" r="2.4" fill="currentColor"/>
+            <circle cx="333" cy="295" r="1.6" fill="currentColor"/>
+          </g>
+        </svg>
+      </div>
+      <div class="portrait">
+        <image-slot id="hero-pet" shape="circle" placeholder="วางรูปน้องของคุณที่นี่ ⌒(ܫ⌒)"></image-slot>
+      </div>
+      <div class="kanji-floater br">犬猫</div>
+      <div class="meta-tag tag-1"><span class="swatch"></span>Grain-free recipe</div>
+      <div class="meta-tag tag-2"><span class="swatch"></span>Made in 日本</div>
+    </div>
+  </div>
+</section>
+
+<div class="hero-foot">
+  <div class="row" style="max-width: var(--max); margin: 0 auto;">
+    <div class="cell">
+      <div class="jpn">壱</div>
+      <div class="n">12<span class="small">+</span></div>
+      <div class="l">Japanese brands curated</div>
+    </div>
+    <div class="cell">
+      <div class="jpn">弐</div>
+      <div class="n">4,800<span class="small">+</span></div>
+      <div class="l">เจ้าของน้องที่ไว้วางใจ</div>
+    </div>
+    <div class="cell">
+      <div class="jpn">参</div>
+      <div class="n">98<span class="small">%</span></div>
+      <div class="l">รีวิวระดับ 5 ดาว</div>
+    </div>
+    <div class="cell">
+      <div class="jpn">四</div>
+      <div class="n">24<span class="small">h</span></div>
+      <div class="l">จัดส่งในกรุงเทพ ฯ</div>
+    </div>
+  </div>
+</div>
+
+<!-- ────────────────────────────────  NOREN DIVIDER  ──────────────────────────────── -->
+<div class="noren">
+  <div class="inner">
+    <div>
+      <div class="jpn-vert">店舗案内</div>
+      <h3>ยินดีต้อนรับ <span class="accent">—</span><br/>เข้าสู่ <span class="accent">Anibound</span></h3>
+    </div>
+    <div>
+      <p>
+        Anibound คือร้านที่เกิดจากความเชื่อง่าย ๆ ว่าการมีน้องหมาน้องแมวสักตัว
+        คือพรหมลิขิตอย่างหนึ่ง <span class="jp" style="color: var(--terracotta);">— 縁 (en) —</span>
+        เราจึงคัดสินค้าและออกแบบทุกชิ้นด้วยใจ เพื่อให้สายใยระหว่างคุณกับเจ้าตัวเล็กยืนยาวและงดงาม.
+      </p>
+      <div class="seal">縁</div>
+    </div>
+  </div>
+</div>
+
+<!-- ────────────────────────────────  CATEGORIES  ──────────────────────────────── -->
+<section class="sect" id="categories">
+  <div class="sect-head">
+    <div class="label">
+      <span class="num">― 01 / 縁を結ぶ</span>
+      <h2>หมวดสินค้า</h2>
+    </div>
+    <div></div>
+    <div class="h-right">
+      <span class="jpn">商品カテゴリー</span>
+      ทุกหมวดถูกคัดมาเพื่อให้เหมาะกับวิถีการเลี้ยงของคนรุ่นใหม่ในเมือง
+    </div>
+  </div>
+
+  <div class="cats">
+    <div class="cat">
+      <div class="vis">
+        <span class="num">01</span>
+        <image-slot id="cat-food" shape="rounded" radius="10" placeholder="ภาพอาหารพรีเมียม"></image-slot>
+        <span class="ksuke">食</span>
+      </div>
+      <div class="body">
+        <div class="jp-name">SHOKU</div>
+        <div class="name">อาหารพรีเมียม</div>
+        <div class="meta"><span>248 รายการ</span><span class="arr">→</span></div>
+      </div>
+    </div>
+
+    <div class="cat">
+      <div class="vis">
+        <span class="num">02</span>
+        <image-slot id="cat-gear" shape="rounded" radius="10" placeholder="ภาพชาม / ปลอกคอ / ที่นอน"></image-slot>
+        <span class="ksuke">器</span>
+      </div>
+      <div class="body">
+        <div class="jp-name">UTSUWA</div>
+        <div class="name">ของใช้ในบ้าน</div>
+        <div class="meta"><span>132 รายการ</span><span class="arr">→</span></div>
+      </div>
+    </div>
+
+    <div class="cat">
+      <div class="vis">
+        <span class="num">03</span>
+        <image-slot id="cat-play" shape="rounded" radius="10" placeholder="ภาพของเล่น"></image-slot>
+        <span class="ksuke">遊</span>
+      </div>
+      <div class="body">
+        <div class="jp-name">ASOBI</div>
+        <div class="name">ของเล่นน่าฟัด</div>
+        <div class="meta"><span>76 รายการ</span><span class="arr">→</span></div>
+      </div>
+    </div>
+
+    <div class="cat">
+      <div class="vis">
+        <span class="num">04</span>
+        <image-slot id="cat-wear" shape="rounded" radius="10" placeholder="ภาพเสื้อยืดคู่เจ้าของ"></image-slot>
+        <span class="ksuke">服</span>
+      </div>
+      <div class="body">
+        <div class="jp-name">FUKU</div>
+        <div class="name">เสื้อคู่คน &amp; น้อง</div>
+        <div class="meta"><span>34 รายการ</span><span class="arr">→</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ────────────────────────────────  FEATURED PRODUCTS  ──────────────────────────────── -->
+<section class="sect" id="featured" style="padding-top: 0;">
+  <div class="sect-head">
+    <div class="label">
+      <span class="num">― 02 / 厳選</span>
+      <h2>คัดมาเด่น ๆ ประจำสัปดาห์</h2>
+    </div>
+    <div></div>
+    <div class="h-right">
+      <span class="jpn">今週のおすすめ</span>
+      6 ชิ้นโปรดของบรรณาธิการ — บางชิ้นเหลือไม่กี่ตัว
+    </div>
+  </div>
+
+  <div class="products">
+    <!-- Product 1 -->
+    <div class="prod" data-kanji-attr>
+      <div class="vis" data-kanji="食">
+        <span class="badge new">New</span>
+        <span class="wish"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>
+        <image-slot id="p1" shape="rounded" radius="6" placeholder="ภาพถุงอาหารแมว"></image-slot>
+        <div class="add">+ Add to cart</div>
+      </div>
+      <div class="info">
+        <span class="cat-tag">อาหารแมว · Grain-free</span>
+        <span class="name">Hokkaido Salmon &amp; Rice<span class="jp">北海道サーモン · 1.2kg</span></span>
+        <div class="price-row">
+          <span class="price">฿ 890</span>
+          <span class="stars">★★★★★ (218)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product 2 -->
+    <div class="prod">
+      <div class="vis" data-kanji="器">
+        <span class="badge best">Best</span>
+        <span class="wish"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>
+        <image-slot id="p2" shape="rounded" radius="6" placeholder="ชามเซรามิก"></image-slot>
+        <div class="add">+ Add to cart</div>
+      </div>
+      <div class="info">
+        <span class="cat-tag">ของใช้ · Ceramic</span>
+        <span class="name">Mino Ware Slow-Feed Bowl<span class="jp">美濃焼 食器 · M / L</span></span>
+        <div class="price-row">
+          <span class="price"><span class="was">฿ 690</span>฿ 520</span>
+          <span class="stars">★★★★★ (94)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product 3 -->
+    <div class="prod">
+      <div class="vis" data-kanji="服">
+        <span class="badge">Matching</span>
+        <span class="wish"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>
+        <image-slot id="p3" shape="rounded" radius="6" placeholder="เสื้อยืดเจ้าของ"></image-slot>
+        <div class="add">+ Add to cart</div>
+      </div>
+      <div class="info">
+        <span class="cat-tag">เสื้อยืด · Owner Tee</span>
+        <span class="name">"Inu / Neko" Heavyweight Tee<span class="jp">犬 / 猫 · S–XL</span></span>
+        <div class="price-row">
+          <span class="price">฿ 1,290</span>
+          <span class="stars">★★★★☆ (47)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product 4 -->
+    <div class="prod">
+      <div class="vis" data-kanji="遊">
+        <span class="badge">Hand-made</span>
+        <span class="wish"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>
+        <image-slot id="p4" shape="rounded" radius="6" placeholder="ของเล่นผ้า"></image-slot>
+        <div class="add">+ Add to cart</div>
+      </div>
+      <div class="info">
+        <span class="cat-tag">ของเล่น · Plush</span>
+        <span class="name">Daruma Squeak Toy<span class="jp">だるま · 3 colours</span></span>
+        <div class="price-row">
+          <span class="price">฿ 380</span>
+          <span class="stars">★★★★★ (162)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product 5 -->
+    <div class="prod">
+      <div class="vis" data-kanji="首">
+        <span class="badge">Leather</span>
+        <span class="wish"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>
+        <image-slot id="p5" shape="rounded" radius="6" placeholder="ปลอกคอหนัง"></image-slot>
+        <div class="add">+ Add to cart</div>
+      </div>
+      <div class="info">
+        <span class="cat-tag">ของใช้ · Leather</span>
+        <span class="name">Indigo-Dyed Collar &amp; Lead<span class="jp">藍染 首輪 · 4 sizes</span></span>
+        <div class="price-row">
+          <span class="price">฿ 1,690</span>
+          <span class="stars">★★★★★ (38)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product 6 -->
+    <div class="prod">
+      <div class="vis" data-kanji="眠">
+        <span class="badge new">New</span>
+        <span class="wish"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>
+        <image-slot id="p6" shape="rounded" radius="6" placeholder="ที่นอนน้อง"></image-slot>
+        <div class="add">+ Add to cart</div>
+      </div>
+      <div class="info">
+        <span class="cat-tag">ของใช้ · Bed</span>
+        <span class="name">Futon Bed for Cats &amp; Small Dogs<span class="jp">布団ベッド · S / M</span></span>
+        <div class="price-row">
+          <span class="price">฿ 2,490</span>
+          <span class="stars">★★★★★ (71)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center; margin-top: 56px;">
+    <button class="btn btn-ghost">ดูสินค้าทั้งหมด 全商品を見る →</button>
+  </div>
+</section>
+
+<!-- ────────────────────────────────  BOND (story)  ──────────────────────────────── -->
+<div class="bond">
+  <div class="inner">
+    <div class="vis">
+      <div class="corner-kanji">縁</div>
+      <div class="frame">
+        <image-slot id="bond-photo" shape="rect" placeholder="ภาพคู่คุณกับน้อง"></image-slot>
+      </div>
+      <div class="stamp">
+        <div class="top">since</div>
+        <div class="big">2024</div>
+        <div class="bot">BKK · 縁</div>
+      </div>
+    </div>
+
+    <div class="text">
+      <div class="eyebrow">縁 <span class="dot"></span> Our philosophy</div>
+      <h2>เลี้ยงน้อง <em>ให้ดี</em><br/>เริ่มที่ <em>การเลือก</em><br/>อย่างตั้งใจ.</h2>
+      <p>
+        เราเชื่อว่าทุกสายสัมพันธ์เริ่มต้นจากความใส่ใจในรายละเอียดเล็ก ๆ
+        ตั้งแต่อาหารที่น้องเคี้ยวจนถึงผ้าที่นอน — ของทุกชิ้นที่เราคัดเลือก
+        ต้องผ่านการทดลองกับน้องในทีมจริง ก่อนจะมาถึงน้องของคุณ.
+      </p>
+
+      <div class="pillars">
+        <div class="pillar">
+          <span class="pn">01</span>
+          <div>
+            <h4>วัตถุดิบโปร่งใส</h4>
+            <p>ระบุแหล่งที่มาและส่วนผสมทุกชิ้น ไม่มีอะไรซ่อน</p>
+          </div>
+        </div>
+        <div class="pillar">
+          <span class="pn">02</span>
+          <div>
+            <h4>ทดลองกับน้องจริง</h4>
+            <p>หมาแมวประจำออฟฟิศคือ QA ตัวจริงของเรา</p>
+          </div>
+        </div>
+        <div class="pillar">
+          <span class="pn">03</span>
+          <div>
+            <h4>แพ็คเกจรีฟิล</h4>
+            <p>กล่องคืนได้ เติมใหม่ในราคาที่ถูกลง</p>
+          </div>
+        </div>
+        <div class="pillar">
+          <span class="pn">04</span>
+          <div>
+            <h4>ทุกชิ้นช่วยน้องที่ยังไม่มีบ้าน</h4>
+            <p>3% ของยอดขายไปสู่บ้านพักพิงทุกเดือน</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ────────────────────────────────  MATCHING MERCH  ──────────────────────────────── -->
+<div class="merch">
+  <div class="inner">
+    <div class="text">
+      <span class="badge"><span class="jp">服</span>OWNER × PET TEES</span>
+      <h2>ใส่<span class="accent">คู่กัน</span><br/>กับเจ้าของจริง。</h2>
+      <p>
+        คอลเลกชันเสื้อยืดที่ออกแบบให้คนกับน้องใส่เข้าคู่กันได้
+        ผ้าคอตตอน 100% ทอแบบ heavyweight 240gsm พิมพ์สีน้ำมือไทย-ญี่ปุ่น
+      </p>
+      <ul>
+        <li>4 สี · 8 ลาย · S-XL สำหรับคน</li>
+        <li>3 ขนาดสำหรับน้อง · ใส่ได้ทั้งหมาและแมว</li>
+        <li>ปักชื่อน้องฟรี (ไทย / English / 仮名)</li>
+      </ul>
+      <button class="btn btn-primary">เลือกลาย View collection
+        <svg class="arr" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 6h14m0 0L10 1m5 5-5 5"/></svg>
+      </button>
+    </div>
+    <div class="grid">
+      <div class="card tall">
+        <span class="pair">Pair · 縁</span>
+        <image-slot id="m1" shape="rounded" radius="2" placeholder="คนใส่เสื้อ + น้องใส่เสื้อ"></image-slot>
+        <span class="lbl">"Inu" Tee</span>
+        <span class="price">฿1,290</span>
+      </div>
+      <div class="card">
+        <image-slot id="m2" shape="rounded" radius="2" placeholder="เสื้อ Neko"></image-slot>
+        <span class="lbl">"Neko" Tee</span>
+        <span class="price">฿1,290</span>
+      </div>
+      <div class="card">
+        <image-slot id="m3" shape="rounded" radius="2" placeholder="เสื้อสำหรับน้อง"></image-slot>
+        <span class="lbl">Pet Tee</span>
+        <span class="price">฿590</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ────────────────────────────────  JOURNAL  ──────────────────────────────── -->
+<section class="sect">
+  <div class="sect-head">
+    <div class="label">
+      <span class="num">― 03 / 読み物</span>
+      <h2>Journal</h2>
+    </div>
+    <div></div>
+    <div class="h-right">
+      <span class="jpn">日々のこと</span>
+      บทความและสาระจากบรรณาธิการของเรา
+    </div>
+  </div>
+
+  <div class="journal-grid">
+    <article>
+      <div class="vis">
+        <image-slot id="j1" shape="rect" placeholder="ภาพหัวบทความ"></image-slot>
+      </div>
+      <div class="tag">บทเรียน · 1 / 縁</div>
+      <h3>คู่มือเลือกอาหารแมวพรีเมียม สำหรับคนเริ่มเลี้ยง</h3>
+      <p>เริ่มจากอ่านฉลาก ทำความเข้าใจส่วนผสมหลัก และเข้าใจสิ่งที่น้องของคุณต้องการจริง ๆ.</p>
+      <span class="read">อ่านต่อ → 5 นาที</span>
+    </article>
+    <article>
+      <div class="vis">
+        <image-slot id="j2" shape="rect" placeholder="ภาพหัวบทความ"></image-slot>
+      </div>
+      <div class="tag">เรื่องเล่า · 2 / 縁</div>
+      <h3>เยี่ยมโรงงานเครื่องเซรามิก Mino-yaki ที่ Gifu</h3>
+      <p>ที่มาของชามที่เรารัก ทำไมเคลือบของจริงถึงปลอดภัยกว่าและสวยกว่า.</p>
+      <span class="read">อ่านต่อ → 8 นาที</span>
+    </article>
+    <article>
+      <div class="vis">
+        <image-slot id="j3" shape="rect" placeholder="ภาพหัวบทความ"></image-slot>
+      </div>
+      <div class="tag">วิถี · 3 / 縁</div>
+      <h3>ออกแบบมุมของน้องให้พอดีกับห้องเล็ก ๆ</h3>
+      <p>5 กฎการจัดมุมหมาแมวในคอนโด ภายใต้แนวคิด ma — เคารพช่องว่าง.</p>
+      <span class="read">อ่านต่อ → 6 นาที</span>
+    </article>
+  </div>
+</section>
+
+<!-- ────────────────────────────────  NEWSLETTER  ──────────────────────────────── -->
+<div class="news">
+  <div class="big-kanji">縁</div>
+  <div class="inner">
+    <div>
+      <div class="jpn-mini">ニュースレター</div>
+      <h2>เข้าร่วมวงคนรัก<br/>น้องหมา &amp; น้อง<span class="accent">แมว</span></h2>
+      <p>รับส่วนลด 10% สำหรับการสั่งครั้งแรก พร้อมบทความและของพิเศษเดือนละครั้ง — ไม่สแปม สัญญา.</p>
+    </div>
+    <div>
+      <form onsubmit="event.preventDefault(); this.querySelector('button').textContent='✓ Joined'; this.querySelector('button').style.background='var(--sage-deep)';">
+        <input type="email" placeholder="อีเมลของคุณ · your@email.com" required />
+        <button type="submit">เข้าร่วม Join 縁</button>
+      </form>
+      <div class="perks">
+        <span>10% off first order</span>
+        <span>Early access</span>
+        <span>No spam</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ────────────────────────────────  FOOTER  ──────────────────────────────── -->
+<footer class="site">
+  <div class="row">
+    <div class="brand-col">
+      <svg class="mark" viewBox="0 0 100 100" aria-hidden="true">
+        <path d="M 50 12 A 38 38 0 1 0 84 60" fill="none" stroke="var(--ink)" stroke-width="5.5" stroke-linecap="round"/>
+        <circle cx="84" cy="60" r="3.2" fill="var(--ink)"/>
+        <text x="50" y="64" text-anchor="middle" font-family="Shippori Mincho, serif" font-size="34" font-weight="500" fill="var(--ink)">縁</text>
+      </svg>
+      <div class="wordmark">ANIBOUND</div>
+      <p>ร้านที่เกิดจากความเชื่อง่าย ๆ ว่าการได้พบกับน้องสักตัวคือพรหมลิขิตอย่างหนึ่ง.</p>
+      <div class="socials">
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.6" fill="currentColor"/></svg></a>
+        <a href="#" aria-label="Line"><svg viewBox="0 0 24 24"><path d="M12 3C6.5 3 2 6.7 2 11.2c0 2.6 1.5 4.9 3.9 6.5l-.7 3.3 3.6-2c1 .2 2.1.3 3.2.3 5.5 0 10-3.7 10-8.1S17.5 3 12 3z"/></svg></a>
+        <a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24"><path d="M9 3v12.5a3 3 0 1 1-3-3"/><path d="M15 3a5 5 0 0 0 5 5"/></svg></a>
+        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+      </div>
+    </div>
+
+    <div>
+      <h5><span class="jp">商品 · Shop</span>สินค้า</h5>
+      <ul>
+        <li><a href="#">อาหารหมา</a></li>
+        <li><a href="#">อาหารแมว</a></li>
+        <li><a href="#">ของใช้ในบ้าน</a></li>
+        <li><a href="#">ของเล่น</a></li>
+        <li><a href="#">เสื้อยืดเจ้าของ</a></li>
+        <li><a href="#">Gift Card</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5><span class="jp">案内 · Help</span>ช่วยเหลือ</h5>
+      <ul>
+        <li><a href="#">การจัดส่ง</a></li>
+        <li><a href="#">คืน / เปลี่ยนสินค้า</a></li>
+        <li><a href="#">วิธีดูแลน้อง</a></li>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">ติดต่อเรา</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5><span class="jp">縁の輪 · Bond Circle</span>สมาชิก</h5>
+      <ul>
+        <li><a href="#">เข้าสู่ระบบ</a></li>
+        <li><a href="#">สมัครสมาชิก</a></li>
+        <li><a href="#">โปรแกรมสะสมแต้ม</a></li>
+        <li><a href="#">Refer a friend</a></li>
+        <li><a href="#">Affiliate</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5><span class="jp">店舗 · Visit</span>ร้านสาขา</h5>
+      <ul>
+        <li><a href="#">Anibound Ari</a></li>
+        <li><a href="#">Anibound Thonglor</a></li>
+        <li><a href="#">Pop-up Kyoto · 2026</a></li>
+        <li><a href="#">เปิดทุกวัน 10:00–20:00</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <div>© 2026 Anibound Co., Ltd. · ทำด้วยใจในกรุงเทพ ฯ · 縁を大切に</div>
+    <div class="pay">
+      <span class="chip">VISA</span>
+      <span class="chip">MC</span>
+      <span class="chip">PromptPay</span>
+      <span class="chip">TrueMoney</span>
+      <span class="chip">COD</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ────────────────────────────────  TWEAKS PANEL  ──────────────────────────────── -->
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel">
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "palette": "sage",
+  "serif": "DM Serif Display",
+  "kanjiAccents": true,
+  "showNorenTeeth": true,
+  "ensoIntensity": 15
+}/*EDITMODE-END*/;
+
+const PALETTES = {
+  sage: {
+    name: "Sage Tea",
+    "--bg":"#f0ebe0", "--bg-deep":"#e7dfd0", "--paper":"#faf6ec",
+    "--ink":"#2b2820", "--ink-soft":"#5a5448", "--rule":"#c8bfac",
+    "--sage":"#d8e8d0", "--sage-deep":"#a8c4a0",
+    "--peach":"#f5d8b8", "--terracotta":"#e8a878", "--accent":"#c97a4a"
+  },
+  sunset: {
+    name: "Sunset Peach",
+    "--bg":"#fef6ea", "--bg-deep":"#fae6cd", "--paper":"#fffaf2",
+    "--ink":"#3a2a22", "--ink-soft":"#6b5448", "--rule":"#e6c9a8",
+    "--sage":"#f8d8b8", "--sage-deep":"#e6a878",
+    "--peach":"#fde0c8", "--terracotta":"#dc6f3a", "--accent":"#c4502a"
+  },
+  stone: {
+    name: "Cool Stone",
+    "--bg":"#ecebe6", "--bg-deep":"#dfdcd2", "--paper":"#f7f5ee",
+    "--ink":"#1f1f1c", "--ink-soft":"#4f4f48", "--rule":"#bdbab0",
+    "--sage":"#cfd5cb", "--sage-deep":"#8c958a",
+    "--peach":"#e2dccb", "--terracotta":"#a39782", "--accent":"#6b6357"
+  },
+  matcha: {
+    name: "Matcha",
+    "--bg":"#e9ecdc", "--bg-deep":"#dde2c8", "--paper":"#f4f5e8",
+    "--ink":"#1f2418", "--ink-soft":"#4c5240", "--rule":"#b7bea0",
+    "--sage":"#c8d6a4", "--sage-deep":"#88996a",
+    "--peach":"#e8e4c2", "--terracotta":"#8aa05c", "--accent":"#5a7038"
+  }
+};
+
+const SERIFS = {
+  "Shippori Mincho": '"Shippori Mincho", "Noto Serif Thai", "Noto Serif JP", serif',
+  "Noto Serif JP":   '"Noto Serif JP", "Noto Serif Thai", serif',
+  "DM Serif Display":'"DM Serif Display", "Noto Serif Thai", serif'
+};
+
+function applyPalette(p) {
+  const palette = PALETTES[p] || PALETTES.sage;
+  const r = document.documentElement;
+  Object.entries(palette).forEach(([k, v]) => {
+    if (k.startsWith("--")) r.style.setProperty(k, v);
+  });
+}
+function applySerif(name) {
+  const stack = SERIFS[name] || SERIFS["Shippori Mincho"];
+  document.documentElement.style.setProperty("--serif", stack);
+}
+function applyKanjiAccents(on) {
+  document.querySelectorAll(".kanji-floater, .ksuke, nav .links a .kanji, .hero-foot .cell .jpn, .corner-kanji, .big-kanji")
+    .forEach(el => el.style.display = on ? "" : "none");
+}
+function applyNorenTeeth(on) {
+  document.querySelectorAll(".noren").forEach(el => {
+    el.style.setProperty("--teeth-display", on ? "block" : "none");
+  });
+  // hide pseudo via custom prop hack - use a class instead
+  document.querySelector(".noren").classList.toggle("no-teeth", !on);
+}
+function applyEnsoIntensity(v) {
+  document.querySelectorAll(".enso path").forEach((p, i) => {
+    if (i === 0) p.setAttribute("stroke-width", v);
+    else p.setAttribute("stroke-width", Math.max(4, v * 0.45));
+  });
+}
+
+// Apply defaults immediately
+applyPalette(TWEAK_DEFAULTS.palette);
+applySerif(TWEAK_DEFAULTS.serif);
+
+// Add no-teeth rule via stylesheet
+const ts = document.createElement("style");
+ts.textContent = `.noren.no-teeth::before, .noren.no-teeth::after { display: none; }`;
+document.head.appendChild(ts);
+
+const { useEffect } = React;
+
+function TweaksApp() {
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+  useEffect(() => { applyPalette(t.palette); }, [t.palette]);
+  useEffect(() => { applySerif(t.serif); }, [t.serif]);
+  useEffect(() => { applyKanjiAccents(t.kanjiAccents); }, [t.kanjiAccents]);
+  useEffect(() => { applyNorenTeeth(t.showNorenTeeth); }, [t.showNorenTeeth]);
+  useEffect(() => { applyEnsoIntensity(t.ensoIntensity); }, [t.ensoIntensity]);
+
+  return (
+    <TweaksPanel title="Tweaks">
+      <TweakSection label="Palette · パレット">
+        <TweakRadio
+          label="Theme"
+          value={t.palette}
+          onChange={v => setTweak("palette", v)}
+          options={[
+            { value: "sage",    label: "Sage" },
+            { value: "sunset",  label: "Sunset" },
+            { value: "stone",   label: "Stone" },
+            { value: "matcha",  label: "Matcha" }
+          ]}
+        />
+      </TweakSection>
+
+      <TweakSection label="Serif · 書体">
+        <TweakRadio
+          label="Headline font"
+          value={t.serif}
+          onChange={v => setTweak("serif", v)}
+          options={[
+            { value: "Shippori Mincho", label: "Shippori" },
+            { value: "Noto Serif JP",   label: "Noto JP" },
+            { value: "DM Serif Display",label: "DM Serif" }
+          ]}
+        />
+      </TweakSection>
+
+      <TweakSection label="Style">
+        <TweakToggle label="Kanji accents 漢字" value={t.kanjiAccents} onChange={v => setTweak("kanjiAccents", v)} />
+        <TweakToggle label="Noren curtain teeth" value={t.showNorenTeeth} onChange={v => setTweak("showNorenTeeth", v)} />
+        <TweakSlider label="Enso brush weight" min={8} max={36} step={1} value={t.ensoIntensity} onChange={v => setTweak("ensoIntensity", v)} />
+      </TweakSection>
+    </TweaksPanel>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("tweaks-root")).render(<TweaksApp />);
+</script>
+<div id="tweaks-root"></div>
+
+</body>
+</html>

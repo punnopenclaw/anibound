@@ -1,0 +1,29 @@
+# .DS_Store / OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Node / build
+node_modules/
+dist/
+.next/
+.cache/
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Vercel
+.vercel/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Screenshots / scratch
+screenshots/
