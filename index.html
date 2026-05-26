@@ -1461,6 +1461,16 @@
   .pm-sep { height: 1px; background: rgba(212,165,116,0.1); margin: 4px 0; }
   .pm-item.danger { color: #e89090; }
   .pm-item.danger:hover { background: rgba(180,60,60,0.12); }
+  .pm-item.admin-link {
+    color: #d4a574;
+    font-weight: 500;
+    background: rgba(212,165,116,0.06);
+    border: 1px solid rgba(212,165,116,0.15);
+    border-radius: 8px;
+    margin-bottom: 2px;
+  }
+  .pm-item.admin-link:hover { background: rgba(212,165,116,0.15); border-color: rgba(212,165,116,0.3); }
+  .pm-item.admin-link svg { opacity: 1; }
   .nav-btn {
     width: 38px; height: 38px;
     border-radius: 50%;
@@ -1720,6 +1730,15 @@
         <a href="profile.html#settings" class="pm-item">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
           ตั้งค่า
+        </a>
+        <!-- Admin link — hidden, shown only for is_admin = true -->
+        <a href="admin.html" class="pm-item admin-link" id="adminMenuItem" style="display:none">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+          หลังบ้าน Admin
         </a>
         <div class="pm-sep"></div>
         <button class="pm-item danger" id="logoutBtn">
@@ -3363,15 +3382,15 @@
 
   async function initAuth() {
     const session = await getSession()
-    if (session) updateUI(session.user)
+    if (session) await updateUI(session.user)
 
-    supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) updateUI(session.user)
+    supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (session) await updateUI(session.user)
       else resetUI()
     })
   }
 
-  function updateUI(user) {
+  async function updateUI(user) {
     window.__aniboundUser = user
 
     // Avatar
@@ -3387,6 +3406,24 @@
     document.getElementById('pmName').textContent  =
       user.user_metadata?.full_name || user.email?.split('@')[0] || 'Member'
     document.getElementById('pmEmail').textContent = user.email || '—'
+
+    // ── ดึง is_admin จาก profiles table ──────────────────
+    try {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('is_admin')
+        .eq('id', user.id)
+        .single()
+
+      const adminLink = document.getElementById('adminMenuItem')
+      if (profile?.is_admin) {
+        adminLink.style.display = 'flex'
+      } else {
+        adminLink.style.display = 'none'
+      }
+    } catch (e) {
+      console.warn('profile fetch:', e.message)
+    }
   }
 
   function resetUI() {
@@ -3395,6 +3432,7 @@
     document.getElementById('profileIconSvg').style.display   = 'block'
     document.getElementById('pmName').textContent  = '—'
     document.getElementById('pmEmail').textContent = '—'
+    document.getElementById('adminMenuItem').style.display = 'none'
   }
 
   // Logout
