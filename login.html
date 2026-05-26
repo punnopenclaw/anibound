@@ -2,15 +2,14 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>เข้าสู่ระบบ · Anibound</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Noto+Serif+JP:wght@400;500;600&family=Noto+Serif+Thai:wght@400;500;600&family=DM+Serif+Display&family=Inter:wght@300;400;500;600&family=Noto+Sans+Thai:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Noto+Serif+Thai:wght@300;400;500;600&family=Inter:wght@300;400;500;600&family=Noto+Sans+Thai:wght@300;400;500&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="auth.css" />
-<script src="image-slot.js"></script>
 </head>
 
 <body>
@@ -20,29 +19,23 @@
   <!-- ───── FORM SIDE ───── -->
   <div class="auth-form-side">
     <div class="auth-top">
-      <a class="auth-brand" href="anibound.html">
-        <svg class="mark" viewBox="0 0 100 100" aria-hidden="true">
-          <path d="M 50 12 A 38 38 0 1 0 84 60" fill="none" stroke="var(--ink)" stroke-width="5.5" stroke-linecap="round"/>
-          <circle cx="84" cy="60" r="3.2" fill="var(--ink)"/>
-          <text x="50" y="64" text-anchor="middle" font-family="Shippori Mincho, serif" font-size="34" font-weight="500" fill="var(--ink)">縁</text>
-        </svg>
-        <span class="wordmark">ANIBOUND</span>
+      <a class="auth-brand" href="index.html">
+        <span class="glyph" aria-hidden="true"></span>
+        <span>ANIBOUND</span>
       </a>
-      <a class="auth-back" href="anibound.html">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M19 12H5m0 0 6 6m-6-6 6-6"/></svg>
-        กลับสู่ร้าน
+      <a class="auth-back" href="index.html">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M19 12H5m0 0 6 6m-6-6 6-6"/></svg>
+        กลับสู่ Journey
       </a>
     </div>
 
     <div class="auth-body">
       <div id="login-view">
-        <div class="auth-eyebrow">
-          <span class="kanji">縁</span>
-          <span class="dot"></span>
-          Welcome back
-        </div>
-        <h1 class="auth-h1">เข้าสู่ <em>Anibound</em></h1>
-        <div class="auth-jp-sub">おかえりなさい — ยินดีต้อนรับกลับมา</div>
+        <div class="auth-eyebrow">— welcome back —</div>
+        <h1 class="auth-h1">เข้าสู่<br/><em>Anibound</em></h1>
+        <p class="auth-sub">
+          ยินดีต้อนรับกลับมาสู่ Field Shop. โปรดเข้าสู่ระบบเพื่อเข้าถึงตะกร้า, รายการสะสม, และคำสั่งซื้อก่อนหน้าของคุณ.
+        </p>
 
         <!-- Socials -->
         <div class="socials-row">
@@ -55,24 +48,22 @@
             Google
           </button>
           <button class="social-btn" type="button" data-social="Apple">
-            <svg viewBox="0 0 24 24" fill="#000"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+            <svg viewBox="0 0 24 24" fill="#ece4d2"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
             Apple
           </button>
         </div>
 
-        <div class="divider">หรือ — または</div>
+        <div class="divider">หรือ — or</div>
 
         <form id="login-form" novalidate>
-          <div class="field has-icon" id="field-email">
-            <label for="email">อีเมล <span class="opt">/ Email</span></label>
-            <svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
-            <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" required />
+          <div class="field" id="field-email">
+            <label for="email">Email <span class="opt">/ อีเมล</span></label>
+            <input type="email" id="email" name="email" placeholder="you@field.co" autocomplete="email" required />
             <div class="err-msg">กรุณากรอกอีเมลให้ถูกต้อง</div>
           </div>
 
-          <div class="field has-icon" id="field-password">
-            <label for="password">รหัสผ่าน <span class="opt">/ Password</span></label>
-            <svg class="ic" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 1 1 8 0v4"/></svg>
+          <div class="field" id="field-password">
+            <label for="password">Password <span class="opt">/ รหัสผ่าน</span></label>
             <input type="password" id="password" name="password" placeholder="••••••••" autocomplete="current-password" required minlength="6" />
             <button type="button" class="reveal" data-target="password">SHOW</button>
             <div class="err-msg">รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร</div>
@@ -84,89 +75,102 @@
               <span class="box"></span>
               <span>จำฉันไว้ 30 วัน</span>
             </label>
-            <a class="forgot" href="#" onclick="event.preventDefault(); alert('ลิงก์รีเซ็ตรหัสผ่านจะถูกส่งไปยังอีเมลของคุณ');">ลืมรหัสผ่าน?</a>
+            <a class="forgot" href="#" onclick="event.preventDefault(); alert('ลิงก์รีเซ็ตจะถูกส่งไปยังอีเมลของคุณ');">ลืมรหัส?</a>
           </div>
 
           <button class="btn-cta" type="submit">
             <span>เข้าสู่ระบบ Sign in</span>
-            <span class="kanji">縁</span>
+            <span class="arr">→</span>
           </button>
         </form>
 
         <div class="switch-link">
-          ยังไม่มีบัญชี? <a href="signup.html">สมัครสมาชิก →</a>
+          ยังไม่มีบัญชี? <a href="signup.html">สมัครสมาชิก</a>
         </div>
       </div>
 
-      <!-- Success view -->
+      <!-- Success -->
       <div id="success-view" style="display:none">
         <div class="success-card">
           <div class="seal">縁</div>
           <h1 class="auth-h1" style="font-size: 32px; margin-bottom: 6px;">ยินดีต้อนรับกลับ</h1>
-          <div class="auth-jp-sub" style="margin-bottom: 22px;">お帰りなさい</div>
-          <p style="color: var(--ink-soft); margin: 0 0 24px; font-size: 14px;">
-            กำลังนำคุณกลับสู่ร้าน <span class="jp" style="color: var(--accent);">縁</span>
-          </p>
-          <button class="btn-cta" onclick="window.location.href='anibound.html'">
-            ไปยังหน้าร้าน → <span class="kanji">店</span>
+          <p class="auth-sub" style="margin-bottom: 24px; text-align: center;">กำลังนำคุณกลับสู่การเดินทาง...</p>
+          <button class="btn-cta" onclick="window.location.href='index.html'">
+            เริ่มต่อ Continue → <span class="arr">縁</span>
           </button>
         </div>
       </div>
     </div>
 
     <div class="auth-foot">
-      <span>© 2026 Anibound</span>
-      <span>ความเป็นส่วนตัว · ข้อกำหนด</span>
+      <span>© 2026 Anibound — Field Shop</span>
+      <span>Privacy · Terms</span>
     </div>
   </div>
 
   <!-- ───── VISUAL SIDE ───── -->
   <div class="auth-visual-side">
-    <div class="vis-inner">
-      <div class="vis-top">
-        <span>BOND CIRCLE · 縁の輪</span>
-        <span class="jp">会員専用</span>
+    <div class="vis-top">
+      <span>FIELD ARCHIVE · 縁の輪</span>
+      <span class="accent">member entry</span>
+    </div>
+
+    <!-- Landscape background -->
+    <svg class="vis-landscape" viewBox="0 0 600 800" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <radialGradient id="vsun" cx="50%" cy="38%" r="20%">
+          <stop offset="0%" stop-color="#e0b878" stop-opacity="0.5"/>
+          <stop offset="100%" stop-color="#e0b878" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <!-- Sun glow -->
+      <circle cx="300" cy="300" r="180" fill="url(#vsun)"/>
+      <!-- Distant mountains -->
+      <path d="M 0 600 L 0 480 L 80 420 L 180 470 L 280 400 L 380 460 L 480 410 L 600 460 L 600 600 Z" fill="#0d1f15" opacity="0.85"/>
+      <!-- Mid hills -->
+      <path d="M 0 600 L 0 540 L 100 500 L 220 540 L 340 490 L 460 530 L 600 500 L 600 600 Z" fill="#0a1812" opacity="0.95"/>
+      <!-- Near hills -->
+      <path d="M 0 600 L 0 600 L 120 570 L 260 600 L 400 575 L 540 600 L 600 590 L 600 800 L 0 800 Z" fill="#05100a"/>
+      <!-- Trees silhouette -->
+      <g fill="#04100a">
+        <path d="M 60 600 L 70 540 L 65 540 L 60 530 L 55 540 L 50 540 Z"/>
+        <path d="M 110 600 L 118 555 L 113 555 L 110 548 L 107 555 L 102 555 Z"/>
+        <path d="M 500 600 L 510 560 L 505 560 L 500 552 L 495 560 L 490 560 Z"/>
+        <path d="M 540 600 L 552 545 L 547 545 L 540 535 L 533 545 L 528 545 Z"/>
+      </g>
+      <!-- Stars / fireflies -->
+      <circle cx="120" cy="180" r="1.5" fill="#ece4d2" opacity="0.8"/>
+      <circle cx="220" cy="120" r="1" fill="#ece4d2" opacity="0.6"/>
+      <circle cx="380" cy="150" r="1.2" fill="#ece4d2" opacity="0.7"/>
+      <circle cx="480" cy="100" r="1" fill="#ece4d2" opacity="0.5"/>
+      <circle cx="160" cy="240" r="0.8" fill="#ece4d2" opacity="0.6"/>
+      <circle cx="450" cy="200" r="1.2" fill="#ece4d2" opacity="0.7"/>
+    </svg>
+
+    <!-- Frame -->
+    <div class="vis-frame">
+      <span class="corner tl"></span>
+      <span class="corner tr"></span>
+      <span class="corner bl"></span>
+      <span class="corner br"></span>
+      <div class="stamp">No. 042</div>
+      <div class="label-top">field member · 会員証</div>
+      <div class="glyph-big">縁</div>
+      <div class="label-bot">
+        <strong>The Bond Circle</strong>
+        สายใยที่ทอดยาวระหว่างคนกับโลกป่า
       </div>
     </div>
 
-    <div class="vis-kanji-tl">縁</div>
-
-    <!-- ENSO + portrait -->
-    <div class="vis-enso">
-      <svg viewBox="0 0 400 400" aria-hidden="true">
-        <defs>
-          <filter id="rough2">
-            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7"/>
-            <feDisplacementMap in="SourceGraphic" scale="2.4"/>
-          </filter>
-        </defs>
-        <g filter="url(#rough2)">
-          <path d="M 200 40 A 160 160 0 1 0 340 280"
-                fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" opacity="0.92"/>
-          <path d="M 200 40 A 160 160 0 1 0 340 280"
-                fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round" opacity="0.6"
-                transform="translate(1.5, 1)"/>
-          <circle cx="340" cy="280" r="6" fill="currentColor"/>
-          <circle cx="350" cy="290" r="2.4" fill="currentColor"/>
-          <circle cx="333" cy="295" r="1.6" fill="currentColor"/>
-        </g>
-      </svg>
-    </div>
-
-    <div class="vis-portrait">
-      <image-slot id="login-pet" shape="circle" placeholder="วางรูปน้องของคุณ (ܫ⌒)"></image-slot>
-    </div>
-
-    <div class="vis-tag">
-      <span class="dot"></span>
-      MEMBER · <span class="jp">縁の輪</span>
-    </div>
-
-    <div class="vis-kanji-br">猫犬</div>
+    <!-- Fireflies -->
+    <div class="vis-firefly" style="top: 28%; left: 22%; animation-delay: 0s;"></div>
+    <div class="vis-firefly" style="top: 40%; left: 78%; animation-delay: 1s;"></div>
+    <div class="vis-firefly" style="top: 60%; left: 18%; animation-delay: 2s;"></div>
+    <div class="vis-firefly" style="top: 22%; left: 65%; animation-delay: 0.5s;"></div>
 
     <div class="vis-quote">
-      <p class="q">"ทุกการ <em>กลับมา</em><br/>คือสายใย <em>ที่ต่อเนื่อง。</em>"</p>
-      <div class="jp-q">— 縁は続く —</div>
+      <p class="q">"ทุกการ <em>กลับมา</em> คือสายใย<br/>ที่ <em>ต่อเนื่อง</em>."</p>
+      <div class="jp-q">— field journal, returning bonds —</div>
     </div>
 
     <div class="vis-vertical">EST. 2024 · 縁</div>
@@ -188,24 +192,22 @@
   document.querySelectorAll("[data-social]").forEach(b => {
     b.addEventListener("click", () => {
       const name = b.dataset.social;
-      b.style.background = "var(--bg-deep)";
-      b.innerHTML = `<span style="color: var(--accent);">✓</span> ${name} (demo)`;
+      b.style.background = "rgba(212,165,116,0.15)";
+      b.style.borderColor = "var(--accent)";
+      b.innerHTML = `<span style="color: var(--accent);">✓</span> ${name}`;
       setTimeout(() => showSuccess(), 700);
     });
   });
 
-  // Validate + submit
+  // Validate
+  function validateEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
   const form = document.getElementById("login-form");
   const emailField = document.getElementById("field-email");
   const pwField = document.getElementById("field-password");
   const emailIn = document.getElementById("email");
   const pwIn = document.getElementById("password");
 
-  function validateEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
-
-  [emailIn, pwIn].forEach(i => i.addEventListener("input", () => {
-    i.closest(".field").classList.remove("error");
-  }));
+  [emailIn, pwIn].forEach(i => i.addEventListener("input", () => i.closest(".field").classList.remove("error")));
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -213,9 +215,8 @@
     if (!validateEmail(emailIn.value.trim())) { emailField.classList.add("error"); ok = false; }
     if (pwIn.value.length < 6) { pwField.classList.add("error"); ok = false; }
     if (!ok) return;
-
-    const btn = form.querySelector(".btn-cta span:first-child");
-    btn.textContent = "กำลังเข้าสู่ระบบ...";
+    const btnSpan = form.querySelector(".btn-cta span:first-child");
+    btnSpan.textContent = "กำลังเข้าสู่ระบบ...";
     setTimeout(showSuccess, 900);
   });
 

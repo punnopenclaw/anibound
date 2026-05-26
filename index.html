@@ -1,25 +1,2882 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<title>Anibound · กำลังนำคุณไปยังหน้าร้าน</title>
-<meta http-equiv="refresh" content="0; url=anibound.html">
-<link rel="canonical" href="anibound.html">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Anibound — สายใยกับโลกป่า</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Noto+Serif+Thai:wght@300;400;500;600&family=Inter:wght@300;400;500;600&family=Noto+Sans+Thai:wght@300;400;500&display=swap" rel="stylesheet">
+
 <style>
-  body { margin:0; min-height:100vh; display:grid; place-items:center; background:#f0ebe0; font-family:"DM Serif Display", serif; color:#2b2820; }
-  .wrap { text-align:center; }
-  .kanji { font-size:64px; color:#c97a4a; margin-bottom:8px; }
-  a { color:#c97a4a; }
+  /* ─────────────────────────────────────────────────────────────
+     ANIBOUND — A bond with the wild
+     4 biomes, one scrolling journey
+     ───────────────────────────────────────────────────────────── */
+
+  :root {
+    --serif: "Cormorant Garamond", "Noto Serif Thai", serif;
+    --sans:  "Inter", "Noto Sans Thai", system-ui, sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--sans);
+    background: #0a0e0c;
+    color: #ece4d2;
+    font-size: 15px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; }
+  .serif { font-family: var(--serif); font-weight: 400; }
+
+  /* ─────────── Sticky nav ─────────── */
+  .site-nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 22px clamp(20px, 4vw, 60px);
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 32px;
+    transition: background 0.6s ease, color 0.6s ease;
+    pointer-events: none;
+  }
+  .site-nav > * { pointer-events: auto; }
+  .site-nav.dark { background: linear-gradient(180deg, rgba(5,10,16,0.55), transparent); color: #f0e8d4; }
+  .site-nav.light { background: linear-gradient(180deg, rgba(245,225,180,0.45), transparent); color: #2a2418; }
+
+  .brand-mark {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-family: var(--serif);
+    font-size: 19px;
+    letter-spacing: 0.42em;
+    font-weight: 500;
+  }
+  .brand-mark .glyph {
+    width: 34px; height: 34px;
+    border: 1.2px solid currentColor;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    position: relative;
+  }
+  .brand-mark .glyph::after {
+    content: "";
+    position: absolute;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.85;
+  }
+  .brand-mark .glyph::before {
+    content: "";
+    position: absolute;
+    width: 22px; height: 1px;
+    background: currentColor;
+    transform: rotate(-32deg);
+    opacity: 0.6;
+  }
+
+  .scene-nav {
+    display: flex;
+    gap: 4px;
+    background: rgba(255,255,255,0.06);
+    padding: 5px;
+    border-radius: 999px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .site-nav.light .scene-nav { background: rgba(255,255,255,0.4); border-color: rgba(0,0,0,0.08); }
+  .scene-nav button {
+    background: none;
+    border: none;
+    color: inherit;
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-family: var(--sans);
+    font-size: 11.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    opacity: 0.72;
+    transition: all 0.3s ease;
+  }
+  .scene-nav button:hover { opacity: 1; }
+  .scene-nav button.active {
+    background: currentColor;
+    opacity: 1;
+  }
+  .scene-nav button.active span { color: var(--scene-bg, #0a0e0c); }
+  .scene-nav button .num {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--scene-accent, #d4a574);
+    opacity: 0.95;
+  }
+  .scene-nav button.active .num { color: inherit; opacity: 0.6; }
+
+  .site-tagline {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 14px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 13.5px;
+    opacity: 0.75;
+  }
+  .site-tagline .dot {
+    width: 6px; height: 6px;
+    background: var(--scene-accent, #d4a574);
+    border-radius: 50%;
+    box-shadow: 0 0 12px var(--scene-accent, #d4a574);
+  }
+
+  /* ─────────── Scene scaffolding ─────────── */
+  .scene {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .scene .copy {
+    position: relative;
+    z-index: 10;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 140px clamp(24px, 5vw, 80px) 100px;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 60px;
+    min-height: 100vh;
+    align-items: end;
+  }
+  .scene .copy-left { max-width: 540px; }
+  .scene .meta {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 28px;
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+  .scene .meta .scene-num {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 18px;
+    letter-spacing: 0.08em;
+    text-transform: none;
+    opacity: 1;
+    color: var(--scene-accent);
+  }
+  .scene .meta .line { flex: 1; height: 1px; background: currentColor; opacity: 0.25; max-width: 80px; }
+  .scene h2 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(56px, 8vw, 124px);
+    line-height: 1.6;
+    margin: 0 0 16px;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  .scene h2 em {
+    font-style: italic;
+    color: var(--scene-accent);
+  }
+  .scene .thai-sub {
+    font-family: "Noto Serif Thai", serif;
+    font-weight: 400;
+    font-size: clamp(18px, 1.8vw, 22px);
+    line-height: 1.5;
+    opacity: 0.92;
+    margin: 0 0 32px;
+    max-width: 460px;
+  }
+  .scene .body-copy {
+    font-size: 15px;
+    line-height: 1.85;
+    opacity: 0.78;
+    margin: 0 0 36px;
+    max-width: 440px;
+  }
+  .scene .field-card {
+    border: 1px solid currentColor;
+    border-opacity: 0.2;
+    border-color: rgba(255,255,255,0.18);
+    padding: 22px 24px;
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(6px);
+    border-radius: 4px;
+    max-width: 420px;
+  }
+  .scene.light-scene .field-card {
+    background: rgba(255,255,255,0.4);
+    border-color: rgba(0,0,0,0.12);
+  }
+  .scene .field-card .lbl {
+    font-size: 10.5px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .scene .field-card .lbl::before {
+    content: "";
+    width: 18px; height: 1px; background: var(--scene-accent);
+  }
+  .scene .field-card .rows {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 16px;
+  }
+  .scene .field-card .rows .k {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin-bottom: 4px;
+  }
+  .scene .field-card .rows .v {
+    font-family: var(--serif);
+    font-size: 22px;
+    line-height: 1.5;
+  }
+  .scene .field-card .rows .v small { font-size: 13px; opacity: 0.65; font-family: var(--sans); letter-spacing: 0.08em; }
+
+  /* Right column — vertical fact stack */
+  .scene .copy-right {
+    align-self: end;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    align-items: flex-end;
+    padding-bottom: 12px;
+  }
+  .scene .quote {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(20px, 2vw, 26px);
+    line-height: 1.4;
+    max-width: 340px;
+    opacity: 0.92;
+  }
+  .scene .quote::before { content: "“"; opacity: 0.4; margin-right: 4px; }
+  .scene .quote::after { content: "”"; opacity: 0.4; margin-left: 2px; }
+  .scene .quote-author {
+    font-family: var(--sans);
+    font-style: normal;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    opacity: 0.55;
+    margin-top: 14px;
+    display: block;
+  }
+  .scene .coord {
+    display: flex;
+    gap: 26px;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.55;
+  }
+  .scene .coord div { display: flex; flex-direction: column; gap: 4px; }
+  .scene .coord .v { font-family: var(--serif); font-style: italic; font-size: 15px; opacity: 0.9; }
+
+  /* Backdrop wrapper for each scene */
+  .scene .backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  /* ─────────── INTRO ─────────── */
+  #intro {
+    --scene-bg: #0a1410;
+    --scene-accent: #d4a574;
+    background: linear-gradient(180deg, #050905 0%, #0a1410 60%, #0d1a13 100%);
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+  #intro::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 50% 30%, rgba(212,165,116,0.12), transparent 70%),
+      radial-gradient(ellipse 80% 60% at 50% 100%, rgba(45,75,55,0.4), transparent 80%);
+  }
+  #intro .intro-inner {
+    position: relative;
+    z-index: 5;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 180px clamp(24px, 5vw, 80px) 80px;
+    width: 100%;
+    text-align: center;
+  }
+  #intro .eyebrow {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    letter-spacing: 0.4em;
+    opacity: 0.7;
+    margin-bottom: 32px;
+    color: #d4a574;
+  }
+  #intro .eyebrow::before, #intro .eyebrow::after { content: "—"; opacity: 0.5; margin: 0 14px; }
+  #intro h1 {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(56px, 9vw, 148px);
+    line-height: 1.6;
+    margin: 0 auto 36px;
+    letter-spacing: -0.02em;
+    max-width: 14ch;
+    text-wrap: balance;
+  }
+  #intro h1 em {
+    font-style: italic;
+    color: #d4a574;
+  }
+  #intro h1 .small {
+    display: block;
+    font-style: italic;
+    font-size: 0.42em;
+    font-weight: 400;
+    opacity: 0.7;
+    margin-top: 16px;
+    letter-spacing: 0.02em;
+  }
+  #intro .thai-intro {
+    font-family: "Noto Serif Thai", serif;
+    font-size: 17px;
+    line-height: 1.7;
+    max-width: 540px;
+    margin: 0 auto 48px;
+    opacity: 0.78;
+  }
+  #intro .start-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 32px;
+    background: transparent;
+    border: 1px solid #d4a574;
+    border-radius: 999px;
+    color: #d4a574;
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  #intro .start-btn:hover { background: #d4a574; color: #0a1410; }
+  #intro .start-btn .arrow { transition: transform 0.3s; }
+  #intro .start-btn:hover .arrow { transform: translateY(3px); }
+
+  #intro .biome-strip {
+    margin-top: 80px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    border-top: 1px solid rgba(212,165,116,0.18);
+    padding-top: 32px;
+  }
+  #intro .biome-strip .bcell {
+    padding: 0 20px;
+    text-align: left;
+    border-left: 1px solid rgba(212,165,116,0.14);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  #intro .biome-strip .bcell:first-child { border-left: none; }
+  #intro .biome-strip .bn {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    color: #d4a574;
+    opacity: 0.85;
+    text-transform: uppercase;
+  }
+  #intro .biome-strip .bt {
+    font-family: var(--serif);
+    font-size: 22px;
+    letter-spacing: 0.01em;
+  }
+  #intro .biome-strip .bs {
+    font-family: "Noto Serif Thai", serif;
+    font-size: 12px;
+    opacity: 0.55;
+    margin-top: 2px;
+  }
+
+  /* Intro decorative leaves */
+  .intro-leaf {
+    position: absolute;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .intro-leaf-1 { top: 10%; left: -5%; width: 320px; transform: rotate(20deg); animation: leafsway 7s ease-in-out infinite; }
+  .intro-leaf-2 { top: 5%; right: -8%; width: 380px; transform: rotate(-10deg); animation: leafsway 8s ease-in-out infinite reverse; }
+  .intro-leaf-3 { bottom: 0; left: 8%; width: 200px; opacity: 0.35; animation: leafsway 6s ease-in-out infinite; }
+  .intro-leaf-4 { bottom: -3%; right: 6%; width: 260px; opacity: 0.4; animation: leafsway 9s ease-in-out infinite reverse; }
+
+  @keyframes leafsway {
+    0%, 100% { transform: rotate(var(--r, 0deg)) translateY(0); }
+    50% { transform: rotate(calc(var(--r, 0deg) + 4deg)) translateY(-6px); }
+  }
+
+  /* ─────────── SCENE 1: JUNGLE ─────────── */
+  #jungle {
+    --scene-bg: #0a1410;
+    --scene-accent: #e0b878;
+    background:
+      radial-gradient(ellipse 70% 50% at 30% 20%, rgba(224,184,120,0.18), transparent 60%),
+      linear-gradient(180deg, #0a1410 0%, #0e1e16 40%, #122820 70%, #0a1a14 100%);
+    color: #e8e0c8;
+  }
+  /* Layered canopy silhouettes */
+  .jungle-canopy {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .jungle-canopy svg {
+    position: absolute;
+    width: 100%;
+    height: auto;
+    bottom: 0;
+  }
+  .jungle-canopy .top {
+    top: 0; bottom: auto;
+    height: 38%;
+    width: 100%;
+  }
+  .jungle-canopy .top svg { top: 0; bottom: auto; }
+  .jungle-light-ray {
+    position: absolute;
+    width: 60px;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(224,184,120,0.18), transparent 65%);
+    transform-origin: top;
+    pointer-events: none;
+  }
+  .jungle-light-ray.r1 { left: 18%; top: 0; transform: rotate(6deg); animation: rayshift 9s ease-in-out infinite; }
+  .jungle-light-ray.r2 { left: 38%; top: 0; transform: rotate(-3deg); width: 90px; animation: rayshift 11s ease-in-out infinite reverse; opacity: 0.7; }
+  .jungle-light-ray.r3 { left: 64%; top: 0; transform: rotate(4deg); width: 40px; animation: rayshift 8s ease-in-out infinite 0.5s; opacity: 0.85; }
+
+  @keyframes rayshift {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; transform: rotate(var(--rr, 0deg)) translateX(8px); }
+  }
+
+  /* River */
+  .jungle-river {
+    position: absolute;
+    bottom: 8%;
+    left: -10%;
+    right: -10%;
+    height: 28%;
+    background:
+      linear-gradient(180deg, rgba(80,140,150,0.0), rgba(40,90,100,0.4) 30%, rgba(20,60,70,0.85)),
+      radial-gradient(ellipse 50% 80% at 50% 0%, rgba(224,184,120,0.18), transparent);
+    border-radius: 50% 50% 0 0 / 8% 8% 0 0;
+    pointer-events: none;
+  }
+  .jungle-river::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(180deg,
+        transparent 0,
+        transparent 14px,
+        rgba(220,200,160,0.06) 14px,
+        rgba(220,200,160,0.06) 15px);
+    animation: ripple 6s linear infinite;
+  }
+  @keyframes ripple {
+    0% { background-position-y: 0; }
+    100% { background-position-y: 28px; }
+  }
+  /* Crocodile */
+  .jungle-croc {
+    position: absolute;
+    bottom: 16%;
+    left: 22%;
+    width: 420px;
+    z-index: 4;
+    pointer-events: none;
+    animation: crocdrift 18s ease-in-out infinite;
+  }
+  @keyframes crocdrift {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(-30px); }
+  }
+  .croc-eye {
+    animation: croceyeblink 5s infinite;
+    transform-origin: center;
+  }
+  @keyframes croceyeblink {
+    0%, 92%, 100% { transform: scaleY(1); }
+    95% { transform: scaleY(0.15); }
+  }
+  /* Hanging vines */
+  .vine {
+    position: absolute;
+    top: 0;
+    width: 4px;
+    background: linear-gradient(180deg, #243a2a, #1a2a1f 80%, transparent);
+    transform-origin: top center;
+    border-radius: 0 0 4px 4px;
+    animation: vinesway 6s ease-in-out infinite;
+    z-index: 3;
+  }
+  .vine::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 28px; height: 18px;
+    background: #3a5238;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    box-shadow: -6px -10px 0 -4px #3a5238, 6px -10px 0 -4px #3a5238;
+  }
+  .vine.v1 { left: 10%; height: 220px; animation-delay: 0s; }
+  .vine.v2 { left: 78%; height: 280px; animation-delay: 1.2s; }
+  .vine.v3 { left: 88%; height: 180px; animation-delay: 0.6s; }
+  .vine.v4 { left: 6%; height: 320px; animation-delay: 2s; }
+  @keyframes vinesway {
+    0%, 100% { transform: rotate(-2deg); }
+    50% { transform: rotate(2.5deg); }
+  }
+  /* Fireflies */
+  .firefly {
+    position: absolute;
+    width: 4px; height: 4px;
+    background: #f2d088;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #f2d088, 0 0 16px #f2d088;
+    animation: flyglow 4s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 5;
+  }
+  .firefly.f1 { top: 30%; left: 50%; animation-delay: 0s; }
+  .firefly.f2 { top: 40%; left: 65%; animation-delay: 1s; }
+  .firefly.f3 { top: 25%; left: 72%; animation-delay: 2s; }
+  .firefly.f4 { top: 55%; left: 30%; animation-delay: 0.5s; }
+  .firefly.f5 { top: 45%; left: 80%; animation-delay: 2.5s; }
+  @keyframes flyglow {
+    0%, 100% { opacity: 0.2; transform: translate(0,0); }
+    50% { opacity: 1; transform: translate(-12px, -8px); }
+  }
+
+  /* ─────────── SCENE 2: SEA ─────────── */
+  #sea {
+    --scene-bg: #04101e;
+    --scene-accent: #7fd4c8;
+    background: linear-gradient(180deg, #0a2347 0%, #061a36 30%, #02101e 70%, #010812 100%);
+    color: #d0e4ec;
+  }
+  .sea-rays {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.7;
+  }
+  .sea-ray {
+    position: absolute;
+    top: -10%;
+    width: 70px;
+    height: 70%;
+    background: linear-gradient(180deg, rgba(180,220,235,0.16), transparent 70%);
+    transform-origin: top;
+  }
+  .sea-ray.s1 { left: 12%; transform: rotate(8deg); animation: rayshift 12s ease-in-out infinite; }
+  .sea-ray.s2 { left: 28%; transform: rotate(-4deg); width: 90px; animation: rayshift 14s ease-in-out infinite reverse; }
+  .sea-ray.s3 { left: 50%; transform: rotate(3deg); width: 50px; animation: rayshift 10s ease-in-out infinite 1s; }
+  .sea-ray.s4 { left: 70%; transform: rotate(-6deg); width: 110px; animation: rayshift 15s ease-in-out infinite 2s; }
+  .sea-ray.s5 { left: 88%; transform: rotate(5deg); width: 60px; animation: rayshift 11s ease-in-out infinite reverse; }
+
+  /* Bubbles rising */
+  .bubble {
+    position: absolute;
+    bottom: -30px;
+    border: 1px solid rgba(180,220,235,0.45);
+    background: rgba(127,212,200,0.08);
+    border-radius: 50%;
+    animation: bubblerise linear infinite;
+    pointer-events: none;
+  }
+  @keyframes bubblerise {
+    0% { transform: translateY(0) translateX(0); opacity: 0; }
+    10% { opacity: 0.7; }
+    100% { transform: translateY(-110vh) translateX(20px); opacity: 0; }
+  }
+
+  /* Schools of fish */
+  .fish-school {
+    position: absolute;
+    pointer-events: none;
+    z-index: 4;
+  }
+  .fish-school svg { display: block; }
+  .fish-school.school-1 {
+    top: 25%;
+    width: 70%;
+    left: 0;
+    animation: schoolglide 30s linear infinite;
+  }
+  .fish-school.school-2 {
+    top: 52%;
+    width: 60%;
+    left: 30%;
+    animation: schoolglide 38s linear infinite reverse;
+  }
+  .fish-school.school-3 {
+    top: 68%;
+    width: 50%;
+    left: 5%;
+    animation: schoolglide 26s linear infinite;
+    transform: scaleX(-1);
+  }
+  @keyframes schoolglide {
+    0% { transform: translateX(-110%); }
+    100% { transform: translateX(180%); }
+  }
+  .fish-school.school-3 { animation-direction: reverse; }
+
+  .fish { animation: fishwiggle 1.4s ease-in-out infinite; transform-origin: center; }
+  .fish.f-a { animation-delay: 0s; }
+  .fish.f-b { animation-delay: 0.3s; }
+  .fish.f-c { animation-delay: 0.6s; }
+  .fish.f-d { animation-delay: 0.9s; }
+  @keyframes fishwiggle {
+    0%, 100% { transform: scaleX(1) rotate(0); }
+    25% { transform: scaleX(0.96) rotate(-2deg); }
+    75% { transform: scaleX(0.96) rotate(2deg); }
+  }
+
+  /* Kelp / abalone seafloor */
+  .seafloor {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 18%;
+    background:
+      radial-gradient(ellipse 50% 100% at 50% 100%, rgba(127,212,200,0.1), transparent 70%),
+      linear-gradient(180deg, transparent, #010810 70%, #000408);
+    z-index: 6;
+  }
+  .seafloor-rocks {
+    position: absolute;
+    inset: 0;
+    z-index: 7;
+  }
+  .kelp {
+    position: absolute;
+    bottom: 0;
+    width: 8px;
+    background: linear-gradient(180deg, transparent, #1d403a 30%, #0c2522 90%);
+    transform-origin: bottom center;
+    border-radius: 999px;
+    animation: kelpsway 5s ease-in-out infinite;
+    z-index: 8;
+  }
+  .kelp::before, .kelp::after {
+    content: "";
+    position: absolute;
+    background: inherit;
+    width: 14px; height: 18px;
+    border-radius: 50%;
+    left: -3px;
+  }
+  .kelp::before { top: 20%; transform: rotate(-12deg); }
+  .kelp::after { top: 60%; transform: rotate(15deg); }
+  .kelp.k1 { left: 14%; height: 22vh; animation-delay: 0s; }
+  .kelp.k2 { left: 28%; height: 18vh; animation-delay: 1.5s; }
+  .kelp.k3 { left: 72%; height: 26vh; animation-delay: 0.8s; }
+  .kelp.k4 { left: 86%; height: 16vh; animation-delay: 2s; }
+  .kelp.k5 { left: 50%; height: 20vh; animation-delay: 1.2s; }
+  @keyframes kelpsway {
+    0%, 100% { transform: rotate(-4deg); }
+    50% { transform: rotate(5deg); }
+  }
+
+  .abalone {
+    position: absolute;
+    bottom: 0;
+    z-index: 9;
+    width: 130px;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+  }
+  .abalone.a1 { left: 16%; width: 110px; }
+  .abalone.a2 { left: 44%; width: 145px; }
+  .abalone.a3 { left: 70%; width: 95px; bottom: -3%; }
+
+  /* ─────────── SCENE 3: WETLAND ─────────── */
+  #wetland {
+    --scene-bg: #f0d8c8;
+    --scene-accent: #c97a4a;
+    background: linear-gradient(180deg,
+      #f3d9bc 0%,
+      #ecc8a8 25%,
+      #d8b29a 45%,
+      #97a6a0 65%,
+      #6e8a8e 85%,
+      #5a7378 100%);
+    color: #2a2620;
+  }
+  #wetland.scene { color: #2a2620; }
+
+  /* Sun */
+  .wetland-sun {
+    position: absolute;
+    top: 14%;
+    right: 18%;
+    width: 130px; height: 130px;
+    background: radial-gradient(circle, #fbe6c2 30%, rgba(251,230,194,0.4) 60%, transparent 80%);
+    border-radius: 50%;
+    z-index: 2;
+    animation: pulse 6s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.95; }
+    50% { transform: scale(1.05); opacity: 1; }
+  }
+
+  /* Distant mountains */
+  .wetland-mtn {
+    position: absolute;
+    bottom: 42%;
+    left: 0;
+    right: 0;
+    z-index: 3;
+    height: 18%;
+  }
+
+  /* V-formation flying ducks */
+  .v-flock {
+    position: absolute;
+    top: 24%;
+    left: -100px;
+    width: 80px;
+    z-index: 4;
+    animation: vflight 32s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes vflight {
+    0% { transform: translateX(0) translateY(0); }
+    50% { transform: translateX(50vw) translateY(-20px); }
+    100% { transform: translateX(100vw) translateY(40px); }
+  }
+  .v-bird {
+    position: absolute;
+    animation: flap 0.4s ease-in-out infinite;
+    transform-origin: center;
+  }
+  .v-bird.b1 { top: 0; left: 0; }
+  .v-bird.b2 { top: 14px; left: 18px; animation-delay: 0.1s; }
+  .v-bird.b3 { top: 14px; left: -18px; animation-delay: 0.15s; }
+  .v-bird.b4 { top: 28px; left: 36px; animation-delay: 0.2s; }
+  .v-bird.b5 { top: 28px; left: -36px; animation-delay: 0.25s; }
+  @keyframes flap {
+    0%, 100% { transform: scaleY(1); }
+    50% { transform: scaleY(0.4); }
+  }
+
+  /* Water surface */
+  .wetland-water {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 42%;
+    background: linear-gradient(180deg,
+      rgba(151,166,160,0.5) 0%,
+      rgba(110,138,142,0.85) 20%,
+      rgba(74,98,108,1) 100%);
+    z-index: 5;
+  }
+  .wetland-water::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(180deg,
+        transparent 0px,
+        transparent 12px,
+        rgba(255,240,200,0.06) 12px,
+        rgba(255,240,200,0.06) 13px);
+    animation: ripple 10s linear infinite;
+  }
+
+  /* Sun reflection on water */
+  .wetland-water::after {
+    content: "";
+    position: absolute;
+    top: 12%;
+    right: 18%;
+    width: 140px;
+    height: 18%;
+    background: radial-gradient(ellipse, rgba(251,230,194,0.7), transparent 70%);
+    filter: blur(8px);
+  }
+
+  /* Floating ducks */
+  .duck-water {
+    position: absolute;
+    z-index: 7;
+    pointer-events: none;
+    animation: duckbob 4s ease-in-out infinite;
+  }
+  .duck-water.d1 { bottom: 18%; left: 22%; width: 120px; animation-delay: 0s; }
+  .duck-water.d2 { bottom: 12%; left: 42%; width: 100px; animation-delay: 0.8s; }
+  .duck-water.d3 { bottom: 22%; left: 58%; width: 110px; animation-delay: 1.6s; transform: scaleX(-1); }
+  .duck-water.d4 { bottom: 8%; left: 74%; width: 90px; animation-delay: 2.4s; transform: scaleX(-1); }
+  @keyframes duckbob {
+    0%, 100% { transform: translateY(0) var(--flip, scaleX(1)); }
+    50% { transform: translateY(-6px) var(--flip, scaleX(1)); }
+  }
+  .duck-water.d3 { --flip: scaleX(-1); }
+  .duck-water.d4 { --flip: scaleX(-1); }
+
+  /* Reeds in foreground */
+  .reed {
+    position: absolute;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, #3a4a30, #2a3520 60%, #1a2515);
+    transform-origin: bottom center;
+    border-radius: 999px 999px 0 0;
+    z-index: 9;
+    animation: reedsway 4s ease-in-out infinite;
+  }
+  .reed::before {
+    content: "";
+    position: absolute;
+    top: -20px; left: -3px;
+    width: 10px; height: 30px;
+    background: #5a6840;
+    border-radius: 50% 50% 0 0 / 80% 80% 0 0;
+  }
+  .reed.r1 { left: 4%; height: 38vh; animation-delay: 0s; }
+  .reed.r2 { left: 10%; height: 32vh; animation-delay: 0.6s; }
+  .reed.r3 { left: 88%; height: 36vh; animation-delay: 1.2s; }
+  .reed.r4 { left: 94%; height: 30vh; animation-delay: 0.4s; }
+  .reed.r5 { left: 14%; height: 28vh; animation-delay: 1.8s; }
+  @keyframes reedsway {
+    0%, 100% { transform: rotate(-3deg); }
+    50% { transform: rotate(4deg); }
+  }
+
+  /* Lily pads */
+  .lily {
+    position: absolute;
+    width: 60px; height: 12px;
+    background: #4a6240;
+    border-radius: 50%;
+    z-index: 8;
+    box-shadow: 0 3px 0 -1px rgba(0,0,0,0.2);
+    animation: lilybob 5s ease-in-out infinite;
+  }
+  .lily::after {
+    content: "";
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 14px;
+    background: #f2c8d4;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px #f2d8e0;
+  }
+  .lily.l1 { bottom: 24%; left: 12%; }
+  .lily.l2 { bottom: 14%; left: 50%; animation-delay: 1s; }
+  .lily.l3 { bottom: 6%; left: 32%; animation-delay: 1.8s; width: 80px; }
+  @keyframes lilybob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+  }
+
+  /* Mist layer */
+  .wetland-mist {
+    position: absolute;
+    bottom: 38%;
+    left: 0; right: 0;
+    height: 100px;
+    background: linear-gradient(180deg, transparent, rgba(244,222,196,0.55) 50%, transparent);
+    z-index: 6;
+    pointer-events: none;
+    animation: mistshift 12s ease-in-out infinite;
+  }
+  @keyframes mistshift {
+    0%, 100% { transform: translateX(0); opacity: 0.7; }
+    50% { transform: translateX(40px); opacity: 1; }
+  }
+
+  /* ─────────── SCENE 4: MEADOW ─────────── */
+  #meadow {
+    --scene-bg: #f8d8a0;
+    --scene-accent: #c4502a;
+    background: linear-gradient(180deg,
+      #fae0a8 0%,
+      #f6c47a 30%,
+      #e9a85f 55%,
+      #a89048 75%,
+      #75683a 100%);
+    color: #2c2515;
+  }
+  #meadow.scene { color: #2c2515; }
+
+  /* Big golden sun on horizon */
+  .meadow-sun {
+    position: absolute;
+    bottom: 38%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, #fff0c4 20%, #fce0a0 45%, rgba(252,224,160,0.3) 70%, transparent 85%);
+    border-radius: 50%;
+    z-index: 2;
+    animation: pulse 8s ease-in-out infinite;
+  }
+  /* Distant hills */
+  .meadow-hill {
+    position: absolute;
+    bottom: 40%;
+    left: -5%; right: -5%;
+    z-index: 3;
+    height: 14%;
+  }
+  .meadow-hill.front {
+    bottom: 32%;
+    z-index: 4;
+    height: 16%;
+  }
+
+  /* Grass field surface */
+  .meadow-field {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 38%;
+    background: linear-gradient(180deg,
+      #b89048 0%,
+      #8a7330 50%,
+      #5a4a20 100%);
+    z-index: 5;
+  }
+  .meadow-field::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 30% 80% at 30% 100%, rgba(180,80,42,0.18), transparent),
+      radial-gradient(ellipse 30% 80% at 70% 100%, rgba(212,140,80,0.15), transparent);
+  }
+
+  /* Grass blades */
+  .blade {
+    position: absolute;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, #c4a050, #6a5520);
+    transform-origin: bottom center;
+    border-radius: 999px 999px 0 0;
+    z-index: 8;
+    animation: bladesway 3s ease-in-out infinite;
+  }
+  @keyframes bladesway {
+    0%, 100% { transform: rotate(-4deg); }
+    50% { transform: rotate(4deg); }
+  }
+  /* Wildflowers */
+  .flower {
+    position: absolute;
+    bottom: 0;
+    z-index: 9;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: #c4502a;
+    box-shadow:
+      0 0 0 2px #f8d4a0,
+      4px -2px 0 -2px #c4502a,
+      -4px -2px 0 -2px #c4502a;
+    animation: flowerwave 4s ease-in-out infinite;
+  }
+  .flower.poppy { background: #c4502a; }
+  .flower.daisy { background: #f8e8b0; box-shadow: 0 0 0 2px #fff5d0; }
+  .flower.violet { background: #7a4a8a; }
+  @keyframes flowerwave {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+  }
+
+  /* Rabbits */
+  .rabbit {
+    position: absolute;
+    z-index: 10;
+    pointer-events: none;
+    width: 90px;
+    bottom: 8%;
+  }
+  .rabbit.r-a { left: 16%; bottom: 12%; animation: rabbithop 5s ease-in-out infinite; }
+  .rabbit.r-b { left: 38%; bottom: 6%; width: 75px; animation: rabbithop 4s ease-in-out infinite 1.5s; }
+  .rabbit.r-c { left: 62%; bottom: 14%; width: 100px; animation: rabbithop 6s ease-in-out infinite 0.8s; transform: scaleX(-1); }
+  .rabbit.r-d { left: 82%; bottom: 8%; width: 70px; animation: rabbithop 5.5s ease-in-out infinite 2.2s; }
+  @keyframes rabbithop {
+    0%, 80%, 100% { transform: translateY(0) var(--flip, scaleX(1)); }
+    85% { transform: translateY(-30px) var(--flip, scaleX(1)) rotate(-3deg); }
+    92% { transform: translateY(0) var(--flip, scaleX(1)); }
+  }
+  .rabbit.r-c { --flip: scaleX(-1); }
+
+  /* Butterflies */
+  .butterfly {
+    position: absolute;
+    z-index: 11;
+    pointer-events: none;
+    animation: butterflypath 12s ease-in-out infinite;
+  }
+  .butterfly.b1 { top: 50%; left: 20%; animation-delay: 0s; }
+  .butterfly.b2 { top: 60%; left: 70%; animation-delay: 3s; }
+  .butterfly.b3 { top: 45%; left: 50%; animation-delay: 6s; }
+  @keyframes butterflypath {
+    0%, 100% { transform: translate(0, 0) rotate(0); }
+    25% { transform: translate(80px, -40px) rotate(-15deg); }
+    50% { transform: translate(40px, -80px) rotate(10deg); }
+    75% { transform: translate(-30px, -30px) rotate(-5deg); }
+  }
+  .butterfly-wing { animation: bflap 0.2s ease-in-out infinite; transform-origin: center; }
+  @keyframes bflap {
+    0%, 100% { transform: scaleX(1); }
+    50% { transform: scaleX(0.5); }
+  }
+
+  /* ─────────── OUTRO ─────────── */
+  #outro {
+    --scene-bg: #0a0805;
+    --scene-accent: #d4a574;
+    background: linear-gradient(180deg, #15110a 0%, #0a0805 100%);
+    min-height: 90vh;
+    color: #ece4d2;
+    padding: 140px clamp(24px, 5vw, 80px) 80px;
+  }
+  #outro .outro-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  #outro .outro-left .lbl {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 13px;
+    letter-spacing: 0.32em;
+    color: #d4a574;
+    margin-bottom: 24px;
+    text-transform: uppercase;
+  }
+  #outro h2 {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(40px, 5vw, 76px);
+    line-height: 1.6;
+    margin: 0 0 24px;
+    letter-spacing: -0.015em;
+  }
+  #outro h2 em { font-style: italic; color: #d4a574; }
+  #outro .thai-out {
+    font-family: "Noto Serif Thai", serif;
+    font-size: 17px;
+    line-height: 1.75;
+    opacity: 0.78;
+    max-width: 460px;
+    margin: 0 0 36px;
+  }
+  #outro .outro-right {
+    border-left: 1px solid rgba(212,165,116,0.2);
+    padding-left: 56px;
+  }
+  #outro .outro-right h4 {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 24px;
+    margin: 0 0 28px;
+    color: #d4a574;
+  }
+  #outro .biome-list {
+    list-style: none;
+    padding: 0; margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  #outro .biome-list li {
+    display: grid;
+    grid-template-columns: 38px 1fr auto;
+    align-items: baseline;
+    gap: 20px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(212,165,116,0.12);
+    font-size: 14px;
+  }
+  #outro .biome-list .n {
+    font-family: var(--serif);
+    font-style: italic;
+    color: #d4a574;
+    font-size: 16px;
+  }
+  #outro .biome-list .t {
+    font-family: var(--serif);
+    font-size: 18px;
+  }
+  #outro .biome-list .t small {
+    display: block;
+    font-family: "Noto Serif Thai", serif;
+    font-size: 12px;
+    opacity: 0.55;
+    margin-top: 3px;
+    letter-spacing: 0;
+  }
+  #outro .biome-list .c {
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    opacity: 0.5;
+  }
+  #outro .biome-list .swatch {
+    display: inline-block;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  footer.site-foot {
+    background: #050402;
+    padding: 36px clamp(24px, 5vw, 80px);
+    border-top: 1px solid rgba(212,165,116,0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(236,228,210,0.5);
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  footer.site-foot .right { display: flex; gap: 28px; }
+  footer.site-foot .right a:hover { color: #d4a574; }
+
+  /* ─────────── Responsive ─────────── */
+  @media (max-width: 900px) {
+    .site-nav { grid-template-columns: 1fr auto; }
+    .site-tagline { display: none; }
+    .scene-nav button { padding: 8px 12px; font-size: 10.5px; }
+    .scene-nav button .num { font-size: 12px; }
+    .scene .copy { grid-template-columns: 1fr; gap: 32px; padding-top: 110px; padding-bottom: 60px; }
+    .scene .copy-right { text-align: left; align-items: flex-start; }
+    #outro .outro-inner { grid-template-columns: 1fr; gap: 40px; }
+    #outro .outro-right { border-left: none; padding-left: 0; border-top: 1px solid rgba(212,165,116,0.2); padding-top: 36px; }
+    #intro h1 { font-size: clamp(48px, 14vw, 84px); }
+    #intro .biome-strip { grid-template-columns: 1fr 1fr; gap: 12px; }
+    #intro .biome-strip .bcell { border-left: none; padding: 12px 0; border-top: 1px solid rgba(212,165,116,0.14); }
+  }
+  @media (max-width: 600px) {
+    .scene-nav button span:not(.num) { display: none; }
+    .scene h2 { font-size: clamp(42px, 13vw, 72px); }
+    .jungle-croc { width: 280px; }
+    .fk-grid { grid-template-columns: 1fr; }
+    .cart-drawer { width: 100%; }
+  }
+
+  /* ─────────── FIELD KIT STRIP ─────────── */
+  .field-kit {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 36px clamp(24px, 5vw, 80px) 80px;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    position: relative;
+    z-index: 10;
+  }
+  .scene.light-scene .field-kit { border-top-color: rgba(0,0,0,0.15); }
+  .fk-head {
+    display: flex;
+    align-items: baseline;
+    gap: 18px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .fk-head .lbl {
+    font-size: 10.5px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    opacity: 0.65;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .fk-head .lbl::before { content: ""; width: 22px; height: 1px; background: var(--scene-accent); }
+  .fk-head .fk-title {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 22px;
+    color: var(--scene-accent);
+  }
+  .fk-head .fk-sub {
+    font-family: "Noto Serif Thai", serif;
+    font-size: 13px;
+    opacity: 0.65;
+    margin-left: auto;
+  }
+  .fk-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .fk-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 4px;
+    padding: 18px;
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: 18px;
+    align-items: center;
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  .scene.light-scene .fk-card {
+    background: rgba(255,255,255,0.32);
+    border-color: rgba(0,0,0,0.15);
+  }
+  .fk-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--scene-accent);
+    background: rgba(255,255,255,0.08);
+  }
+  .scene.light-scene .fk-card:hover { background: rgba(255,255,255,0.55); }
+  .fk-icon {
+    width: 80px; height: 80px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    display: grid; place-items: center;
+  }
+  .scene.light-scene .fk-icon { background: rgba(255,255,255,0.5); border-color: rgba(0,0,0,0.1); }
+  .fk-icon svg { width: 48px; height: 48px; color: var(--scene-accent); }
+  .fk-info { min-width: 0; }
+  .fk-tag {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 11px;
+    color: var(--scene-accent);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+  .fk-name {
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.5;
+    margin-bottom: 4px;
+  }
+  .fk-th {
+    font-family: "Noto Serif Thai", serif;
+    font-size: 12px;
+    opacity: 0.6;
+  }
+  .fk-add { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+  .fk-price { font-family: var(--serif); font-size: 17px; }
+  .fk-add-btn {
+    background: transparent;
+    border: 1px solid currentColor;
+    color: inherit;
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: inherit;
+    opacity: 0.8;
+    transition: all 0.25s;
+  }
+  .fk-add-btn:hover { background: var(--scene-accent); border-color: var(--scene-accent); color: #0a0e0c; opacity: 1; }
+  .fk-card.added .fk-add-btn { background: var(--scene-accent); border-color: var(--scene-accent); color: #0a0e0c; opacity: 1; }
+
+  /* ─────────── NAV ACTIONS (cart + auth) ─────────── */
+  .nav-actions {
+    display: flex; gap: 10px; align-items: center;
+    justify-self: end;
+  }
+  .nav-btn {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    display: grid; place-items: center;
+    cursor: pointer;
+    position: relative;
+    color: inherit;
+    transition: all 0.25s;
+  }
+  .site-nav.light .nav-btn { background: rgba(255,255,255,0.4); border-color: rgba(0,0,0,0.1); }
+  .nav-btn:hover { background: var(--scene-accent, #d4a574); color: #0a0e0c; }
+  .nav-btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; }
+  .nav-btn .badge {
+    position: absolute;
+    top: -3px; right: -3px;
+    background: var(--scene-accent, #d4a574);
+    color: #0a0e0c;
+    border-radius: 999px;
+    font-size: 9.5px;
+    font-weight: 600;
+    padding: 1px 5px;
+    min-width: 16px;
+    height: 16px;
+    line-height: 1.4;
+    text-align: center;
+    font-family: var(--sans);
+  }
+  .nav-btn .badge.hide { display: none; }
+  .nav-signup {
+    padding: 0 16px;
+    width: auto;
+    height: 38px;
+    border-radius: 999px;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-family: inherit;
+  }
+  @media (max-width: 720px) {
+    .nav-signup { display: none; }
+  }
+
+  /* ─────────── CART DRAWER ─────────── */
+  .cart-overlay {
+    position: fixed; inset: 0;
+    background: rgba(2,4,8,0.65);
+    z-index: 200;
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+    backdrop-filter: blur(6px);
+  }
+  .cart-overlay.open { opacity: 1; visibility: visible; }
+  .cart-drawer {
+    position: fixed; top: 0; right: 0; bottom: 0;
+    width: 440px;
+    background: #0d1310;
+    color: #ece4d2;
+    border-left: 1px solid rgba(212,165,116,0.15);
+    z-index: 201;
+    transform: translateX(100%);
+    transition: transform 0.42s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex; flex-direction: column;
+  }
+  .cart-drawer.open { transform: translateX(0); }
+  .cart-head {
+    padding: 28px 32px;
+    border-bottom: 1px solid rgba(212,165,116,0.15);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .cart-head .small {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 12px;
+    color: #d4a574;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+  .cart-head h3 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 26px;
+    margin: 0;
+    letter-spacing: 0.02em;
+  }
+  .cart-close {
+    background: rgba(212,165,116,0.08);
+    border: 1px solid rgba(212,165,116,0.2);
+    color: inherit;
+    cursor: pointer;
+    width: 36px; height: 36px;
+    display: grid; place-items: center;
+    border-radius: 50%;
+  }
+  .cart-close:hover { background: rgba(212,165,116,0.2); }
+  .cart-items { flex: 1; overflow-y: auto; padding: 8px 32px; }
+  .cart-empty {
+    padding: 80px 0;
+    text-align: center;
+    opacity: 0.55;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 16px;
+  }
+  .cart-empty .glyph-empty {
+    font-size: 40px;
+    color: #d4a574;
+    opacity: 0.5;
+    display: block;
+    margin-bottom: 16px;
+  }
+  .cart-item {
+    display: grid;
+    grid-template-columns: 56px 1fr auto;
+    gap: 14px;
+    padding: 18px 0;
+    border-bottom: 1px solid rgba(212,165,116,0.08);
+    align-items: center;
+  }
+  .cart-item:last-child { border-bottom: none; }
+  .ci-icon {
+    width: 56px; height: 56px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(212,165,116,0.1);
+    border-radius: 4px;
+    display: grid; place-items: center;
+  }
+  .ci-icon svg { width: 34px; height: 34px; color: #d4a574; }
+  .ci-info { min-width: 0; }
+  .ci-info .ci-tag {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 10px;
+    color: #d4a574;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .ci-info .ci-name { font-family: var(--serif); font-size: 15px; line-height: 1.2; margin-bottom: 6px; }
+  .ci-info .qty-row { display: flex; align-items: center; gap: 10px; }
+  .qty-btn {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(212,165,116,0.18);
+    color: inherit;
+    cursor: pointer;
+    display: grid; place-items: center;
+    font-size: 12px;
+    font-family: inherit;
+  }
+  .qty-btn:hover { background: rgba(212,165,116,0.18); }
+  .qty { font-family: var(--serif); font-size: 14px; min-width: 14px; text-align: center; }
+  .remove {
+    background: none; border: none; color: rgba(236,228,210,0.45);
+    cursor: pointer; font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    font-family: inherit; padding: 0; margin-left: 10px;
+  }
+  .remove:hover { color: #c4502a; }
+  .ci-price { font-family: var(--serif); font-size: 16px; text-align: right; }
+  .cart-foot {
+    padding: 22px 32px 28px;
+    border-top: 1px solid rgba(212,165,116,0.15);
+    background: rgba(0,0,0,0.2);
+  }
+  .cart-total {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: var(--serif);
+    font-size: 22px;
+    margin-bottom: 4px;
+  }
+  .cart-total .lbl { font-style: italic; opacity: 0.7; font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; }
+  .cart-sub {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin-bottom: 18px;
+  }
+  .cart-checkout {
+    width: 100%;
+    padding: 16px;
+    background: #d4a574;
+    color: #0a0e0c;
+    border: none;
+    border-radius: 999px;
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.25s;
+  }
+  .cart-checkout:hover { background: #f0bf80; }
+  .cart-checkout:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  /* Toast on add to cart */
+  .cart-toast {
+    position: fixed;
+    bottom: 32px; left: 50%;
+    transform: translateX(-50%) translateY(40px);
+    background: #0d1310;
+    color: #ece4d2;
+    border: 1px solid rgba(212,165,116,0.3);
+    padding: 12px 22px;
+    border-radius: 999px;
+    z-index: 150;
+    font-size: 13px;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .cart-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .cart-toast .dot { width: 6px; height: 6px; border-radius: 50%; background: #7fc77f; box-shadow: 0 0 8px #7fc77f; }
+  .cart-toast .it { font-family: var(--serif); font-style: italic; color: #d4a574; }
 </style>
 </head>
+
 <body>
-<div class="wrap">
-  <div class="kanji">縁</div>
-  <div>Anibound</div>
-  <p style="opacity:0.6; font-family:sans-serif; font-size:13px;">
-    กำลังนำคุณไปยังหน้าร้าน… <a href="anibound.html">คลิกที่นี่</a> หากไม่ redirect
-  </p>
+
+<!-- ─────────── NAV ─────────── -->
+<header class="site-nav dark" id="siteNav">
+  <a class="brand-mark" href="#intro">
+    <span class="glyph" aria-hidden="true"></span>
+    <span>ANIBOUND</span>
+  </a>
+  <nav class="scene-nav" id="sceneNav">
+    <button data-target="jungle" class="active"><span class="num">01</span><span>ป่า</span></button>
+    <button data-target="sea"><span class="num">02</span><span>ทะเล</span></button>
+    <button data-target="wetland"><span class="num">03</span><span>บึง</span></button>
+    <button data-target="meadow"><span class="num">04</span><span>ทุ่ง</span></button>
+  </nav>
+  <div class="nav-actions">
+    <a href="login.html" class="nav-btn" title="เข้าสู่ระบบ / Sign in" aria-label="Sign in">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </a>
+    <button class="nav-btn" id="cartOpenBtn" title="ตะกร้า / Cart" aria-label="Cart">
+      <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      <span class="badge hide" id="cartBadge" data-count="0">0</span>
+    </button>
+  </div>
+</header>
+
+<!-- ─────────── INTRO ─────────── -->
+<section id="intro" data-scene="intro" data-nav="dark">
+  <!-- decorative leaves -->
+  <svg class="intro-leaf intro-leaf-1" viewBox="0 0 200 200" fill="#1a3322" style="--r: 20deg">
+    <path d="M 100 10 Q 30 50, 50 130 Q 80 180, 100 195 Q 120 180, 150 130 Q 170 50, 100 10 Z M 100 30 L 100 180" stroke="#2a4732" stroke-width="1.5" fill="#1a3322" opacity="0.7"/>
+  </svg>
+  <svg class="intro-leaf intro-leaf-2" viewBox="0 0 200 200" fill="#15291a" style="--r: -10deg">
+    <path d="M 100 5 Q 25 45, 45 135 Q 78 185, 100 198 Q 122 185, 155 135 Q 175 45, 100 5 Z" opacity="0.75"/>
+  </svg>
+  <svg class="intro-leaf intro-leaf-3" viewBox="0 0 200 200" fill="#1a3322" style="--r: 0deg">
+    <path d="M 100 10 Q 30 50, 50 130 Q 80 180, 100 195 Q 120 180, 150 130 Q 170 50, 100 10 Z"/>
+  </svg>
+  <svg class="intro-leaf intro-leaf-4" viewBox="0 0 200 200" fill="#15291a" style="--r: 5deg">
+    <path d="M 100 10 Q 30 50, 50 130 Q 80 180, 100 195 Q 120 180, 150 130 Q 170 50, 100 10 Z"/>
+  </svg>
+
+  <div class="intro-inner">
+    <div class="eyebrow">ANIBOUND · 2026</div>
+    <h1>
+      สายใย<br/>
+      ระหว่าง <em>เรา</em><br/>
+      กับ <em>ป่าและน้ำ</em>
+      <span class="small">— a bond with the wild —</span>
+    </h1>
+    <p class="thai-intro">
+      เดินทางผ่าน 4 ระบบนิเวศที่สิ่งมีชีวิตยังอาศัยอย่างเงียบงาม.
+      ทุกฉากบอกเล่าด้วยภาพและเสียงเงียบของสายลม น้ำ และผืนดิน
+      ที่หล่อเลี้ยงทั้งพวกเขา — และเรา.
+    </p>
+    <button class="start-btn" onclick="document.getElementById('jungle').scrollIntoView({behavior:'smooth'})">
+      เริ่มเดินทาง · Begin journey
+      <span class="arrow">↓</span>
+    </button>
+
+    <div class="biome-strip">
+      <div class="bcell">
+        <span class="bn">01 · jungle</span>
+        <span class="bt">ป่าดงดิบ</span>
+        <span class="bs">deep canopy &amp; river</span>
+      </div>
+      <div class="bcell">
+        <span class="bn">02 · ocean</span>
+        <span class="bt">ทะเลลึก</span>
+        <span class="bs">where light fades</span>
+      </div>
+      <div class="bcell">
+        <span class="bn">03 · marsh</span>
+        <span class="bt">บึงเช้า</span>
+        <span class="bs">wings on still water</span>
+      </div>
+      <div class="bcell">
+        <span class="bn">04 · meadow</span>
+        <span class="bt">ทุ่งกว้าง</span>
+        <span class="bs">where the sun stays</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ─────────── SCENE 1: JUNGLE ─────────── -->
+<section id="jungle" class="scene" data-scene="jungle" data-nav="dark">
+  <div class="backdrop">
+    <!-- Light rays through canopy -->
+    <div class="jungle-light-ray r1"></div>
+    <div class="jungle-light-ray r2"></div>
+    <div class="jungle-light-ray r3"></div>
+
+    <!-- Far canopy silhouette (top, mid range) -->
+    <div class="jungle-canopy">
+      <svg class="top" viewBox="0 0 1600 220" preserveAspectRatio="none">
+        <path d="M 0 0 L 0 130 Q 50 100 100 120 Q 150 80 200 110 Q 260 70 320 100 Q 380 60 440 95 Q 500 70 560 110 Q 620 80 680 100 Q 740 60 800 90 Q 860 70 920 105 Q 980 75 1040 95 Q 1100 65 1160 100 Q 1220 80 1280 110 Q 1340 75 1400 100 Q 1460 70 1520 110 Q 1560 90 1600 110 L 1600 0 Z" fill="#0a1a14"/>
+        <path d="M 0 0 L 0 90 Q 60 60 120 85 Q 180 50 240 80 Q 300 55 360 80 Q 420 50 480 85 Q 540 60 600 80 Q 660 50 720 75 Q 780 55 840 80 Q 900 50 960 85 Q 1020 60 1080 80 Q 1140 50 1200 85 Q 1260 55 1320 85 Q 1380 60 1440 90 Q 1500 65 1560 85 L 1600 80 L 1600 0 Z" fill="#050d09" opacity="0.7"/>
+      </svg>
+      <!-- Mid canopy -->
+      <svg viewBox="0 0 1600 280" preserveAspectRatio="none" style="bottom: 22%; height: 18%; opacity: 0.6;">
+        <path d="M 0 280 L 0 100 Q 80 50 160 90 Q 240 40 320 80 Q 400 60 480 95 Q 560 50 640 90 Q 720 70 800 100 Q 880 60 960 90 Q 1040 70 1120 100 Q 1200 50 1280 95 Q 1360 70 1440 95 Q 1520 60 1600 95 L 1600 280 Z" fill="#0a1d15"/>
+      </svg>
+    </div>
+
+    <!-- Hanging vines -->
+    <div class="vine v1"></div>
+    <div class="vine v2"></div>
+    <div class="vine v3"></div>
+    <div class="vine v4"></div>
+
+    <!-- River -->
+    <div class="jungle-river"></div>
+
+    <!-- Crocodile -->
+    <svg class="jungle-croc" viewBox="0 0 420 90" aria-hidden="true">
+      <!-- ripple lines around croc -->
+      <path d="M 10 60 Q 80 56 160 60 M 220 64 Q 290 60 380 64" stroke="rgba(220,200,160,0.3)" stroke-width="1" fill="none"/>
+
+      <!-- back ridge bumps (long flat profile) -->
+      <path d="M 10 55
+               L 28 52 L 36 48 L 44 52
+               L 60 50 L 68 45 L 76 50
+               L 92 48 L 100 43 L 108 48
+               L 124 46 L 132 42 L 140 46
+               L 156 45 L 164 41 L 172 45
+               L 188 44 L 196 40 L 204 44
+               L 220 43 L 228 40 L 236 43
+               L 252 43 L 260 39 L 268 43
+               L 284 42 L 292 38 L 300 42
+               L 316 42 L 324 39 L 332 42
+               L 350 42
+               L 360 42
+               Q 380 42 390 48
+               Q 405 52 410 58
+               L 410 64
+               L 10 64 Z"
+        fill="#243025"/>
+
+      <!-- Eye on snout (right side) -->
+      <ellipse cx="368" cy="40" rx="6" ry="5" fill="#2d3a2a"/>
+      <ellipse class="croc-eye" cx="368" cy="40" rx="3.5" ry="3" fill="#0a0808"/>
+      <circle cx="369" cy="39" r="0.8" fill="#e0b878"/>
+
+      <!-- nostrils -->
+      <ellipse cx="395" cy="48" rx="2" ry="1.2" fill="#0a0808"/>
+      <ellipse cx="395" cy="52" rx="1.5" ry="1" fill="#0a0808"/>
+
+      <!-- water meniscus around body -->
+      <path d="M 0 64 Q 100 60 220 64 Q 320 66 420 62 L 420 90 L 0 90 Z" fill="rgba(20,55,60,0.65)"/>
+      <path d="M 0 65 Q 100 62 220 66 Q 320 68 420 64" stroke="rgba(220,200,160,0.18)" stroke-width="0.8" fill="none"/>
+    </svg>
+
+    <!-- Fireflies -->
+    <div class="firefly f1"></div>
+    <div class="firefly f2"></div>
+    <div class="firefly f3"></div>
+    <div class="firefly f4"></div>
+    <div class="firefly f5"></div>
+  </div>
+
+  <div class="copy">
+    <div class="copy-left">
+      <div class="meta">
+        <span class="scene-num">01 / iv</span>
+        <span class="line"></span>
+        <span>ป่าดงดิบ · jungle</span>
+      </div>
+      <h2>ป่าลึก<br/>กับ <em>สายน้ำ</em><br/>ที่ทอดยาว</h2>
+      <p class="thai-sub">เงาของยักษ์เขียว — ที่ซึ่งสายน้ำเคลื่อนเงียบ และนักล่านอนรอ.</p>
+      <p class="body-copy">
+        ใต้ม่านใบหนา แสงตะวันแทรกเป็นริ้วทอง.
+        จระเข้ลอยตัวนิ่งอยู่กลางน้ำเย็น เพียงดวงตาคู่หนึ่งเหนือผิวน้ำ —
+        ผู้เฝ้าระวังที่ใจดีต่อกาลเวลา. ที่นี่ ทุกชีวิตเดินทางด้วยจังหวะที่ป่ากำหนด.
+      </p>
+      <div class="field-card">
+        <div class="lbl">field note · บันทึก</div>
+        <div class="rows">
+          <div><div class="k">canopy</div><div class="v">45<small>m</small></div></div>
+          <div><div class="k">river</div><div class="v">2.4<small>km</small></div></div>
+          <div><div class="k">humidity</div><div class="v">88<small>%</small></div></div>
+          <div><div class="k">species</div><div class="v">312<small>+</small></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="copy-right">
+      <p class="quote">
+        ป่ามิได้เงียบ — เพียงแต่<br/>
+        พูดด้วยภาษาที่เรา<br/>ลืมจะฟัง.
+        <span class="quote-author">— field journal, vol. i</span>
+      </p>
+      <div class="coord">
+        <div><div>lat</div><div class="v">14°02′ N</div></div>
+        <div><div>long</div><div class="v">101°55′ E</div></div>
+        <div><div>elev</div><div class="v">340 m</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="field-kit">
+    <div class="fk-head">
+      <span class="lbl">field kit</span>
+      <span class="fk-title">ของใช้แห่งป่าดงดิบ</span>
+      <span class="fk-sub">— forest gear for the bond —</span>
+    </div>
+    <div class="fk-grid">
+
+      <div class="fk-card" data-id="j1" data-name="Field Collar" data-tag="Earth Edition" data-th="ปลอกคอนักสำรวจ" data-price="1290">
+        <div class="fk-icon">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="24" cy="26" r="13"/>
+            <rect x="22.5" y="11" width="3" height="5" fill="currentColor" stroke="none"/>
+            <line x1="20" y1="14" x2="28" y2="14"/>
+            <circle cx="24" cy="36" r="2.2" fill="currentColor" stroke="none"/>
+          </svg>
+        </div>
+        <div class="fk-info">
+          <div class="fk-tag">Earth Edition</div>
+          <div class="fk-name">Field Collar</div>
+          <div class="fk-th">ปลอกคอนักสำรวจ · หนังย้อมเปลือกไม้</div>
+        </div>
+        <div class="fk-add">
+          <div class="fk-price">฿1,290</div>
+          <button class="fk-add-btn">+ Add</button>
+        </div>
+      </div>
+
+      <div class="fk-card" data-id="j2" data-name="Expedition Bowl" data-tag="Stoneware" data-th="ชามเดินทาง" data-price="590">
+        <div class="fk-icon">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M 8 22 Q 24 30 40 22 L 36 38 Q 24 41 12 38 Z"/>
+            <ellipse cx="24" cy="22" rx="16" ry="3.5"/>
+          </svg>
+        </div>
+        <div class="fk-info">
+          <div class="fk-tag">Stoneware</div>
+          <div class="fk-name">Expedition Bowl</div>
+          <div class="fk-th">ชามเดินทาง · หินกล้วยไม้</div>
+        </div>
+        <div class="fk-add">
+          <div class="fk-price">฿590</div>
+          <button class="fk-add-btn">+ Add</button>
+        </div>
+      </div>
+
+      <div class="fk-card" data-id="j3" data-name="Trail Tee" data-tag="Owner's wear" data-th="เสื้อเดินป่า" data-price="890">
+        <div class="fk-icon">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M 14 14 L 18 10 L 30 10 L 34 14 L 40 18 L 36 24 L 34 22 L 34 40 L 14 40 L 14 22 L 12 24 L 8 18 Z"/>
+            <path d="M 18 10 Q 24 14 30 10"/>
+          </svg>
+        </div>
+        <div class="fk-info">
+          <div class="fk-tag">Owner's wear</div>
+          <div class="fk-name">Trail Tee</div>
+          <div class="fk-th">เสื้อยืดเจ้าของ · ฝ้ายหนัก 240gsm</div>
+        </div>
+        <div class="fk-add">
+          <div class="fk-price">฿890</div>
+          <button class="fk-add-btn">+ Add</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ─────────── SCENE 2: SEA ─────────── -->
+<section id="sea" class="scene" data-scene="sea" data-nav="dark">
+  <div class="backdrop">
+    <!-- Light rays from surface -->
+    <div class="sea-rays">
+      <div class="sea-ray s1"></div>
+      <div class="sea-ray s2"></div>
+      <div class="sea-ray s3"></div>
+      <div class="sea-ray s4"></div>
+      <div class="sea-ray s5"></div>
+    </div>
+
+    <!-- Schools of fish -->
+    <div class="fish-school school-1">
+      <svg viewBox="0 0 800 80" width="100%" height="80">
+        <g fill="#a8c4ce">
+          <g class="fish f-a">
+            <path d="M 20 40 Q 35 32, 55 40 Q 35 48, 20 40 Z M 55 40 L 65 32 L 60 40 L 65 48 Z" />
+            <circle cx="48" cy="38" r="0.9" fill="#08111d"/>
+          </g>
+          <g class="fish f-b" transform="translate(80, 18)">
+            <path d="M 20 40 Q 32 33, 50 40 Q 32 47, 20 40 Z M 50 40 L 58 34 L 54 40 L 58 46 Z" />
+            <circle cx="44" cy="38" r="0.7" fill="#08111d"/>
+          </g>
+          <g class="fish f-c" transform="translate(160, -10)">
+            <path d="M 20 40 Q 35 32, 55 40 Q 35 48, 20 40 Z M 55 40 L 65 32 L 60 40 L 65 48 Z" />
+            <circle cx="48" cy="38" r="0.9" fill="#08111d"/>
+          </g>
+          <g class="fish f-d" transform="translate(240, 8)">
+            <path d="M 20 40 Q 32 34, 48 40 Q 32 46, 20 40 Z M 48 40 L 55 35 L 52 40 L 55 45 Z" />
+            <circle cx="42" cy="38" r="0.6" fill="#08111d"/>
+          </g>
+          <g class="fish f-a" transform="translate(320, 20)">
+            <path d="M 20 40 Q 35 32, 55 40 Q 35 48, 20 40 Z M 55 40 L 65 32 L 60 40 L 65 48 Z" />
+            <circle cx="48" cy="38" r="0.9" fill="#08111d"/>
+          </g>
+          <g class="fish f-b" transform="translate(400, -8)">
+            <path d="M 20 40 Q 32 33, 50 40 Q 32 47, 20 40 Z M 50 40 L 58 34 L 54 40 L 58 46 Z" />
+            <circle cx="44" cy="38" r="0.7" fill="#08111d"/>
+          </g>
+          <g class="fish f-c" transform="translate(480, 14)">
+            <path d="M 20 40 Q 35 32, 55 40 Q 35 48, 20 40 Z M 55 40 L 65 32 L 60 40 L 65 48 Z" />
+            <circle cx="48" cy="38" r="0.9" fill="#08111d"/>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <div class="fish-school school-2">
+      <svg viewBox="0 0 600 60" width="100%" height="60">
+        <g fill="#7fbac8" opacity="0.85">
+          <g class="fish f-a">
+            <path d="M 20 30 Q 32 23, 48 30 Q 32 37, 20 30 Z M 48 30 L 55 24 L 51 30 L 55 36 Z" />
+            <circle cx="42" cy="28" r="0.6" fill="#08111d"/>
+          </g>
+          <g class="fish f-b" transform="translate(60, 10)">
+            <path d="M 20 30 Q 32 23, 48 30 Q 32 37, 20 30 Z M 48 30 L 55 24 L 51 30 L 55 36 Z" />
+            <circle cx="42" cy="28" r="0.6" fill="#08111d"/>
+          </g>
+          <g class="fish f-c" transform="translate(120, -5)">
+            <path d="M 20 30 Q 32 23, 48 30 Q 32 37, 20 30 Z M 48 30 L 55 24 L 51 30 L 55 36 Z" />
+            <circle cx="42" cy="28" r="0.6" fill="#08111d"/>
+          </g>
+          <g class="fish f-d" transform="translate(180, 8)">
+            <path d="M 20 30 Q 32 23, 48 30 Q 32 37, 20 30 Z M 48 30 L 55 24 L 51 30 L 55 36 Z" />
+            <circle cx="42" cy="28" r="0.6" fill="#08111d"/>
+          </g>
+          <g class="fish f-a" transform="translate(240, -3)">
+            <path d="M 20 30 Q 32 23, 48 30 Q 32 37, 20 30 Z M 48 30 L 55 24 L 51 30 L 55 36 Z" />
+            <circle cx="42" cy="28" r="0.6" fill="#08111d"/>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <div class="fish-school school-3">
+      <svg viewBox="0 0 500 50" width="100%" height="50">
+        <g fill="#5fa0b0" opacity="0.7">
+          <g class="fish f-b">
+            <path d="M 15 25 Q 25 19, 38 25 Q 25 31, 15 25 Z M 38 25 L 45 20 L 41 25 L 45 30 Z" />
+            <circle cx="33" cy="23" r="0.5" fill="#08111d"/>
+          </g>
+          <g class="fish f-c" transform="translate(55, 8)">
+            <path d="M 15 25 Q 25 19, 38 25 Q 25 31, 15 25 Z M 38 25 L 45 20 L 41 25 L 45 30 Z" />
+            <circle cx="33" cy="23" r="0.5" fill="#08111d"/>
+          </g>
+          <g class="fish f-a" transform="translate(110, -5)">
+            <path d="M 15 25 Q 25 19, 38 25 Q 25 31, 15 25 Z M 38 25 L 45 20 L 41 25 L 45 30 Z" />
+            <circle cx="33" cy="23" r="0.5" fill="#08111d"/>
+          </g>
+          <g class="fish f-d" transform="translate(170, 5)">
+            <path d="M 15 25 Q 25 19, 38 25 Q 25 31, 15 25 Z M 38 25 L 45 20 L 41 25 L 45 30 Z" />
+            <circle cx="33" cy="23" r="0.5" fill="#08111d"/>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <!-- bubbles (created by JS for randomness, but seed with some static ones) -->
+    <div class="bubble" style="left: 10%; width: 8px; height: 8px; animation-duration: 14s;"></div>
+    <div class="bubble" style="left: 22%; width: 5px; height: 5px; animation-duration: 11s; animation-delay: 3s;"></div>
+    <div class="bubble" style="left: 35%; width: 6px; height: 6px; animation-duration: 16s; animation-delay: 1s;"></div>
+    <div class="bubble" style="left: 48%; width: 9px; height: 9px; animation-duration: 13s; animation-delay: 4s;"></div>
+    <div class="bubble" style="left: 60%; width: 4px; height: 4px; animation-duration: 10s; animation-delay: 2s;"></div>
+    <div class="bubble" style="left: 73%; width: 7px; height: 7px; animation-duration: 15s; animation-delay: 5s;"></div>
+    <div class="bubble" style="left: 86%; width: 5px; height: 5px; animation-duration: 12s; animation-delay: 1.5s;"></div>
+    <div class="bubble" style="left: 17%; width: 6px; height: 6px; animation-duration: 13s; animation-delay: 6s;"></div>
+    <div class="bubble" style="left: 55%; width: 8px; height: 8px; animation-duration: 14s; animation-delay: 7s;"></div>
+    <div class="bubble" style="left: 92%; width: 5px; height: 5px; animation-duration: 11s; animation-delay: 3.5s;"></div>
+
+    <!-- Seafloor -->
+    <div class="seafloor"></div>
+
+    <!-- Kelp -->
+    <div class="kelp k1"></div>
+    <div class="kelp k2"></div>
+    <div class="kelp k3"></div>
+    <div class="kelp k4"></div>
+    <div class="kelp k5"></div>
+
+    <!-- Abalone shells -->
+    <svg class="abalone a1" viewBox="0 0 130 70" aria-hidden="true">
+      <defs>
+        <linearGradient id="abalg1" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#3a5e6a"/>
+          <stop offset="40%" stop-color="#7fa8b0"/>
+          <stop offset="70%" stop-color="#c97a4a"/>
+          <stop offset="100%" stop-color="#3a3a48"/>
+        </linearGradient>
+      </defs>
+      <ellipse cx="65" cy="55" rx="62" ry="14" fill="#0a1218"/>
+      <path d="M 8 58 Q 8 18 65 12 Q 122 18 122 58 Z" fill="url(#abalg1)"/>
+      <path d="M 18 55 Q 18 25 65 20 Q 112 25 112 55" stroke="rgba(255,255,255,0.18)" stroke-width="0.8" fill="none"/>
+      <path d="M 28 53 Q 28 30 65 26 Q 102 30 102 53" stroke="rgba(255,255,255,0.12)" stroke-width="0.6" fill="none"/>
+      <ellipse cx="40" cy="44" rx="2" ry="1" fill="#0a0a08" opacity="0.6"/>
+      <ellipse cx="58" cy="40" rx="1.6" ry="0.8" fill="#0a0a08" opacity="0.6"/>
+      <ellipse cx="78" cy="42" rx="2" ry="1" fill="#0a0a08" opacity="0.6"/>
+    </svg>
+
+    <svg class="abalone a2" viewBox="0 0 130 70" aria-hidden="true">
+      <defs>
+        <linearGradient id="abalg2" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#48708a"/>
+          <stop offset="40%" stop-color="#a8c4c8"/>
+          <stop offset="65%" stop-color="#e08a5a"/>
+          <stop offset="100%" stop-color="#2a3540"/>
+        </linearGradient>
+      </defs>
+      <ellipse cx="65" cy="55" rx="62" ry="14" fill="#0a1218"/>
+      <path d="M 8 58 Q 8 18 65 12 Q 122 18 122 58 Z" fill="url(#abalg2)"/>
+      <path d="M 18 55 Q 18 25 65 20 Q 112 25 112 55" stroke="rgba(255,255,255,0.18)" stroke-width="0.8" fill="none"/>
+      <path d="M 28 53 Q 28 30 65 26 Q 102 30 102 53" stroke="rgba(255,255,255,0.12)" stroke-width="0.6" fill="none"/>
+      <ellipse cx="40" cy="44" rx="2" ry="1" fill="#0a0a08" opacity="0.6"/>
+      <ellipse cx="58" cy="40" rx="1.6" ry="0.8" fill="#0a0a08" opacity="0.6"/>
+      <ellipse cx="78" cy="42" rx="2" ry="1" fill="#0a0a08" opacity="0.6"/>
+      <ellipse cx="92" cy="46" rx="1.6" ry="0.8" fill="#0a0a08" opacity="0.6"/>
+    </svg>
+
+    <svg class="abalone a3" viewBox="0 0 130 70" aria-hidden="true">
+      <defs>
+        <linearGradient id="abalg3" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#3a4858"/>
+          <stop offset="50%" stop-color="#7fb0a8"/>
+          <stop offset="100%" stop-color="#2a3540"/>
+        </linearGradient>
+      </defs>
+      <ellipse cx="65" cy="55" rx="62" ry="14" fill="#0a1218"/>
+      <path d="M 8 58 Q 8 18 65 12 Q 122 18 122 58 Z" fill="url(#abalg3)"/>
+      <path d="M 18 55 Q 18 25 65 20 Q 112 25 112 55" stroke="rgba(255,255,255,0.16)" stroke-width="0.7" fill="none"/>
+    </svg>
+  </div>
+
+  <div class="copy" style="align-items: end;">
+    <div class="copy-left">
+      <div class="meta">
+        <span class="scene-num">02 / iv</span>
+        <span class="line"></span>
+        <span>ทะเลลึก · ocean</span>
+      </div>
+      <h2>ทะเลลึก<br/>ที่ซึ่ง <em>แสง</em><br/>ไม่เคยถึง.</h2>
+      <p class="thai-sub">ห่างจากผิวน้ำเพียงไม่กี่เมตร — โลกอีกใบเริ่มต้น.</p>
+      <p class="body-copy">
+        ฝูงปลาเงินเคลื่อนตัวพร้อมกันเหมือนสายสตางค์ลับ
+        หอยเป่าฮื้อนั่งเงียบอยู่บนหิน ผิวเปลือกของมันเก็บแสงเอาไว้
+        เหมือนเก็บความทรงจำของผิวน้ำที่อยู่ไกล.
+      </p>
+      <div class="field-card">
+        <div class="lbl">field note · บันทึก</div>
+        <div class="rows">
+          <div><div class="k">depth</div><div class="v">28<small>m</small></div></div>
+          <div><div class="k">temp</div><div class="v">22<small>°C</small></div></div>
+          <div><div class="k">visibility</div><div class="v">14<small>m</small></div></div>
+          <div><div class="k">species</div><div class="v">148<small>+</small></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="copy-right">
+      <p class="quote">
+        เปลือกหอยจดจำ<br/>
+        ทุกคลื่นที่ผ่านมา<br/>— และจะไม่ลืม.
+        <span class="quote-author">— marine log, 04.2026</span>
+      </p>
+      <div class="coord">
+        <div><div>lat</div><div class="v">7°50′ N</div></div>
+        <div><div>long</div><div class="v">98°20′ E</div></div>
+        <div><div>depth</div><div class="v">-28 m</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="field-kit">
+    <div class="fk-head">
+      <span class="lbl">field kit</span>
+      <span class="fk-title">ของใช้แห่งทะเลลึก</span>
+      <span class="fk-sub">— ocean gear for the bond —</span>
+    </div>
+    <div class="fk-grid">
+
+      <div class="fk-card" data-id="s1" data-name="Salmon Recipe" data-tag="Cat food · 1.2kg" data-th="อาหารแมว ซัลม่อน" data-price="890">
+        <div class="fk-icon">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M 14 14 L 34 14 L 36 40 L 12 40 Z"/>
+            <line x1="14" y1="14" x2="20" y2="9"/>
+            <line x1="34" y1="14" x2="28" y2="9"/>
+            <line x1="20" y1="9" x2="28" y2="9"/>
+            <rect x="19" y="22" width="10" height="8" stroke-width="1.2"/>
+            <line x1="19" y1="26" x2="29" y2="26" stroke-width="0.8"/>
+          </svg>
+        </div>
+        <div class="fk-info">
+          <div class="fk-tag">Cat food · 1.2kg</div>
+          <div class="fk-name">Salmon Recipe</div>
+          <div class="fk-th">อาหารแมว ซัลม่อนฮอกไกโด · grain-free</div>
+        </div>
+        <div class="fk-add">
+          <div class="fk-price">฿890</div>
+          <button class="fk-add-btn">+ Add</button>
+        </div>
+      </div>
+
+      <div class="fk-card" data-id="s2" data-name="Tideline Lead" data-tag="Marine canvas" data-th="สายจูงลายคลื่น" data-price="790">
+        <div class="fk-icon">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M 10 10 Q 26 6 30 22 Q 32 36 22 40 Q 14 41 12 36"/>
+            <circle cx="10" cy="10" r="2.5"/>
+            <rect x="18" y="38" width="8" height="5" rx="2"/>
+          </svg>
+        </div>
+        <div class="fk-info">
+          <div class="fk-tag">Marine canvas</div>
+          <div class="fk-name">Tideline Lead</div>
+          <div class="fk-th">สายจูงลายคลื่น · กันน้ำ</div>
+        </div>
+        <div class="fk-add">
+          <div class="fk-price">฿790</div>
+          <button class="fk-add-btn">+ Add</button>
+        </div>
+      </div>
+
+      <div class="fk-card" data-id="s3" data-name="Float Toy" data-tag="Buoyant" data-th="ของเล่นลอยน้ำ" data-price="380">
+        <div class="fk-icon">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="24" cy="22" r="11"/>
+            <path d="M 13 22 Q 24 15 35 22"/>
+            <path d="M 13 22 Q 24 29 35 22"/>
+            <ellipse cx="24" cy="38" rx="14" ry="2.5" stroke-dasharray="2 2"/>
+          </svg>
+        </div>
+        <div class="fk-info">
+          <div class="fk-tag">Buoyant</div>
+          <div class="fk-name">Float Toy</div>
+          <div class="fk-th">ของเล่นลอยน้ำ · ทนเคี้ยว</div>
+        </div>
+        <div class="fk-add">
+          <div class="fk-price">฿380</div>
+          <button class="fk-add-btn">+ Add</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ─────────── SCENE 3: WETLAND ─────────── -->
+<section id="wetland" class="scene light-scene" data-scene="wetland" data-nav="light">
+  <div class="backdrop">
+    <!-- Sun -->
+    <div class="wetland-sun"></div>
+
+    <!-- Far mountains -->
+    <svg class="wetland-mtn" viewBox="0 0 1600 200" preserveAspectRatio="none">
+      <path d="M 0 200 L 0 120 L 100 70 L 220 110 L 360 50 L 500 120 L 660 80 L 820 130 L 960 60 L 1120 110 L 1280 80 L 1440 120 L 1600 90 L 1600 200 Z" fill="#7e8a7e" opacity="0.55"/>
+      <path d="M 0 200 L 0 140 L 140 110 L 280 140 L 420 100 L 580 145 L 740 115 L 900 140 L 1060 105 L 1220 145 L 1380 120 L 1540 140 L 1600 130 L 1600 200 Z" fill="#5e6e6c" opacity="0.45"/>
+    </svg>
+
+    <!-- Flying V-formation -->
+    <div class="v-flock">
+      <svg class="v-bird b1" width="22" height="10" viewBox="0 0 22 10"><path d="M 1 8 Q 6 1, 11 5 Q 16 1, 21 8" stroke="#3a3525" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+      <svg class="v-bird b2" width="20" height="10" viewBox="0 0 22 10"><path d="M 1 8 Q 6 1, 11 5 Q 16 1, 21 8" stroke="#3a3525" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+      <svg class="v-bird b3" width="20" height="10" viewBox="0 0 22 10"><path d="M 1 8 Q 6 1, 11 5 Q 16 1, 21 8" stroke="#3a3525" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+      <svg class="v-bird b4" width="18" height="9" viewBox="0 0 22 10"><path d="M 1 8 Q 6 1, 11 5 Q 16 1, 21 8" stroke="#3a3525" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+      <svg class="v-bird b5" width="18" height="9" viewBox="0 0 22 10"><path d="M 1 8 Q 6 1, 11 5 Q 16 1, 21 8" stroke="#3a3525" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+    </div>
+
+    <!-- Mist over water -->
+    <div class="wetland-mist"></div>
+
+    <!-- Water -->
+    <div class="wetland-water"></div>
+
+    <!-- Floating ducks -->
+    <svg class="duck-water d1" viewBox="0 0 120 80" aria-hidden="true">
+      <!-- reflection -->
+      <ellipse cx="60" cy="65" rx="38" ry="6" fill="#2a3340" opacity="0.3"/>
+      <!-- body -->
+      <ellipse cx="50" cy="45" rx="42" ry="20" fill="#1f1f1c"/>
+      <ellipse cx="50" cy="42" rx="38" ry="16" fill="#2d2d28"/>
+      <!-- head -->
+      <circle cx="92" cy="30" r="15" fill="#0d3a2a"/>
+      <ellipse cx="92" cy="25" rx="13" ry="11" fill="#155544"/>
+      <!-- white neck stripe -->
+      <path d="M 78 38 Q 85 35 95 38" stroke="#fffaf0" stroke-width="2" fill="none"/>
+      <!-- beak -->
+      <path d="M 105 32 L 117 33 L 117 38 L 105 36 Z" fill="#d4a040"/>
+      <!-- eye -->
+      <circle cx="95" cy="24" r="1.8" fill="#0a0a08"/>
+      <circle cx="95.5" cy="23.5" r="0.5" fill="#fff"/>
+      <!-- ripples around body -->
+      <path d="M 5 55 Q 50 53 95 55 M 12 60 Q 50 58 90 60" stroke="rgba(255,240,200,0.4)" stroke-width="0.8" fill="none"/>
+    </svg>
+
+    <svg class="duck-water d2" viewBox="0 0 120 80" aria-hidden="true">
+      <ellipse cx="60" cy="65" rx="36" ry="5" fill="#2a3340" opacity="0.3"/>
+      <ellipse cx="50" cy="45" rx="40" ry="18" fill="#7a6240"/>
+      <ellipse cx="50" cy="42" rx="36" ry="15" fill="#a08458"/>
+      <circle cx="90" cy="30" r="14" fill="#5a4530"/>
+      <path d="M 102 32 L 113 33 L 113 38 L 102 36 Z" fill="#d4a040"/>
+      <circle cx="93" cy="25" r="1.6" fill="#0a0a08"/>
+      <circle cx="93.4" cy="24.6" r="0.4" fill="#fff"/>
+      <path d="M 8 55 Q 50 53 92 55" stroke="rgba(255,240,200,0.4)" stroke-width="0.8" fill="none"/>
+    </svg>
+
+    <svg class="duck-water d3" viewBox="0 0 120 80" aria-hidden="true">
+      <ellipse cx="60" cy="65" rx="36" ry="5" fill="#2a3340" opacity="0.3"/>
+      <ellipse cx="50" cy="45" rx="40" ry="18" fill="#1f1f1c"/>
+      <ellipse cx="50" cy="42" rx="36" ry="15" fill="#2d2d28"/>
+      <circle cx="90" cy="30" r="14" fill="#0d3a2a"/>
+      <ellipse cx="90" cy="26" rx="12" ry="10" fill="#155544"/>
+      <path d="M 76 38 Q 84 35 94 38" stroke="#fffaf0" stroke-width="2" fill="none"/>
+      <path d="M 102 32 L 113 33 L 113 38 L 102 36 Z" fill="#d4a040"/>
+      <circle cx="93" cy="24" r="1.6" fill="#0a0a08"/>
+    </svg>
+
+    <svg class="duck-water d4" viewBox="0 0 120 80" aria-hidden="true">
+      <ellipse cx="60" cy="65" rx="32" ry="4" fill="#2a3340" opacity="0.3"/>
+      <ellipse cx="50" cy="45" rx="38" ry="16" fill="#8a6f48"/>
+      <ellipse cx="50" cy="42" rx="34" ry="13" fill="#b09060"/>
+      <circle cx="88" cy="30" r="13" fill="#5a4530"/>
+      <path d="M 100 32 L 110 33 L 110 38 L 100 36 Z" fill="#d4a040"/>
+      <circle cx="91" cy="25" r="1.4" fill="#0a0a08"/>
+    </svg>
+
+    <!-- Lily pads -->
+    <div class="lily l1"></div>
+    <div class="lily l2"></div>
+    <div class="lily l3"></div>
+
+    <!-- Foreground reeds -->
+    <div class="reed r1"></div>
+    <div class="reed r2"></div>
+    <div class="reed r3"></div>
+    <div class="reed r4"></div>
+    <div class="reed r5"></div>
+  </div>
+
+  <div class="copy" style="align-items: end;">
+    <div class="copy-left">
+      <div class="meta">
+        <span class="scene-num">03 / iv</span>
+        <span class="line"></span>
+        <span>บึงป่า · marsh</span>
+      </div>
+      <h2>บึงเช้า<br/>กับ <em>ปีก</em><br/>ที่ทอนำเสียง.</h2>
+      <p class="thai-sub">น้ำนิ่งราวกระจก สะท้อนฟ้าและฝูงนกที่กำลังเดินทาง.</p>
+      <p class="body-copy">
+        เป็ดป่ารวมตัวกันบนผิวน้ำ บางตัวเริ่มตีปีก —
+        และในอีกอึดใจ ฝูงทั้งหมดก็ทยอยขึ้นบินเป็นรูปลูกศร.
+        ที่นี่ ฤดูกาลเดินทางด้วยจังหวะของปีก.
+      </p>
+      <div class="field-card">
+        <div class="lbl">field note · บันทึก</div>
+        <div class="rows">
+          <div><div class="k">flock size</div><div class="v">240<small>+</small></div></div>
+          <div><div class="k">depth</div><div class="v">1.2<small>m</small></div></div>
+          <div><div class="k">migration</div><div class="v">3,400<small>km</small></div></div>
+          <div><div class="k">dawn</div><div class="v">05:42</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="copy-right">
+      <p class="quote">
+        นกไม่กลัวฟ้าที่กว้าง<br/>
+        เพราะมันรู้ว่า — ปีก<br/>คือแผนที่.
+        <span class="quote-author">— wetland diary, autumn</span>
+      </p>
+      <div class="coord">
+        <div><div>lat</div><div class="v">19°54′ N</div></div>
+        <div><div>long</div><div class="v">99°50′ E</div></div>
+        <div><div>elev</div><div class="v">420 m</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="field-kit">
+    <div class="fk-head">
+      <span class="lbl">field kit</span>
+      <span class="fk-title">ของใช้แห่งบึงเช้า</span>
+      <span class="fk-sub">— wetland gear for the bond —</span>
+    </div>
+    <div class="fk-grid">
+
+      <div class="fk-card" data-id="w1" data-name="Dawn Bed" data-tag="Cloud cotton" data-th="ที่นอนสีหมอก" data-price="2490">
+        <div class="fk-icon">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+            <ellipse cx="24" cy="32" rx="18" ry="9"/>
+            <ellipse cx="24" cy="32" rx="13" ry="5"/>
+            <path d="M 6 28 Q 24 18 42 28"/>
+          </svg>
+        </div>
+        <div class="fk-info">
+          <div class="fk-tag">Cloud cotton</div>
+          <div class="fk-name">Dawn Bed</div>
+          <div class="fk-th">ที่นอนสีหมอกเช้า · ขนาด M/L</div>
+        </div>
+        <div class="fk-add">
+          <div class="fk-price">฿2,490</div>
+          <button class="fk-add-btn">+ Add</button>
+        </div>
+      </div>
+
+      <div class="fk-card" data-id="w2" data-name="Marsh Treats" data-tag="Slow-baked" data-th="ขนมรสเป็ด" data-price="180">
+        <div class="fk-icon">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M 14 14 Q 14 11 17 11 L 31 11 Q 34 11 34 14 L 34 40 L 14 40 Z"/>
+            <line x1="14" y1="20" x2="34" y2="20"/>
+            <circle cx="20" cy="28" r="1.5" fill="currentColor"/>
+            <circle cx="26" cy="32" r="1.5" fill="currentColor"/>
+            <circle cx="22" cy="34" r="1.5" fill="currentColor"/>
+            <circle cx="28" cy="26" r="1.2" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="fk-info">
+          <div class="fk-tag">Slow-baked</div>
+          <div class="fk-name">Marsh Treats</div>
+          <div class="fk-th">ขนมรสเป็ดป่า · grain-free</div>
+        </div>
+        <div class="fk-add">
+          <div class="fk-price">฿180</div>
+          <button class="fk-add-btn">+ Add</button>
+        </div>
+      </div>
+
+      <div class="fk-card" data-id="w3" data-name="Reed Harness" data-tag="Adjustable" data-th="สายอกสีฟาง" data-price="1190">
+        <div class="fk-icon">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M 12 20 L 36 20 L 34 36 L 14 36 Z"/>
+            <path d="M 18 20 L 18 12 L 30 12 L 30 20"/>
+            <circle cx="24" cy="28" r="3"/>
+          </svg>
+        </div>
+        <div class="fk-info">
+          <div class="fk-tag">Adjustable</div>
+          <div class="fk-name">Reed Harness</div>
+          <div class="fk-th">สายอกสีฟาง · นุ่ม ไม่กัดผิว</div>
+        </div>
+        <div class="fk-add">
+          <div class="fk-price">฿1,190</div>
+          <button class="fk-add-btn">+ Add</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ─────────── SCENE 4: MEADOW ─────────── -->
+<section id="meadow" class="scene light-scene" data-scene="meadow" data-nav="light">
+  <div class="backdrop">
+    <!-- Sun -->
+    <div class="meadow-sun"></div>
+
+    <!-- Distant hills -->
+    <svg class="meadow-hill" viewBox="0 0 1600 200" preserveAspectRatio="none">
+      <path d="M 0 200 L 0 120 Q 200 80 400 110 Q 600 70 800 105 Q 1000 75 1200 100 Q 1400 80 1600 105 L 1600 200 Z" fill="#9a7d3e" opacity="0.5"/>
+    </svg>
+    <svg class="meadow-hill front" viewBox="0 0 1600 200" preserveAspectRatio="none">
+      <path d="M 0 200 L 0 140 Q 250 100 500 130 Q 750 95 1000 125 Q 1250 100 1500 130 L 1600 120 L 1600 200 Z" fill="#7a6028" opacity="0.65"/>
+    </svg>
+
+    <!-- Field -->
+    <div class="meadow-field"></div>
+
+    <!-- Butterflies -->
+    <svg class="butterfly b1" width="22" height="18" viewBox="0 0 22 18">
+      <g>
+        <ellipse class="butterfly-wing" cx="6" cy="9" rx="6" ry="8" fill="#c4502a" opacity="0.85"/>
+        <ellipse class="butterfly-wing" cx="16" cy="9" rx="6" ry="8" fill="#c4502a" opacity="0.85"/>
+        <ellipse cx="11" cy="9" rx="0.8" ry="6" fill="#2c2515"/>
+      </g>
+    </svg>
+    <svg class="butterfly b2" width="18" height="14" viewBox="0 0 22 18">
+      <g>
+        <ellipse class="butterfly-wing" cx="6" cy="9" rx="6" ry="8" fill="#7a4a8a" opacity="0.85"/>
+        <ellipse class="butterfly-wing" cx="16" cy="9" rx="6" ry="8" fill="#7a4a8a" opacity="0.85"/>
+        <ellipse cx="11" cy="9" rx="0.8" ry="6" fill="#2c2515"/>
+      </g>
+    </svg>
+    <svg class="butterfly b3" width="20" height="16" viewBox="0 0 22 18">
+      <g>
+        <ellipse class="butterfly-wing" cx="6" cy="9" rx="6" ry="8" fill="#f8c870" opacity="0.85"/>
+        <ellipse class="butterfly-wing" cx="16" cy="9" rx="6" ry="8" fill="#f8c870" opacity="0.85"/>
+        <ellipse cx="11" cy="9" rx="0.8" ry="6" fill="#2c2515"/>
+      </g>
+    </svg>
+
+    <!-- Rabbits -->
+    <svg class="rabbit r-a" viewBox="0 0 100 70" aria-hidden="true">
+      <!-- shadow -->
+      <ellipse cx="50" cy="65" rx="32" ry="4" fill="#3a2a18" opacity="0.3"/>
+      <!-- back legs -->
+      <ellipse cx="22" cy="56" rx="14" ry="7" fill="#8a6f48"/>
+      <!-- body -->
+      <ellipse cx="40" cy="48" rx="28" ry="16" fill="#a0825a"/>
+      <!-- front legs -->
+      <ellipse cx="56" cy="60" rx="5" ry="6" fill="#8a6f48"/>
+      <ellipse cx="64" cy="60" rx="5" ry="6" fill="#8a6f48"/>
+      <!-- head -->
+      <ellipse cx="68" cy="38" rx="14" ry="13" fill="#a8895d"/>
+      <!-- ears -->
+      <ellipse cx="64" cy="18" rx="3.5" ry="14" fill="#8a6f48"/>
+      <ellipse cx="64" cy="18" rx="1.8" ry="11" fill="#d4a890"/>
+      <ellipse cx="72" cy="18" rx="3.5" ry="14" fill="#8a6f48"/>
+      <ellipse cx="72" cy="18" rx="1.8" ry="11" fill="#d4a890"/>
+      <!-- eye -->
+      <circle cx="74" cy="36" r="2" fill="#0a0a08"/>
+      <circle cx="75" cy="35" r="0.6" fill="#fff"/>
+      <!-- nose -->
+      <ellipse cx="82" cy="42" rx="1.5" ry="1" fill="#c4502a"/>
+      <!-- mouth line -->
+      <path d="M 80 45 Q 78 48 76 46" stroke="#5a4520" stroke-width="0.8" fill="none"/>
+      <!-- tail -->
+      <circle cx="14" cy="46" r="6" fill="#fff5d8"/>
+    </svg>
+
+    <svg class="rabbit r-b" viewBox="0 0 100 70" aria-hidden="true">
+      <ellipse cx="50" cy="65" rx="28" ry="3" fill="#3a2a18" opacity="0.3"/>
+      <ellipse cx="22" cy="56" rx="12" ry="6" fill="#7a5f40"/>
+      <ellipse cx="40" cy="48" rx="26" ry="15" fill="#8c7448"/>
+      <ellipse cx="55" cy="60" rx="4" ry="5" fill="#7a5f40"/>
+      <ellipse cx="62" cy="60" rx="4" ry="5" fill="#7a5f40"/>
+      <ellipse cx="66" cy="38" rx="13" ry="12" fill="#967d50"/>
+      <ellipse cx="62" cy="18" rx="3.2" ry="13" fill="#7a5f40"/>
+      <ellipse cx="70" cy="18" rx="3.2" ry="13" fill="#7a5f40"/>
+      <circle cx="72" cy="36" r="1.8" fill="#0a0a08"/>
+      <ellipse cx="80" cy="42" rx="1.3" ry="0.9" fill="#c4502a"/>
+      <circle cx="14" cy="46" r="5" fill="#fff5d8"/>
+    </svg>
+
+    <svg class="rabbit r-c" viewBox="0 0 100 70" aria-hidden="true">
+      <ellipse cx="50" cy="65" rx="34" ry="4" fill="#3a2a18" opacity="0.3"/>
+      <ellipse cx="22" cy="56" rx="14" ry="7" fill="#8a6f48"/>
+      <ellipse cx="40" cy="48" rx="28" ry="16" fill="#a0825a"/>
+      <ellipse cx="56" cy="60" rx="5" ry="6" fill="#8a6f48"/>
+      <ellipse cx="64" cy="60" rx="5" ry="6" fill="#8a6f48"/>
+      <ellipse cx="68" cy="38" rx="14" ry="13" fill="#a8895d"/>
+      <ellipse cx="64" cy="18" rx="3.5" ry="14" fill="#8a6f48"/>
+      <ellipse cx="64" cy="18" rx="1.8" ry="11" fill="#d4a890"/>
+      <ellipse cx="72" cy="18" rx="3.5" ry="14" fill="#8a6f48"/>
+      <ellipse cx="72" cy="18" rx="1.8" ry="11" fill="#d4a890"/>
+      <circle cx="74" cy="36" r="2" fill="#0a0a08"/>
+      <ellipse cx="82" cy="42" rx="1.5" ry="1" fill="#c4502a"/>
+      <circle cx="14" cy="46" r="6" fill="#fff5d8"/>
+    </svg>
+
+    <svg class="rabbit r-d" viewBox="0 0 100 70" aria-hidden="true">
+      <ellipse cx="50" cy="65" rx="26" ry="3" fill="#3a2a18" opacity="0.3"/>
+      <ellipse cx="22" cy="56" rx="11" ry="5.5" fill="#6e5638"/>
+      <ellipse cx="40" cy="48" rx="24" ry="14" fill="#806840"/>
+      <ellipse cx="54" cy="60" rx="3.5" ry="4.5" fill="#6e5638"/>
+      <ellipse cx="60" cy="60" rx="3.5" ry="4.5" fill="#6e5638"/>
+      <ellipse cx="64" cy="38" rx="12" ry="11" fill="#8a7148"/>
+      <ellipse cx="60" cy="18" rx="3" ry="12" fill="#6e5638"/>
+      <ellipse cx="68" cy="18" rx="3" ry="12" fill="#6e5638"/>
+      <circle cx="70" cy="36" r="1.6" fill="#0a0a08"/>
+      <ellipse cx="77" cy="42" rx="1.2" ry="0.8" fill="#c4502a"/>
+      <circle cx="14" cy="46" r="4.5" fill="#fff5d8"/>
+    </svg>
+  </div>
+
+  <div class="copy" style="align-items: end;">
+    <div class="copy-left">
+      <div class="meta">
+        <span class="scene-num">04 / iv</span>
+        <span class="line"></span>
+        <span>ทุ่งกว้าง · meadow</span>
+      </div>
+      <h2>ทุ่งกว้าง<br/>กับ <em>พวก</em><br/>ช่างซน.</h2>
+      <p class="thai-sub">หญ้าโยกในลมเย็น และเงาเล็ก ๆ กระโดดข้ามดอกป๊อปปี้.</p>
+      <p class="body-copy">
+        แดดบ่ายตกเอียง ทุ่งกลายเป็นทองคำ —
+        ฝูงกระต่ายโผล่ขึ้นจากดงหญ้า มองซ้าย มองขวา
+        แล้วก็กระโดดข้ามดอกไม้อย่างไม่มีจุดหมาย.
+        นี่คือเวลาที่ทุ่งสนุกที่สุด.
+      </p>
+      <div class="field-card">
+        <div class="lbl">field note · บันทึก</div>
+        <div class="rows">
+          <div><div class="k">grass</div><div class="v">0.6<small>m</small></div></div>
+          <div><div class="k">colony</div><div class="v">38<small>+</small></div></div>
+          <div><div class="k">sunset</div><div class="v">18:24</div></div>
+          <div><div class="k">flowers</div><div class="v">12<small>spp.</small></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="copy-right">
+      <p class="quote">
+        ทุ่งไม่มีเข็มทิศ —<br/>
+        จึงทำให้หัวใจ<br/>เดินเล่นได้ทุกทาง.
+        <span class="quote-author">— meadow notebook, viii.</span>
+      </p>
+      <div class="coord">
+        <div><div>lat</div><div class="v">17°56′ N</div></div>
+        <div><div>long</div><div class="v">99°06′ E</div></div>
+        <div><div>elev</div><div class="v">680 m</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="field-kit">
+    <div class="fk-head">
+      <span class="lbl">field kit</span>
+      <span class="fk-title">ของใช้แห่งทุ่งกว้าง</span>
+      <span class="fk-sub">— meadow gear for the bond —</span>
+    </div>
+    <div class="fk-grid">
+
+      <div class="fk-card" data-id="m1" data-name="Chase Toy" data-tag="Felted wool" data-th="ของเล่นชี้ส์" data-price="420">
+        <div class="fk-icon">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M 8 18 Q 8 13 13 13 Q 18 13 18 18 L 30 18 Q 30 13 35 13 Q 40 13 40 18 Q 40 22 36 23 Q 40 24 40 28 Q 40 33 35 33 Q 30 33 30 28 L 18 28 Q 18 33 13 33 Q 8 33 8 28 Q 8 24 12 23 Q 8 22 8 18 Z"/>
+          </svg>
+        </div>
+        <div class="fk-info">
+          <div class="fk-tag">Felted wool</div>
+          <div class="fk-name">Chase Toy</div>
+          <div class="fk-th">ของเล่นชี้ส์ · มีแคทนิป</div>
+        </div>
+        <div class="fk-add">
+          <div class="fk-price">฿420</div>
+          <button class="fk-add-btn">+ Add</button>
+        </div>
+      </div>
+
+      <div class="fk-card" data-id="m2" data-name="Meadow Mat" data-tag="Cotton weave" data-th="ที่นอนผ้าฝ้าย" data-price="1890">
+        <div class="fk-icon">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="8" y="15" width="32" height="20" rx="2"/>
+            <line x1="8" y1="22" x2="40" y2="22"/>
+            <line x1="8" y1="28" x2="40" y2="28"/>
+            <line x1="15" y1="15" x2="15" y2="35"/>
+            <line x1="33" y1="15" x2="33" y2="35"/>
+          </svg>
+        </div>
+        <div class="fk-info">
+          <div class="fk-tag">Cotton weave</div>
+          <div class="fk-name">Meadow Mat</div>
+          <div class="fk-th">ที่นอนผ้าฝ้าย · ทอลาย herringbone</div>
+        </div>
+        <div class="fk-add">
+          <div class="fk-price">฿1,890</div>
+          <button class="fk-add-btn">+ Add</button>
+        </div>
+      </div>
+
+      <div class="fk-card" data-id="m3" data-name="Honeyed Snack" data-tag="Limited" data-th="ขนมรสน้ำผึ้ง" data-price="220">
+        <div class="fk-icon">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M 16 14 L 32 14 L 34 18 L 34 38 Q 34 42 30 42 L 18 42 Q 14 42 14 38 L 14 18 Z"/>
+            <line x1="14" y1="22" x2="34" y2="22"/>
+            <path d="M 20 30 Q 24 34 28 30 Q 26 33 24 33 Q 22 33 20 30 Z" fill="currentColor"/>
+            <line x1="22" y1="27" x2="26" y2="27" stroke-width="0.8"/>
+          </svg>
+        </div>
+        <div class="fk-info">
+          <div class="fk-tag">Limited</div>
+          <div class="fk-name">Honeyed Snack</div>
+          <div class="fk-th">ขนมรสน้ำผึ้งและหญ้าอ่อน · 80g</div>
+        </div>
+        <div class="fk-add">
+          <div class="fk-price">฿220</div>
+          <button class="fk-add-btn">+ Add</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ─────────── OUTRO ─────────── -->
+<section id="outro" data-scene="outro" data-nav="dark">
+  <div class="outro-inner">
+    <div class="outro-left">
+      <div class="lbl">— end of the journey —</div>
+      <h2>เราคือ <em>สาย</em><br/>ที่โยงไว้ทั้งหมด.</h2>
+      <p class="thai-out">
+        ป่า ทะเล บึง และทุ่ง — ทั้งสี่ระบบนิเวศ
+        ดูเหมือนจะอยู่คนละโลก แต่จริง ๆ แล้วเชื่อมโยงกันด้วยลม น้ำ
+        และสายใยเล็ก ๆ ที่ไม่อาจมองเห็นได้ด้วยตา.
+        <strong style="color: #d4a574; font-weight: 400;">Anibound</strong>
+        คือคำที่เราใช้เรียกสายใยนั้น.
+      </p>
+      <p style="font-family: var(--serif); font-style: italic; font-size: 18px; opacity: 0.7; max-width: 420px;">
+        “The wild is not somewhere else.<br/>
+        It is the room we have always lived in.”
+      </p>
+    </div>
+    <div class="outro-right">
+      <h4>The four biomes</h4>
+      <ul class="biome-list">
+        <li>
+          <span class="n">i.</span>
+          <span class="t">Jungle<small>ป่าดงดิบ · river &amp; canopy</small></span>
+          <span class="c"><span class="swatch" style="background: #2d4a35"></span>340 m</span>
+        </li>
+        <li>
+          <span class="n">ii.</span>
+          <span class="t">Deep Ocean<small>ทะเลลึก · fish &amp; abalone</small></span>
+          <span class="c"><span class="swatch" style="background: #0a2347"></span>-28 m</span>
+        </li>
+        <li>
+          <span class="n">iii.</span>
+          <span class="t">Wetland<small>บึงเช้า · duck migration</small></span>
+          <span class="c"><span class="swatch" style="background: #6e8a8e"></span>420 m</span>
+        </li>
+        <li>
+          <span class="n">iv.</span>
+          <span class="t">Meadow<small>ทุ่งกว้าง · rabbit colony</small></span>
+          <span class="c"><span class="swatch" style="background: #b89048"></span>680 m</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer class="site-foot">
+  <div>© 2026 Anibound · field notes from the wild</div>
+  <div class="right">
+    <a href="#intro">↑ back to top</a>
+    <a href="#">contact</a>
+    <a href="#">credits</a>
+  </div>
+</footer>
+
+
+<script>
+  // ─────────── Scene navigation + active state ───────────
+  const sceneButtons = document.querySelectorAll('#sceneNav button');
+  const sections = document.querySelectorAll('section[data-scene]');
+  const siteNav = document.getElementById('siteNav');
+
+  // Click → scroll
+  sceneButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.target);
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // Scroll observer → update active button + nav theme
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && entry.intersectionRatio > 0.4) {
+        const scene = entry.target.dataset.scene;
+        const navTheme = entry.target.dataset.nav;
+
+        // active scene-nav button
+        sceneButtons.forEach(b => {
+          b.classList.toggle('active', b.dataset.target === scene);
+        });
+
+        // nav theme
+        siteNav.classList.remove('dark', 'light');
+        siteNav.classList.add(navTheme);
+
+        // scene accent color picked from CSS var of section
+        const acc = getComputedStyle(entry.target).getPropertyValue('--scene-accent');
+        if (acc) document.documentElement.style.setProperty('--scene-accent', acc.trim());
+      }
+    });
+  }, {
+    threshold: [0.4, 0.6],
+    rootMargin: '-10% 0px -10% 0px'
+  });
+  sections.forEach(s => observer.observe(s));
+
+  // ─────────── Generate randomized blades + flowers in meadow ───────────
+  const meadowField = document.querySelector('#meadow .backdrop');
+  if (meadowField) {
+    // Grass blades
+    for (let i = 0; i < 80; i++) {
+      const blade = document.createElement('div');
+      blade.className = 'blade';
+      const left = Math.random() * 100;
+      const height = 30 + Math.random() * 60;
+      const delay = Math.random() * 3;
+      blade.style.left = left + '%';
+      blade.style.height = height + 'px';
+      blade.style.animationDelay = '-' + delay + 's';
+      blade.style.opacity = (0.4 + Math.random() * 0.6).toFixed(2);
+      meadowField.appendChild(blade);
+    }
+    // Wildflowers
+    const flowerTypes = ['poppy', 'daisy', 'violet'];
+    for (let i = 0; i < 18; i++) {
+      const f = document.createElement('div');
+      f.className = 'flower ' + flowerTypes[Math.floor(Math.random() * flowerTypes.length)];
+      f.style.left = Math.random() * 100 + '%';
+      f.style.bottom = (Math.random() * 30) + '%';
+      f.style.animationDelay = '-' + (Math.random() * 4) + 's';
+      f.style.transform = 'scale(' + (0.6 + Math.random() * 0.7) + ')';
+      meadowField.appendChild(f);
+    }
+  }
+
+  // ─────────── Spawn more bubbles in sea ───────────
+  const seaBackdrop = document.querySelector('#sea .backdrop');
+  if (seaBackdrop) {
+    setInterval(() => {
+      const inView = seaBackdrop.closest('section').getBoundingClientRect();
+      if (inView.bottom < 0 || inView.top > window.innerHeight) return;
+      const b = document.createElement('div');
+      b.className = 'bubble';
+      const size = 3 + Math.random() * 6;
+      b.style.left = Math.random() * 100 + '%';
+      b.style.width = size + 'px';
+      b.style.height = size + 'px';
+      b.style.animationDuration = (10 + Math.random() * 10) + 's';
+      seaBackdrop.appendChild(b);
+      setTimeout(() => b.remove(), 22000);
+    }, 1800);
+  }
+</script>
+
+<!-- ─────────── CART DRAWER ─────────── -->
+<div class="cart-overlay" id="cartOverlay"></div>
+<aside class="cart-drawer" id="cartDrawer" aria-hidden="true">
+  <div class="cart-head">
+    <div>
+      <div class="small">— field shop · 縁 —</div>
+      <h3>Your bundle</h3>
+    </div>
+    <button class="cart-close" id="cartCloseBtn" aria-label="Close cart">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty" id="cartEmpty">
+      <span class="glyph-empty">◯</span>
+      ยังไม่มีสิ่งของในกระเป๋า<br/>
+      <span style="font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; font-family: var(--sans); font-style: normal; opacity: 0.55;">— pack for the journey —</span>
+    </div>
+  </div>
+  <div class="cart-foot" id="cartFoot" style="display:none;">
+    <div class="cart-total">
+      <span class="lbl">Total</span>
+      <span id="cartTotal">฿0</span>
+    </div>
+    <div class="cart-sub">รวมภาษีแล้ว · จัดส่งฟรีเมื่อสั่งครบ ฿890</div>
+    <button class="cart-checkout" id="cartCheckout">Checkout — ดำเนินการ →</button>
+  </div>
+</aside>
+
+<!-- Add-to-cart toast -->
+<div class="cart-toast" id="cartToast">
+  <span class="dot"></span>
+  <span>เพิ่ม <span class="it" id="toastName">item</span> ลงในกระเป๋า</span>
 </div>
-<script>location.replace("anibound.html");</script>
+
+<script>
+  // ─────────── Cart state + localStorage ───────────
+  const CART_KEY = 'anibound_cart_v1';
+  let cart = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
+
+  function saveCart() { localStorage.setItem(CART_KEY, JSON.stringify(cart)); }
+  function cartCount() { return cart.reduce((s, i) => s + i.qty, 0); }
+  function cartTotal() { return cart.reduce((s, i) => s + i.qty * i.price, 0); }
+
+  function updateBadge() {
+    const badge = document.getElementById('cartBadge');
+    const n = cartCount();
+    badge.textContent = n;
+    badge.classList.toggle('hide', n === 0);
+  }
+
+  function renderCart() {
+    const items = document.getElementById('cartItems');
+    const empty = document.getElementById('cartEmpty');
+    const foot = document.getElementById('cartFoot');
+    const totalEl = document.getElementById('cartTotal');
+
+    // Clear existing items
+    items.querySelectorAll('.cart-item').forEach(n => n.remove());
+
+    if (cart.length === 0) {
+      empty.style.display = 'block';
+      foot.style.display = 'none';
+    } else {
+      empty.style.display = 'none';
+      foot.style.display = 'block';
+      cart.forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'cart-item';
+        row.innerHTML = `
+          <div class="ci-icon">${item.icon}</div>
+          <div class="ci-info">
+            <div class="ci-tag">${item.tag}</div>
+            <div class="ci-name">${item.name}</div>
+            <div class="qty-row">
+              <button class="qty-btn" data-act="dec" data-id="${item.id}" aria-label="Decrease">−</button>
+              <span class="qty">${item.qty}</span>
+              <button class="qty-btn" data-act="inc" data-id="${item.id}" aria-label="Increase">+</button>
+              <button class="remove" data-act="rm" data-id="${item.id}">remove</button>
+            </div>
+          </div>
+          <div class="ci-price">฿${(item.qty * item.price).toLocaleString()}</div>
+        `;
+        items.appendChild(row);
+      });
+      totalEl.textContent = '฿' + cartTotal().toLocaleString();
+    }
+    updateBadge();
+  }
+
+  function addToCart(card) {
+    const id = card.dataset.id;
+    const found = cart.find(i => i.id === id);
+    if (found) {
+      found.qty += 1;
+    } else {
+      cart.push({
+        id,
+        name: card.dataset.name,
+        tag: card.dataset.tag,
+        th: card.dataset.th,
+        price: parseFloat(card.dataset.price),
+        qty: 1,
+        icon: card.querySelector('.fk-icon').innerHTML
+      });
+    }
+    saveCart();
+    renderCart();
+
+    // Toast
+    document.getElementById('toastName').textContent = card.dataset.name;
+    const toast = document.getElementById('cartToast');
+    toast.classList.add('show');
+    clearTimeout(window._toastT);
+    window._toastT = setTimeout(() => toast.classList.remove('show'), 1800);
+
+    // Card feedback
+    card.classList.add('added');
+    setTimeout(() => card.classList.remove('added'), 800);
+  }
+
+  // Wire up add buttons
+  document.querySelectorAll('.fk-add-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const card = btn.closest('.fk-card');
+      addToCart(card);
+    });
+  });
+  // Clicking entire card also adds
+  document.querySelectorAll('.fk-card').forEach(card => {
+    card.addEventListener('click', () => addToCart(card));
+  });
+
+  // Open/close drawer
+  const drawer = document.getElementById('cartDrawer');
+  const overlay = document.getElementById('cartOverlay');
+  function openCart() {
+    drawer.classList.add('open');
+    overlay.classList.add('open');
+    drawer.setAttribute('aria-hidden', 'false');
+  }
+  function closeCart() {
+    drawer.classList.remove('open');
+    overlay.classList.remove('open');
+    drawer.setAttribute('aria-hidden', 'true');
+  }
+  document.getElementById('cartOpenBtn').addEventListener('click', openCart);
+  document.getElementById('cartCloseBtn').addEventListener('click', closeCart);
+  overlay.addEventListener('click', closeCart);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCart(); });
+
+  // Cart item qty / remove (delegated)
+  document.getElementById('cartItems').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-act]');
+    if (!btn) return;
+    const id = btn.dataset.id;
+    const act = btn.dataset.act;
+    const item = cart.find(i => i.id === id);
+    if (!item) return;
+    if (act === 'inc') item.qty += 1;
+    if (act === 'dec') { item.qty -= 1; if (item.qty <= 0) cart = cart.filter(i => i.id !== id); }
+    if (act === 'rm') cart = cart.filter(i => i.id !== id);
+    saveCart();
+    renderCart();
+  });
+
+  // Checkout demo
+  document.getElementById('cartCheckout').addEventListener('click', () => {
+    if (cart.length === 0) return;
+    const btn = document.getElementById('cartCheckout');
+    btn.textContent = 'กำลังดำเนินการ…';
+    btn.disabled = true;
+    setTimeout(() => {
+      btn.textContent = '✓ Order placed';
+      setTimeout(() => {
+        cart = [];
+        saveCart();
+        renderCart();
+        btn.textContent = 'Checkout — ดำเนินการ →';
+        btn.disabled = false;
+        closeCart();
+      }, 1500);
+    }, 1000);
+  });
+
+  // Initial render
+  renderCart();
+</script>
+
 </body>
 </html>

@@ -2,40 +2,20 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>สมัครสมาชิก · Anibound</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Noto+Serif+JP:wght@400;500;600&family=Noto+Serif+Thai:wght@400;500;600&family=DM+Serif+Display&family=Inter:wght@300;400;500;600&family=Noto+Sans+Thai:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Noto+Serif+Thai:wght@300;400;500;600&family=Inter:wght@300;400;500;600&family=Noto+Sans+Thai:wght@300;400;500&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="auth.css" />
-<script src="image-slot.js"></script>
 
 <style>
-  .step-pill {
-    display: inline-flex;
-    gap: 10px;
-    align-items: center;
-    background: var(--paper);
-    border: 1px solid var(--rule);
-    padding: 6px 14px;
-    border-radius: 999px;
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-    margin-bottom: 22px;
-  }
-  .step-pill .n {
-    font-family: var(--serif);
-    color: var(--accent);
-    font-size: 14px;
-  }
   .field-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 14px;
+    gap: 18px;
   }
   @media (max-width: 520px) {
     .field-row { grid-template-columns: 1fr; }
@@ -50,30 +30,25 @@
   <!-- ───── FORM SIDE ───── -->
   <div class="auth-form-side">
     <div class="auth-top">
-      <a class="auth-brand" href="anibound.html">
-        <svg class="mark" viewBox="0 0 100 100" aria-hidden="true">
-          <path d="M 50 12 A 38 38 0 1 0 84 60" fill="none" stroke="var(--ink)" stroke-width="5.5" stroke-linecap="round"/>
-          <circle cx="84" cy="60" r="3.2" fill="var(--ink)"/>
-          <text x="50" y="64" text-anchor="middle" font-family="Shippori Mincho, serif" font-size="34" font-weight="500" fill="var(--ink)">縁</text>
-        </svg>
-        <span class="wordmark">ANIBOUND</span>
+      <a class="auth-brand" href="index.html">
+        <span class="glyph" aria-hidden="true"></span>
+        <span>ANIBOUND</span>
       </a>
-      <a class="auth-back" href="anibound.html">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M19 12H5m0 0 6 6m-6-6 6-6"/></svg>
-        กลับสู่ร้าน
+      <a class="auth-back" href="index.html">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M19 12H5m0 0 6 6m-6-6 6-6"/></svg>
+        กลับสู่ Journey
       </a>
     </div>
 
     <div class="auth-body">
       <div id="signup-view">
-        <div class="step-pill">
-          <span class="n">01</span>
-          <span>เริ่มต้น · Step 1 of 1</span>
-        </div>
-        <h1 class="auth-h1">สมัครเป็น <em>สมาชิก</em></h1>
-        <div class="auth-jp-sub">はじめまして — เข้าร่วม Bond Circle</div>
+        <div class="auth-eyebrow">— begin the bond —</div>
+        <h1 class="auth-h1">เข้าร่วม<br/><em>Bond Circle</em></h1>
+        <p class="auth-sub">
+          สมัครเป็นสมาชิกเพื่อรับส่วนลด 10% สำหรับการสั่งครั้งแรก,
+          เข้าถึงคอลเลกชันใหม่ก่อนใคร, และ Field Journal รายเดือนจากเรา.
+        </p>
 
-        <!-- Socials -->
         <div class="socials-row">
           <button class="social-btn" type="button" data-social="Line">
             <svg viewBox="0 0 24 24" fill="#06C755"><path d="M12 2C6.5 2 2 5.7 2 10.2c0 2.6 1.5 4.9 3.9 6.5l-.7 3.3 3.6-2c1 .2 2.1.3 3.2.3 5.5 0 10-3.7 10-8.1S17.5 2 12 2z"/></svg>
@@ -84,158 +59,141 @@
             Google
           </button>
           <button class="social-btn" type="button" data-social="Apple">
-            <svg viewBox="0 0 24 24" fill="#000"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+            <svg viewBox="0 0 24 24" fill="#ece4d2"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
             Apple
           </button>
         </div>
 
-        <div class="divider">หรือสมัครด้วยอีเมล — または</div>
+        <div class="divider">หรือสมัครด้วยอีเมล — or</div>
 
         <form id="signup-form" novalidate>
-          <div class="field has-icon" id="field-name">
-            <label for="name">ชื่อ <span class="opt">/ Your name</span></label>
-            <svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v2"/></svg>
-            <input type="text" id="name" placeholder="คุณ / Owner name" autocomplete="name" required />
+          <div class="field" id="field-name">
+            <label for="name">Your name <span class="opt">/ ชื่อ</span></label>
+            <input type="text" id="name" placeholder="Field name" autocomplete="name" required />
             <div class="err-msg">กรุณากรอกชื่อของคุณ</div>
           </div>
 
-          <div class="field has-icon" id="field-email">
-            <label for="email">อีเมล <span class="opt">/ Email</span></label>
-            <svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
-            <input type="email" id="email" placeholder="you@example.com" autocomplete="email" required />
+          <div class="field" id="field-email">
+            <label for="email">Email <span class="opt">/ อีเมล</span></label>
+            <input type="email" id="email" placeholder="you@field.co" autocomplete="email" required />
             <div class="err-msg">กรุณากรอกอีเมลให้ถูกต้อง</div>
           </div>
 
-          <div class="field has-icon" id="field-password">
-            <label for="password">รหัสผ่าน <span class="opt">/ Password · 8+ ตัวอักษร</span></label>
-            <svg class="ic" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 1 1 8 0v4"/></svg>
+          <div class="field" id="field-password">
+            <label for="password">Password <span class="opt">/ 8+ ตัวอักษร</span></label>
             <input type="password" id="password" placeholder="••••••••" autocomplete="new-password" required minlength="8" />
             <button type="button" class="reveal" data-target="password">SHOW</button>
             <div class="strength" id="strength"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
-            <div class="strength-label" id="strength-label">ความปลอดภัย: —</div>
+            <div class="strength-label" id="strength-label">strength · —</div>
             <div class="err-msg">รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร</div>
           </div>
 
-          <!-- Pet info -->
-          <div class="field" id="field-petname">
-            <label>เกี่ยวกับน้อง <span class="opt">/ About your pet</span></label>
+          <!-- Companion -->
+          <div class="field">
+            <label>Companion <span class="opt">/ เพื่อนของคุณ</span></label>
             <div class="field-row" style="margin-top: 4px;">
-              <div>
-                <input type="text" id="petname" placeholder="ชื่อน้อง · pet's name" />
-              </div>
-              <div>
-                <div class="seg-group">
-                  <input type="radio" name="species" id="sp-dog" value="dog" checked />
-                  <label class="seg" for="sp-dog"><span class="kana">犬</span>หมา</label>
-                  <input type="radio" name="species" id="sp-cat" value="cat" />
-                  <label class="seg" for="sp-cat"><span class="kana">猫</span>แมว</label>
-                </div>
+              <input type="text" id="petname" placeholder="ชื่อ · pet's name" />
+              <div class="seg-group">
+                <input type="radio" name="species" id="sp-dog" value="dog" checked />
+                <label class="seg" for="sp-dog">Dog</label>
+                <input type="radio" name="species" id="sp-cat" value="cat" />
+                <label class="seg" for="sp-cat">Cat</label>
+                <input type="radio" name="species" id="sp-other" value="other" />
+                <label class="seg" for="sp-other">Wild</label>
+                <input type="radio" name="species" id="sp-none" value="none" />
+                <label class="seg" for="sp-none">—</label>
               </div>
             </div>
           </div>
 
-          <label class="checkbox" style="margin: 8px 0 22px; align-items: flex-start;">
+          <label class="checkbox" style="margin: 16px 0 22px; align-items: flex-start;">
             <input type="checkbox" id="tos" />
             <span class="box" style="margin-top: 2px;"></span>
-            <span>ฉันยอมรับ <a href="#" onclick="event.preventDefault()">ข้อกำหนด</a> และ <a href="#" onclick="event.preventDefault()">นโยบายความเป็นส่วนตัว</a> ของ Anibound</span>
+            <span>ฉันยอมรับ <a href="#" onclick="event.preventDefault()">ข้อกำหนด</a> และ <a href="#" onclick="event.preventDefault()">นโยบายความเป็นส่วนตัว</a></span>
           </label>
-          <div id="tos-err" style="display:none; color:#b34a2a; font-size:12px; margin-top:-14px; margin-bottom:16px;">กรุณายอมรับข้อกำหนดเพื่อสมัครสมาชิก</div>
+          <div id="tos-err" style="display:none; color: var(--terracotta); font-size:12px; margin-top:-14px; margin-bottom:16px; font-family: 'Noto Serif Thai', serif;">กรุณายอมรับข้อกำหนดเพื่อสมัครสมาชิก</div>
 
           <button class="btn-cta" type="submit">
-            <span>สร้างบัญชี Create account</span>
-            <span class="kanji">縁</span>
+            <span>เข้าร่วม Bond Circle</span>
+            <span class="arr">縁</span>
           </button>
         </form>
 
         <div class="switch-link">
-          มีบัญชีแล้ว? <a href="login.html">เข้าสู่ระบบ →</a>
+          มีบัญชีแล้ว? <a href="login.html">เข้าสู่ระบบ</a>
         </div>
       </div>
 
-      <!-- Success view -->
+      <!-- Success -->
       <div id="success-view" style="display:none">
         <div class="success-card">
           <div class="seal">縁</div>
-          <h1 class="auth-h1" style="font-size: 32px; margin-bottom: 6px;">ยินดีต้อนรับสู่ Bond Circle</h1>
-          <div class="auth-jp-sub" style="margin-bottom: 22px;">縁の輪へようこそ</div>
-          <p style="color: var(--ink-soft); margin: 0 0 6px; font-size: 14px;">
-            สวัสดี <span id="hi-name" style="font-family: var(--serif); color: var(--ink);">friend</span>!
-            ส่วนลด 10% <span class="jp" style="color: var(--accent);">縁</span> ถูกส่งไปยังอีเมลของคุณแล้ว
+          <h1 class="auth-h1" style="font-size: 32px; margin-bottom: 6px;">ยินดีต้อนรับ<br/>สู่ Bond Circle</h1>
+          <p class="auth-sub" style="text-align: center; margin: 18px 0 24px;">
+            สวัสดี <span id="hi-name" style="font-family: var(--serif); font-style: italic; color: var(--accent);">friend</span>!
+            ส่วนลด 10% ถูกส่งไปยังอีเมลของคุณแล้ว
           </p>
-          <p style="color: var(--ink-soft); margin: 0 0 24px; font-size: 13px;">
-            พร้อมเปิดประตูร้านให้ <span id="hi-pet" style="color: var(--accent);">น้อง</span> ของคุณแล้ว
-          </p>
-          <button class="btn-cta" onclick="window.location.href='anibound.html'">
-            เริ่มช้อป Start shopping → <span class="kanji">店</span>
+          <button class="btn-cta" onclick="window.location.href='index.html'">
+            เริ่มสำรวจ Begin journey → <span class="arr">縁</span>
           </button>
         </div>
       </div>
     </div>
 
     <div class="auth-foot">
-      <span>© 2026 Anibound</span>
-      <span>ความเป็นส่วนตัว · ข้อกำหนด</span>
+      <span>© 2026 Anibound — Field Shop</span>
+      <span>Privacy · Terms</span>
     </div>
   </div>
 
   <!-- ───── VISUAL SIDE ───── -->
   <div class="auth-visual-side">
-    <div class="vis-inner">
-      <div class="vis-top">
-        <span>JOIN THE BOND · 縁を結ぶ</span>
-        <span class="jp">入会案内</span>
-      </div>
+    <div class="vis-top">
+      <span>NEW MEMBER · 縁を結ぶ</span>
+      <span class="accent">welcome</span>
     </div>
 
-    <div class="vis-kanji-tl" style="font-size: 100px;">入</div>
+    <!-- Landscape -->
+    <svg class="vis-landscape" viewBox="0 0 600 800" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <radialGradient id="vsun2" cx="50%" cy="32%" r="22%">
+          <stop offset="0%" stop-color="#e0b878" stop-opacity="0.55"/>
+          <stop offset="100%" stop-color="#e0b878" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <circle cx="300" cy="250" r="200" fill="url(#vsun2)"/>
+      <path d="M 0 600 L 0 470 L 60 410 L 160 460 L 270 390 L 380 450 L 490 400 L 600 450 L 600 600 Z" fill="#0d1f15" opacity="0.85"/>
+      <path d="M 0 600 L 0 530 L 120 490 L 240 530 L 360 480 L 480 520 L 600 490 L 600 600 Z" fill="#0a1812" opacity="0.95"/>
+      <path d="M 0 800 L 0 580 L 140 555 L 280 585 L 420 560 L 560 590 L 600 580 L 600 800 Z" fill="#05100a"/>
+      <!-- Stars -->
+      <circle cx="140" cy="160" r="1.5" fill="#ece4d2" opacity="0.8"/>
+      <circle cx="240" cy="110" r="1" fill="#ece4d2" opacity="0.6"/>
+      <circle cx="400" cy="130" r="1.2" fill="#ece4d2" opacity="0.7"/>
+      <circle cx="500" cy="90" r="1" fill="#ece4d2" opacity="0.5"/>
+      <circle cx="180" cy="220" r="0.8" fill="#ece4d2" opacity="0.6"/>
+      <circle cx="460" cy="180" r="1.2" fill="#ece4d2" opacity="0.7"/>
+    </svg>
 
-    <div class="vis-enso">
-      <svg viewBox="0 0 400 400" aria-hidden="true">
-        <defs>
-          <filter id="rough3">
-            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="11"/>
-            <feDisplacementMap in="SourceGraphic" scale="2.4"/>
-          </filter>
-        </defs>
-        <g filter="url(#rough3)">
-          <path d="M 200 40 A 160 160 0 1 0 340 280"
-                fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" opacity="0.92"/>
-          <path d="M 200 40 A 160 160 0 1 0 340 280"
-                fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round" opacity="0.6"
-                transform="translate(1.5, 1)"/>
-          <circle cx="340" cy="280" r="6" fill="currentColor"/>
-          <circle cx="350" cy="290" r="2.4" fill="currentColor"/>
-          <circle cx="333" cy="295" r="1.6" fill="currentColor"/>
-        </g>
-      </svg>
-    </div>
-
-    <div class="vis-portrait">
-      <image-slot id="signup-pet" shape="circle" placeholder="รูปน้องของคุณ (·ω·)"></image-slot>
-    </div>
-
-    <div class="vis-tag">
-      <span class="dot"></span>
-      NEW MEMBER · <span class="jp">縁</span>
-    </div>
-
-    <div class="vis-kanji-br" style="font-size: 96px;">迎</div>
+    <!-- Fireflies -->
+    <div class="vis-firefly" style="top: 20%; left: 28%; animation-delay: 0s;"></div>
+    <div class="vis-firefly" style="top: 38%; left: 76%; animation-delay: 1.2s;"></div>
+    <div class="vis-firefly" style="top: 30%; left: 50%; animation-delay: 2.1s;"></div>
 
     <!-- Perks -->
     <div class="vis-perks">
       <div class="title">
-        <span class="jp">会員特典 · Member perks</span>
+        <small>members' perks · 会員特典</small>
         สิ่งที่คุณจะได้รับ
       </div>
       <ul>
-        <li><span class="n">壱</span><div><strong style="color:var(--ink); font-family:var(--serif); font-weight:500;">ส่วนลด 10%</strong> สำหรับการสั่งครั้งแรก</div></li>
-        <li><span class="n">弐</span><div><strong style="color:var(--ink); font-family:var(--serif); font-weight:500;">บทความ Journal</strong> เฉพาะสมาชิก รายเดือน</div></li>
-        <li><span class="n">参</span><div><strong style="color:var(--ink); font-family:var(--serif); font-weight:500;">Early access</strong> สำหรับคอลเลกชันใหม่</div></li>
-        <li><span class="n">四</span><div><strong style="color:var(--ink); font-family:var(--serif); font-weight:500;">บัตรอวยพร</strong> วันเกิดน้อง พร้อมของขวัญ</div></li>
+        <li><span class="n">i.</span><div><strong>ส่วนลด 10%</strong> สำหรับการสั่งครั้งแรก</div></li>
+        <li><span class="n">ii.</span><div><strong>Field Journal</strong> รายเดือนจากบรรณาธิการ</div></li>
+        <li><span class="n">iii.</span><div><strong>Early access</strong> สำหรับคอลเลกชันใหม่</div></li>
+        <li><span class="n">iv.</span><div><strong>3% ของยอด</strong> สนับสนุนบ้านพักพิงสัตว์</div></li>
       </ul>
     </div>
 
-    <div class="vis-vertical" style="right: 30px; left: auto;">SINCE 2024 · 縁</div>
+    <div class="vis-vertical">SINCE 2024 · 縁</div>
   </div>
 
 </div>
@@ -254,17 +212,18 @@
   document.querySelectorAll("[data-social]").forEach(b => {
     b.addEventListener("click", () => {
       const name = b.dataset.social;
-      b.style.background = "var(--bg-deep)";
-      b.innerHTML = `<span style="color: var(--accent);">✓</span> ${name} (demo)`;
-      setTimeout(() => showSuccess({ name: "friend", pet: "น้อง" }), 700);
+      b.style.background = "rgba(212,165,116,0.15)";
+      b.style.borderColor = "var(--accent)";
+      b.innerHTML = `<span style="color: var(--accent);">✓</span> ${name}`;
+      setTimeout(() => showSuccess({ name: "friend" }), 700);
     });
   });
 
-  // Password strength
+  // Strength meter
   const pw = document.getElementById("password");
   const strengthBar = document.getElementById("strength");
   const strengthLbl = document.getElementById("strength-label");
-  const STRENGTH_LABELS = ["—", "อ่อน", "พอใช้", "ดี", "แข็งแกร่ง"];
+  const LABELS = ["—", "อ่อน · weak", "พอใช้ · fair", "ดี · good", "แข็งแกร่ง · strong"];
   pw.addEventListener("input", () => {
     const v = pw.value;
     let s = 0;
@@ -273,11 +232,10 @@
     if (/\d/.test(v)) s++;
     if (/[^A-Za-z0-9]/.test(v) || v.length >= 14) s++;
     strengthBar.className = "strength s" + s;
-    strengthLbl.textContent = "ความปลอดภัย: " + STRENGTH_LABELS[s];
+    strengthLbl.textContent = "strength · " + LABELS[s];
     pw.closest(".field").classList.remove("error");
   });
 
-  // Live clear errors
   ["name", "email"].forEach(id => {
     document.getElementById(id).addEventListener("input", function() {
       this.closest(".field").classList.remove("error");
@@ -287,7 +245,6 @@
     document.getElementById("tos-err").style.display = "none";
   });
 
-  // Validate + submit
   function validateEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
   const form = document.getElementById("signup-form");
   form.addEventListener("submit", (e) => {
@@ -296,27 +253,20 @@
     const name = document.getElementById("name");
     const email = document.getElementById("email");
     const tos = document.getElementById("tos");
-
     if (!name.value.trim()) { name.closest(".field").classList.add("error"); ok = false; }
     if (!validateEmail(email.value.trim())) { email.closest(".field").classList.add("error"); ok = false; }
     if (pw.value.length < 8) { pw.closest(".field").classList.add("error"); ok = false; }
     if (!tos.checked) { document.getElementById("tos-err").style.display = "block"; ok = false; }
     if (!ok) return;
-
-    const btn = form.querySelector(".btn-cta span:first-child");
-    btn.textContent = "กำลังสร้างบัญชี...";
-
-    setTimeout(() => showSuccess({
-      name: name.value.trim() || "friend",
-      pet: document.getElementById("petname").value.trim() || "น้อง"
-    }), 1000);
+    const btnSpan = form.querySelector(".btn-cta span:first-child");
+    btnSpan.textContent = "กำลังสร้างบัญชี...";
+    setTimeout(() => showSuccess({ name: name.value.trim() || "friend" }), 1000);
   });
 
   function showSuccess(data) {
     document.getElementById("signup-view").style.display = "none";
     document.getElementById("success-view").style.display = "block";
     document.getElementById("hi-name").textContent = data.name;
-    document.getElementById("hi-pet").textContent = data.pet;
   }
 </script>
 
