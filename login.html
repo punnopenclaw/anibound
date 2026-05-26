@@ -170,51 +170,115 @@
 
 </div>
 
-<script>
-  // Password reveal
-  document.querySelectorAll(".reveal").forEach(b => {
-    b.addEventListener("click", () => {
-      const t = document.getElementById(b.dataset.target);
-      if (t.type === "password") { t.type = "text"; b.textContent = "HIDE"; }
-      else { t.type = "password"; b.textContent = "SHOW"; }
-    });
-  });
+<script type="module">
+  import { supabase, signInWithGoogle, signInWithEmail, resetPassword, getSession } from './supabase-client.js'
 
-  // Social demo
-  document.querySelectorAll("[data-social]").forEach(b => {
-    b.addEventListener("click", () => {
-      const name = b.dataset.social;
-      b.style.background = "rgba(212,165,116,0.15)";
-      b.style.borderColor = "var(--accent)";
-      b.innerHTML = `<span style="color: var(--accent);">✓</span> ${name}`;
-      setTimeout(() => showSuccess(), 700);
-    });
-  });
+  // ── ถ้า login อยู่แล้ว → กลับหน้า index ──────────────────
+  getSession().then(session => {
+    if (session) window.location.href = 'index.html'
+  })
 
-  // Validate
-  function validateEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
-  const form = document.getElementById("login-form");
-  const emailField = document.getElementById("field-email");
-  const pwField = document.getElementById("field-password");
-  const emailIn = document.getElementById("email");
-  const pwIn = document.getElementById("password");
+  // ── Password reveal ───────────────────────────────────────
+  document.querySelectorAll('.reveal').forEach(b => {
+    b.addEventListener('click', () => {
+      const t = document.getElementById(b.dataset.target)
+      t.type = t.type === 'password' ? 'text' : 'password'
+      b.textContent = t.type === 'password' ? 'SHOW' : 'HIDE'
+    })
+  })
 
-  [emailIn, pwIn].forEach(i => i.addEventListener("input", () => i.closest(".field").classList.remove("error")));
+  // ── Google Sign-In ────────────────────────────────────────
+  document.querySelector('[data-social="Google"]').addEventListener('click', async function() {
+    this.disabled = true
+    this.innerHTML = `<span style="opacity:.5">กำลังเชื่อมต่อ Google…</span>`
+    try {
+      await signInWithGoogle()
+      // browser จะ redirect ไป Google → ไม่มีโค้ดหลังจากนี้
+    } catch (err) {
+      showFormError(err.message)
+      this.disabled = false
+      this.innerHTML = `<svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.5 12.27c0-.79-.07-1.54-.2-2.27H12v4.3h5.92c-.26 1.38-1.04 2.55-2.21 3.34v2.77h3.57c2.08-1.92 3.28-4.75 3.28-8.14z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.99.66-2.25 1.05-3.71 1.05-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.84 14.09A6.6 6.6 0 0 1 5.5 12c0-.73.12-1.44.34-2.09V7.07H2.18A11 11 0 0 0 1 12c0 1.78.43 3.46 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.07.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1A11 11 0 0 0 2.18 7.07l3.66 2.84C6.71 7.31 9.14 5.38 12 5.38z"/></svg>Continue with Google`
+    }
+  })
 
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    let ok = true;
-    if (!validateEmail(emailIn.value.trim())) { emailField.classList.add("error"); ok = false; }
-    if (pwIn.value.length < 6) { pwField.classList.add("error"); ok = false; }
-    if (!ok) return;
-    const btnSpan = form.querySelector(".btn-cta span:first-child");
-    btnSpan.textContent = "กำลังเข้าสู่ระบบ...";
-    setTimeout(showSuccess, 900);
-  });
+  // ── Email / Password Sign-In ──────────────────────────────
+  function validateEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) }
+  const form      = document.getElementById('login-form')
+  const emailField = document.getElementById('field-email')
+  const pwField   = document.getElementById('field-password')
+  const emailIn   = document.getElementById('email')
+  const pwIn      = document.getElementById('password')
 
+  ;[emailIn, pwIn].forEach(i => i.addEventListener('input', () => {
+    i.closest('.field').classList.remove('error')
+    clearFormError()
+  }))
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault()
+    let ok = true
+    if (!validateEmail(emailIn.value.trim())) { emailField.classList.add('error'); ok = false }
+    if (pwIn.value.length < 6) { pwField.classList.add('error'); ok = false }
+    if (!ok) return
+
+    const btn = form.querySelector('.btn-cta')
+    btn.disabled = true
+    btn.querySelector('span:first-child').textContent = 'กำลังเข้าสู่ระบบ…'
+
+    try {
+      await signInWithEmail(emailIn.value.trim(), pwIn.value)
+      showSuccess()
+    } catch (err) {
+      btn.disabled = false
+      btn.querySelector('span:first-child').textContent = 'เข้าสู่ระบบ Sign in'
+      const msg = err.message.includes('Invalid login credentials')
+        ? 'อีเมลหรือรหัสผ่านไม่ถูกต้อง'
+        : err.message.includes('Email not confirmed')
+        ? 'กรุณายืนยันอีเมลของคุณก่อนเข้าสู่ระบบ'
+        : err.message
+      showFormError(msg)
+    }
+  })
+
+  // ── Forgot password ───────────────────────────────────────
+  document.querySelector('.forgot').addEventListener('click', async (e) => {
+    e.preventDefault()
+    const email = emailIn.value.trim()
+    if (!validateEmail(email)) {
+      emailField.classList.add('error')
+      showFormError('กรุณากรอกอีเมลก่อน แล้วกดลืมรหัส')
+      return
+    }
+    try {
+      await resetPassword(email)
+      showFormError(`✓ ส่งลิงก์รีเซ็ตไปที่ ${email} แล้วครับ`, 'success')
+    } catch (err) {
+      showFormError(err.message)
+    }
+  })
+
+  // ── UI helpers ────────────────────────────────────────────
+  function showFormError(msg, type = 'error') {
+    let el = document.getElementById('form-error')
+    if (!el) {
+      el = document.createElement('div')
+      el.id = 'form-error'
+      el.style.cssText = 'border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:16px;line-height:1.5;'
+      form.prepend(el)
+    }
+    el.style.background = type === 'success' ? 'rgba(52,168,83,0.12)' : 'rgba(180,60,60,0.12)'
+    el.style.border      = type === 'success' ? '1px solid rgba(52,168,83,0.3)' : '1px solid rgba(180,60,60,0.3)'
+    el.style.color       = type === 'success' ? '#7ecf8e' : '#e89090'
+    el.textContent = msg
+  }
+  function clearFormError() {
+    const el = document.getElementById('form-error')
+    if (el) el.remove()
+  }
   function showSuccess() {
-    document.getElementById("login-view").style.display = "none";
-    document.getElementById("success-view").style.display = "block";
+    document.getElementById('login-view').style.display = 'none'
+    document.getElementById('success-view').style.display = 'block'
+    setTimeout(() => { window.location.href = 'index.html' }, 1600)
   }
 </script>
 

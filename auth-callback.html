@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>กำลังเข้าสู่ระบบ… · Anibound</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #07120d;
+    color: #ece4d2;
+    font-family: 'Inter', system-ui, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .seal {
+    font-size: 48px;
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+  .msg {
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    opacity: 0.6;
+  }
+  .error-box {
+    display: none;
+    background: rgba(180,60,60,0.15);
+    border: 1px solid rgba(180,60,60,0.4);
+    border-radius: 12px;
+    padding: 18px 24px;
+    max-width: 360px;
+    text-align: center;
+    color: #e89090;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .error-box a { color: #d4a574; }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50%       { opacity: 1;   transform: scale(1.08); }
+  }
+</style>
+</head>
+<body>
+
+<div class="seal">縁</div>
+<p class="msg" id="msg">กำลังยืนยันตัวตน…</p>
+<div class="error-box" id="error-box">
+  <strong>เกิดข้อผิดพลาด</strong><br/>
+  <span id="error-detail"></span><br/><br/>
+  <a href="login.html">← กลับไปหน้าเข้าสู่ระบบ</a>
+</div>
+
+<script type="module">
+  import { supabase, upsertProfile } from './supabase-client.js'
+
+  async function handleCallback() {
+    // Supabase resolves the hash/code automatically when getSession() is called
+    const { data: { session }, error } = await supabase.auth.getSession()
+
+    if (error) {
+      showError(error.message)
+      return
+    }
+
+    if (!session) {
+      // ยังไม่มี session — รอ onAuthStateChange (PKCE flow)
+      supabase.auth.onAuthStateChange(async (event, newSession) => {
+        if (event === 'SIGNED_IN' && newSession) {
+          await afterSignIn(newSession)
+        } else if (event === 'SIGNED_OUT' || (!newSession && event !== 'INITIAL_SESSION')) {
+          showError('ไม่พบ session กรุณาลองใหม่อีกครั้ง')
+        }
+      })
+      return
+    }
+
+    await afterSignIn(session)
+  }
+
+  async function afterSignIn(session) {
+    document.getElementById('msg').textContent = 'สร้างโปรไฟล์…'
+
+    try {
+      await upsertProfile(session.user)
+    } catch (e) {
+      console.warn('upsertProfile warning:', e.message)
+    }
+
+    document.getElementById('msg').textContent = 'ยินดีต้อนรับ!'
+
+    // กลับไปหน้าที่ค้างไว้ หรือ index
+    const returnTo = sessionStorage.getItem('anibound_return') || 'index.html'
+    sessionStorage.removeItem('anibound_return')
+    setTimeout(() => { window.location.href = returnTo }, 600)
+  }
+
+  function showError(msg) {
+    document.getElementById('msg').style.display = 'none'
+    const box = document.getElementById('error-box')
+    document.getElementById('error-detail').textContent = msg
+    box.style.display = 'block'
+  }
+
+  handleCallback()
+</script>
+
+</body>
+</html>
