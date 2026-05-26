@@ -93,8 +93,8 @@
 
     document.getElementById('msg').textContent = 'ยินดีต้อนรับ!'
 
-    // กลับไปหน้าที่ค้างไว้ หรือ index
-    const returnTo = sessionStorage.getItem('anibound_return') || 'index.html'
+    // กลับไปหน้าที่ค้างไว้ หรือ homepage
+    const returnTo = sessionStorage.getItem('anibound_return') || 'https://anibound.vercel.app/'
     sessionStorage.removeItem('anibound_return')
     setTimeout(() => { window.location.href = returnTo }, 600)
   }

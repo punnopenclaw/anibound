@@ -308,6 +308,8 @@
     if (needsConfirm) {
       const sub = sv.querySelector('.auth-sub')
       if (sub) sub.innerHTML = `กรุณาตรวจสอบอีเมลของคุณ แล้วกดลิงก์ยืนยัน จากนั้นกลับมา <a href="login.html" style="color:var(--accent)">เข้าสู่ระบบ</a>`
+    } else {
+      setTimeout(() => { window.location.href = 'https://anibound.vercel.app/' }, 1600)
     }
   }
 </script>
