@@ -800,8 +800,8 @@
             <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 2h2l2 8h6l2-6H5"/><circle cx="7" cy="13" r="1"/><circle cx="11" cy="13" r="1"/></svg>
             ออเดอร์ทั้งหมด
           </div>
-          <div class="value">128</div>
-          <div class="delta">↑ +12 จากเดือนที่แล้ว</div>
+          <div class="value" id="statOrders">0</div>
+          <div class="delta" id="statOrdersSub">— ยังไม่มีข้อมูล</div>
           <div class="mini-chart">
             <div class="mini-bar" style="height:40%"></div>
             <div class="mini-bar" style="height:60%"></div>
@@ -818,8 +818,8 @@
             <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1v14M4 4h7a3 3 0 010 6H5a3 3 0 000 6h7"/></svg>
             ยอดขาย (เดือนนี้)
           </div>
-          <div class="value">฿84,290</div>
-          <div class="delta">↑ +18% จากเดือนที่แล้ว</div>
+          <div class="value" id="statRevenue">฿0</div>
+          <div class="delta" id="statRevenueSub">— ยังไม่มีข้อมูล</div>
           <div class="mini-chart">
             <div class="mini-bar" style="height:30%; background:var(--green)"></div>
             <div class="mini-bar" style="height:50%; background:var(--green)"></div>
@@ -835,8 +835,8 @@
             <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3 2.7-5 6-5s6 2 6 5"/></svg>
             สมาชิก
           </div>
-          <div class="value">342</div>
-          <div class="delta">↑ +24 ใหม่เดือนนี้</div>
+          <div class="value" id="statMembers">0</div>
+          <div class="delta" id="statMembersSub">— ยังไม่มีข้อมูล</div>
           <div class="mini-chart">
             <div class="mini-bar" style="height:50%; background:var(--blue)"></div>
             <div class="mini-bar" style="height:60%; background:var(--blue)"></div>
@@ -852,8 +852,8 @@
             <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4l6-2 6 2v8l-6 2-6-2V4z"/></svg>
             สินค้าทั้งหมด
           </div>
-          <div class="value">24</div>
-          <div class="delta">↑ +6 ชิ้นใหม่ล่าสุด</div>
+          <div class="value" id="statProducts">0</div>
+          <div class="delta" id="statProductsSub">— ยังไม่มีข้อมูล</div>
           <div class="mini-chart">
             <div class="mini-bar" style="height:60%; background:var(--orange)"></div>
             <div class="mini-bar" style="height:60%; background:var(--orange)"></div>
@@ -1171,64 +1171,10 @@
 </div>
 
 <script>
-// ─── Data ───
-const orders = [
-  { id:'ANB-0128', name:'วิภาวี สุขใจ',    items:'Dawn Bed × 1',         price:2490, status:'pending',  date:'26 พ.ค. 69' },
-  { id:'ANB-0127', name:'ธนัช โกมลรัตน์',  items:'Salmon Recipe × 2',    price:1780, status:'pending',  date:'26 พ.ค. 69' },
-  { id:'ANB-0126', name:'พิมพ์ นวลอนงค์',  items:'Field Collar × 1, Trail Tee × 1', price:2180, status:'pending', date:'25 พ.ค. 69' },
-  { id:'ANB-0125', name:'สุทธิพร เมืองรัก', items:'Float Toy × 3',        price:1140, status:'pending',  date:'25 พ.ค. 69' },
-  { id:'ANB-0124', name:'กรกช บุญยมาลี',   items:'Meadow Mat × 1',       price:1890, status:'pending',  date:'24 พ.ค. 69' },
-  { id:'ANB-0123', name:'ณัชชา วงค์สมบัติ', items:'Expedition Bowl × 2', price:1180, status:'confirm',  date:'24 พ.ค. 69' },
-  { id:'ANB-0122', name:'เบญจมาศ รุ่งเรือง',items:'Rope Toy × 1',        price:350,  status:'shipped',  date:'23 พ.ค. 69' },
-  { id:'ANB-0121', name:'ปัทมา ชัยฤทธิ์',  items:'Tideline Lead × 1',   price:790,  status:'shipped',  date:'22 พ.ค. 69' },
-  { id:'ANB-0120', name:'ชานน สุดาพร',     items:'Bark Treat × 4',       price:640,  status:'done',     date:'20 พ.ค. 69' },
-  { id:'ANB-0119', name:'รัตนา เกื้อกูล',   items:'Reed Harness × 1',    price:1190, status:'done',     date:'19 พ.ค. 69' },
-  { id:'ANB-0118', name:'วรัญญา ประเสริฐ',  items:'Wave Collar × 1',     price:990,  status:'done',     date:'18 พ.ค. 69' },
-  { id:'ANB-0117', name:'ปิยะดา หนูสอน',   items:'Tuna Stew × 2',       price:1440, status:'cancel',   date:'17 พ.ค. 69' },
-  { id:'ANB-0116', name:'สมชาย กองแก้ว',   items:'Heron Wand × 2',      price:440,  status:'done',     date:'15 พ.ค. 69' },
-];
-
-const members = [
-  { name:'วิภาวี สุขใจ',     email:'wiphawee@gmail.com',   joined:'12 ม.ค. 69', orders:4,  spent:8240,  status:'active' },
-  { name:'ธนัช โกมลรัตน์',  email:'thanat@gmail.com',      joined:'18 ม.ค. 69', orders:2,  spent:3560,  status:'active' },
-  { name:'พิมพ์ นวลอนงค์',  email:'pim@hotmail.com',        joined:'2 ก.พ. 69',  orders:7,  spent:14890, status:'active' },
-  { name:'สุทธิพร เมืองรัก', email:'suttiporn@gmail.com',  joined:'14 ก.พ. 69', orders:1,  spent:1140,  status:'active' },
-  { name:'กรกช บุญยมาลี',   email:'korakot@gmail.com',     joined:'1 มี.ค. 69',  orders:3,  spent:5670,  status:'active' },
-  { name:'ณัชชา วงค์สมบัติ', email:'natcha@gmail.com',     joined:'8 มี.ค. 69',  orders:6,  spent:9820,  status:'active' },
-  { name:'เบญจมาศ รุ่งเรือง', email:'benjamas@gmail.com',  joined:'22 มี.ค. 69', orders:2,  spent:1890,  status:'inactive'},
-  { name:'ปัทมา ชัยฤทธิ์',  email:'patama@gmail.com',      joined:'5 เม.ย. 69',  orders:1,  spent:790,   status:'active' },
-  { name:'ชานน สุดาพร',     email:'chanon@gmail.com',       joined:'10 เม.ย. 69', orders:5,  spent:7240,  status:'active' },
-  { name:'รัตนา เกื้อกูล',   email:'rattana@gmail.com',    joined:'14 เม.ย. 69', orders:2,  spent:2380,  status:'active' },
-  { name:'วรัญญา ประเสริฐ',  email:'waranya@gmail.com',    joined:'20 เม.ย. 69', orders:3,  spent:4120,  status:'inactive'},
-  { name:'ปิยะดา หนูสอน',   email:'piyada@gmail.com',      joined:'1 พ.ค. 69',   orders:1,  spent:0,     status:'inactive'},
-];
-
-const products = [
-  { id:'j1', name:'Field Collar',      th:'ปลอกคอนักสำรวจ',    cat:'ของใช้',  scene:'jungle',  price:1290, tag:'Earth Edition' },
-  { id:'j2', name:'Expedition Bowl',   th:'ชามเดินทาง',         cat:'ของใช้',  scene:'jungle',  price:590,  tag:'Stoneware' },
-  { id:'j3', name:'Trail Tee',         th:'เสื้อยืดเจ้าของ',    cat:'เสื้อ',   scene:'jungle',  price:890,  tag:"Owner's Wear" },
-  { id:'j4', name:'Bark Treat',        th:'ขนมสุนัขธรรมชาติ',   cat:'อาหาร',  scene:'jungle',  price:160,  tag:'Natural Snack' },
-  { id:'j5', name:'Trail Bandana',     th:'ผ้าพันคอนักสำรวจ',   cat:'เสื้อ',   scene:'jungle',  price:290,  tag:"Owner's Wear" },
-  { id:'j6', name:'Rope Toy',          th:'ของเล่นเชือกป่า',     cat:'ของเล่น', scene:'jungle',  price:350,  tag:'Jungle Play' },
-  { id:'s1', name:'Salmon Recipe',     th:'อาหารแมว ซัลม่อน',   cat:'อาหาร',  scene:'sea',     price:890,  tag:'Cat food' },
-  { id:'s2', name:'Tideline Lead',     th:'สายจูงลายคลื่น',      cat:'ของใช้',  scene:'sea',     price:790,  tag:'Marine canvas' },
-  { id:'s3', name:'Float Toy',         th:'ของเล่นลอยน้ำ',       cat:'ของเล่น', scene:'sea',     price:380,  tag:'Buoyant' },
-  { id:'s4', name:'Tuna Stew',         th:'อาหารสุนัข ทูน่า',   cat:'อาหาร',  scene:'sea',     price:720,  tag:'Dog food' },
-  { id:'s5', name:'Wave Collar',       th:'ปลอกคอลายคลื่น',      cat:'ของใช้',  scene:'sea',     price:990,  tag:'Marine Edition' },
-  { id:'s6', name:'Drift Toy',         th:'ของเล่นลากน้ำ',        cat:'ของเล่น', scene:'sea',     price:280,  tag:'Ocean Play' },
-  { id:'w1', name:'Dawn Bed',          th:'ที่นอนสีหมอก',         cat:'ของใช้',  scene:'wetland', price:2490, tag:'Cloud cotton' },
-  { id:'w2', name:'Marsh Treats',      th:'ขนมรสเป็ดป่า',         cat:'อาหาร',  scene:'wetland', price:180,  tag:'Slow-baked' },
-  { id:'w3', name:'Reed Harness',      th:'สายอกสีฟาง',           cat:'ของใช้',  scene:'wetland', price:1190, tag:'Adjustable' },
-  { id:'w4', name:'Duck Grain',        th:'อาหารสุนัข รสเป็ด',   cat:'อาหาร',  scene:'wetland', price:390,  tag:'Dog food' },
-  { id:'w5', name:'Mist Poncho',       th:'เสื้อกันฝนบาง',         cat:'เสื้อ',   scene:'wetland', price:680,  tag:"Owner's Wear" },
-  { id:'w6', name:'Heron Wand',        th:'ของเล่นไม้ปลาย',        cat:'ของเล่น', scene:'wetland', price:220,  tag:'Wetland Play' },
-  { id:'m1', name:'Chase Toy',         th:'ของเล่นชี้ส์',          cat:'ของเล่น', scene:'meadow',  price:420,  tag:'Felted wool' },
-  { id:'m2', name:'Meadow Mat',        th:'ที่นอนผ้าฝ้าย',          cat:'ของใช้',  scene:'meadow',  price:1890, tag:'Cotton weave' },
-  { id:'m3', name:'Honeyed Snack',     th:'ขนมรสน้ำผึ้ง',           cat:'อาหาร',  scene:'meadow',  price:220,  tag:'Limited' },
-  { id:'m4', name:'Clover Kibble',     th:'อาหารแมว รสหญ้าทุ่ง',  cat:'อาหาร',  scene:'meadow',  price:450,  tag:'Cat food' },
-  { id:'m5', name:'Grass Lead',        th:'สายจูงลายทุ่ง',           cat:'ของใช้',  scene:'meadow',  price:890,  tag:'Meadow canvas' },
-  { id:'m6', name:'Sun Collar',        th:'ปลอกคอสีทอง',             cat:'ของใช้',  scene:'meadow',  price:990,  tag:'Meadow Edition' },
-];
+// ─── Data (โหลดจาก Supabase) ───
+let orders   = [];
+let members  = [];
+let products = [];
 
 // ─── State ───
 let orderFilter   = 'all';
@@ -1539,8 +1485,165 @@ document.getElementById('topDate').textContent = new Date().toLocaleDateString('
   weekday:'short', year:'numeric', month:'short', day:'numeric'
 });
 
-// ─── Init ───
+// ─── Empty state helper ───
+function emptyRow(cols, msg) {
+  return `<tr><td colspan="${cols}" style="text-align:center;padding:48px 0;color:var(--ink-soft);font-style:italic;font-size:13px">${msg}</td></tr>`;
+}
+function emptyGrid(msg) {
+  return `<div style="grid-column:1/-1;text-align:center;padding:64px 0;color:var(--ink-soft);font-style:italic;font-size:13px">${msg}</div>`;
+}
+
+// ─── Override renders to show empty state ───
+const _origFilterOrders = filterOrders;
+filterOrders = function() {
+  const q = document.getElementById('orderSearch').value.toLowerCase();
+  const filtered = orders.filter(o => {
+    const matchStatus = orderFilter === 'all' || o.status === orderFilter;
+    const matchQ = (o.id||'').toLowerCase().includes(q) || (o.name||'').includes(q);
+    return matchStatus && matchQ;
+  });
+  document.getElementById('orderTbody').innerHTML = filtered.length
+    ? filtered.map(o => orderRow(o)).join('')
+    : emptyRow(7, 'ยังไม่มีออเดอร์');
+  document.getElementById('orderCount').textContent = filtered.length + ' รายการ';
+  document.getElementById('orderPagInfo').textContent = filtered.length
+    ? `แสดง 1–${Math.min(10, filtered.length)} จาก ${filtered.length} รายการ`
+    : '— ไม่มีข้อมูล —';
+};
+
+const _origFilterMembers = filterMembers;
+filterMembers = function() {
+  const q = document.getElementById('memberSearch').value.toLowerCase();
+  const filtered = members.filter(m => {
+    const matchStatus = memberFilterVal === 'all' || m.status === memberFilterVal;
+    const matchQ = (m.name||'').includes(q) || (m.email||'').includes(q);
+    return matchStatus && matchQ;
+  });
+  document.getElementById('memberTbody').innerHTML = filtered.length
+    ? filtered.map(m => `
+    <tr>
+      <td>
+        <div class="mem-info">
+          <div class="mem-avatar">${(m.avatar_url
+            ? `<img src="${m.avatar_url}" style="width:32px;height:32px;border-radius:50%;object-fit:cover">`
+            : (m.display_name||m.name||'?')[0])}</div>
+          <div>
+            <div class="mem-name">${m.display_name||m.name||'—'}</div>
+            <div class="mem-email">${m.email||'—'}</div>
+          </div>
+        </div>
+      </td>
+      <td style="color:var(--ink-soft);font-size:12px">${m.joined||m.created_at?.slice(0,10)||'—'}</td>
+      <td style="font-family:var(--serif)">${m.orders||0}</td>
+      <td style="font-family:var(--serif)">฿${(m.spent||0).toLocaleString()}</td>
+      <td><span class="badge badge-${m.status||'active'}">${(m.status||'active') === 'active' ? 'ใช้งานอยู่' : 'ไม่ใช้งาน'}</span></td>
+      <td>
+        <div class="action-row">
+          <button class="act-btn" title="ดู"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><line x1="8" y1="5" x2="8" y2="8"/><circle cx="8" cy="11" r="0.5" fill="currentColor"/></svg></button>
+        </div>
+      </td>
+    </tr>`).join('')
+    : emptyRow(6, 'ยังไม่มีสมาชิก');
+  document.getElementById('memberCount').textContent = filtered.length + ' คน';
+  document.getElementById('memberPagInfo').textContent = filtered.length
+    ? `แสดง 1–${Math.min(10, filtered.length)} จาก ${filtered.length} คน`
+    : '— ไม่มีข้อมูล —';
+};
+
+// ─── Date ───
+document.getElementById('topDate').textContent = new Date().toLocaleDateString('th-TH', {
+  weekday:'short', year:'numeric', month:'short', day:'numeric'
+});
+
+// ─── Init (เปล่า) ───
 renderDashOrders();
+</script>
+
+<!-- ─── Supabase: โหลดข้อมูลจริง ─── -->
+<script type="module">
+import { supabase } from './supabase-client.js'
+
+async function loadAll() {
+  await Promise.all([loadOrders(), loadMembers(), loadProducts()])
+  updateDashboard()
+}
+
+async function loadOrders() {
+  const { data, error } = await supabase
+    .from('orders')
+    .select(`id, status, total, created_at, shipping_name,
+             order_items(product_name, quantity)`)
+    .order('created_at', { ascending: false })
+  if (error) { console.warn('orders:', error.message); return; }
+  orders = (data || []).map(o => ({
+    id:     'ANB-' + o.id.slice(0,6).toUpperCase(),
+    _uuid:  o.id,
+    name:   o.shipping_name || '—',
+    items:  (o.order_items||[]).map(i => `${i.product_name} × ${i.quantity}`).join(', ') || '—',
+    price:  o.total,
+    status: o.status,
+    date:   new Date(o.created_at).toLocaleDateString('th-TH', {day:'numeric',month:'short',year:'2-digit'})
+  }))
+  renderOrders()
+  renderDashOrders()
+}
+
+async function loadMembers() {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('id, display_name, email, avatar_url, created_at, is_admin')
+    .order('created_at', { ascending: false })
+  if (error) { console.warn('members:', error.message); return; }
+  members = (data || []).map(p => ({
+    name:       p.display_name || p.email?.split('@')[0] || '—',
+    display_name: p.display_name,
+    email:      p.email,
+    avatar_url: p.avatar_url,
+    joined:     new Date(p.created_at).toLocaleDateString('th-TH', {day:'numeric',month:'short',year:'2-digit'}),
+    created_at: p.created_at,
+    orders:     0,
+    spent:      0,
+    status:     'active',
+  }))
+  renderMembers()
+}
+
+async function loadProducts() {
+  const { data, error } = await supabase
+    .from('products')
+    .select('*')
+    .order('created_at', { ascending: false })
+  if (error) { console.warn('products:', error.message); return; }
+  products = (data || []).map(p => ({
+    id:    p.id,
+    name:  p.name,
+    th:    p.name_th || '',
+    cat:   p.category,
+    scene: p.biome || '',
+    price: p.price,
+    tag:   p.description || '',
+    stock: p.stock,
+  }))
+  renderProducts()
+}
+
+function updateDashboard() {
+  // Stat cards
+  document.getElementById('statOrders').textContent   = orders.length
+  document.getElementById('statMembers').textContent  = members.length
+  document.getElementById('statProducts').textContent = products.length
+
+  const revenue = orders.filter(o => o.status !== 'cancel').reduce((s, o) => s + (o.price || 0), 0)
+  document.getElementById('statRevenue').textContent = '฿' + revenue.toLocaleString()
+
+  const pending = orders.filter(o => o.status === 'pending').length
+  document.getElementById('statOrdersSub').textContent   = pending ? `${pending} รายการรอดำเนินการ` : '— ยังไม่มีออเดอร์'
+  document.getElementById('statMembersSub').textContent  = members.length ? `${members.length} คนในระบบ` : '— ยังไม่มีสมาชิก'
+  document.getElementById('statProductsSub').textContent = products.length ? `${products.length} ชิ้นในฐานข้อมูล` : '— ยังไม่มีสินค้า'
+  document.getElementById('statRevenueSub').textContent  = revenue ? 'รายได้รวม (ไม่รวมยกเลิก)' : '— ยังไม่มีข้อมูล'
+}
+
+loadAll()
 </script>
 
 </body>
