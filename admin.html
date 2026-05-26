@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Anibound Admin — หลังบ้าน</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Inter:wght@300;400;500;600&family=Noto+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #080c0a;
+    --bg2:      #0f1410;
+    --bg3:      #161c14;
+    --surface:  #1a221a;
+    --border:   rgba(255,255,255,0.08);
+    --border2:  rgba(255,255,255,0.14);
+    --ink:      #e2ddd4;
+    --ink-soft: #8a8880;
+    --gold:     #c8a97a;
+    --gold-dim: rgba(200,169,122,0.15);
+    --green:    #5a9e6e;
+    --green-dim:rgba(90,158,110,0.15);
+    --red:      #c0574a;
+    --red-dim:  rgba(192,87,74,0.15);
+    --blue:     #4a7ec0;
+    --blue-dim: rgba(74,126,192,0.15);
+    --orange:   #c07a3a;
+    --orange-dim:rgba(192,122,58,0.15);
+    --serif:    "Shippori Mincho", serif;
+    --sans:     "Inter", "Noto Sans Thai", system-ui, sans-serif;
+    --sidebar:  220px;
+    --radius:   6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  html, body { height: 100%; }
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 13.5px;
+    line-height: 1.6;
+    display: flex;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: var(--sidebar);
+    min-height: 100vh;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 100;
+  }
+  .sidebar-logo {
+    padding: 22px 24px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .sidebar-logo .glyph {
+    font-family: var(--serif);
+    font-size: 22px;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .sidebar-logo .name {
+    font-family: var(--serif);
+    font-size: 15px;
+    letter-spacing: 0.08em;
+  }
+  .sidebar-logo .badge {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    display: block;
+    margin-top: 2px;
+  }
+  .sidebar-nav {
+    flex: 1;
+    padding: 12px 0;
+  }
+  .nav-section {
+    padding: 8px 16px 4px;
+    font-size: 9.5px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    opacity: 0.6;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 20px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    border-radius: 0;
+    transition: all 0.18s;
+    border-left: 2px solid transparent;
+    font-size: 13px;
+    font-weight: 400;
+    user-select: none;
+  }
+  .nav-item:hover { background: var(--gold-dim); color: var(--ink); }
+  .nav-item.active {
+    color: var(--gold);
+    background: var(--gold-dim);
+    border-left-color: var(--gold);
+    font-weight: 500;
+  }
+  .nav-item .icon { width: 16px; opacity: 0.7; flex-shrink: 0; }
+  .nav-item.active .icon { opacity: 1; }
+  .nav-item .badge-count {
+    margin-left: auto;
+    background: var(--gold);
+    color: #0a0e0c;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 999px;
+  }
+  .sidebar-foot {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .sidebar-foot .avatar {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--gold-dim);
+    border: 1px solid var(--gold);
+    display: grid; place-items: center;
+    font-size: 12px;
+    color: var(--gold);
+    flex-shrink: 0;
+  }
+  .sidebar-foot .info { min-width: 0; flex: 1; }
+  .sidebar-foot .info .uname { font-size: 12.5px; font-weight: 500; }
+  .sidebar-foot .info .role  { font-size: 10.5px; color: var(--ink-soft); }
+  .sidebar-foot .logout-btn {
+    background: none; border: none;
+    color: var(--ink-soft); cursor: pointer;
+    padding: 4px; border-radius: 4px;
+    transition: color 0.18s;
+    display: grid; place-items: center;
+  }
+  .sidebar-foot .logout-btn:hover { color: var(--red); }
+
+  /* ── Main ── */
+  .main {
+    margin-left: var(--sidebar);
+    flex: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .topbar {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .topbar .page-title {
+    font-family: var(--serif);
+    font-size: 17px;
+    color: var(--ink);
+  }
+  .topbar .breadcrumb {
+    font-size: 12px;
+    color: var(--ink-soft);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .topbar .breadcrumb span { opacity: 0.45; }
+  .topbar-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .topbar-right .date {
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+  }
+  .notif-btn {
+    background: none; border: none;
+    color: var(--ink-soft); cursor: pointer;
+    width: 32px; height: 32px;
+    border-radius: 6px;
+    display: grid; place-items: center;
+    transition: all 0.18s;
+    position: relative;
+  }
+  .notif-btn:hover { background: var(--border); color: var(--ink); }
+  .notif-btn .dot {
+    position: absolute;
+    top: 6px; right: 6px;
+    width: 6px; height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+  }
+
+  .content {
+    padding: 28px 32px;
+    flex: 1;
+  }
+
+  /* ── Stat cards ── */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--c, var(--gold));
+  }
+  .stat-card.green { --c: var(--green); }
+  .stat-card.blue  { --c: var(--blue); }
+  .stat-card.orange{ --c: var(--orange); }
+  .stat-card .label {
+    font-size: 10.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .stat-card .label svg { opacity: 0.6; }
+  .stat-card .value {
+    font-family: var(--serif);
+    font-size: 28px;
+    color: var(--ink);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-card .delta {
+    font-size: 11px;
+    color: var(--green);
+    display: flex; align-items: center; gap: 4px;
+  }
+  .stat-card .delta.down { color: var(--red); }
+  .stat-card .bg-glyph {
+    position: absolute;
+    right: -4px; bottom: -8px;
+    font-family: var(--serif);
+    font-size: 52px;
+    color: rgba(255,255,255,0.03);
+    user-select: none;
+    line-height: 1;
+  }
+
+  /* ── Section header ── */
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .section-head h2 {
+    font-family: var(--serif);
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--ink);
+  }
+  .section-head .count {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--gold-dim);
+    color: var(--gold);
+    letter-spacing: 0.06em;
+  }
+  .section-head-right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+
+  /* ── Controls bar ── */
+  .ctrl-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 7px 12px;
+    flex: 1;
+    min-width: 200px;
+    max-width: 320px;
+  }
+  .search-box svg { color: var(--ink-soft); flex-shrink: 0; }
+  .search-box input {
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--ink);
+    font-size: 13px;
+    font-family: inherit;
+    width: 100%;
+  }
+  .search-box input::placeholder { color: var(--ink-soft); opacity: 0.6; }
+
+  .filter-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 3px;
+  }
+  .filter-tab {
+    padding: 5px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: var(--ink-soft);
+    font-family: inherit;
+    transition: all 0.18s;
+    white-space: nowrap;
+  }
+  .filter-tab:hover { color: var(--ink); }
+  .filter-tab.active { background: var(--gold); color: #080c0a; font-weight: 500; }
+
+  .btn {
+    padding: 7px 16px;
+    border-radius: var(--radius);
+    font-size: 12.5px;
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    transition: all 0.18s;
+    display: flex; align-items: center; gap: 6px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .btn-primary { background: var(--gold); color: #080c0a; }
+  .btn-primary:hover { opacity: 0.88; }
+  .btn-ghost {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    color: var(--ink);
+  }
+  .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+  .btn-danger { background: var(--red-dim); border: 1px solid var(--red); color: var(--red); }
+  .btn-danger:hover { background: var(--red); color: #fff; }
+  .btn-sm { padding: 4px 10px; font-size: 11.5px; }
+
+  /* ── Table ── */
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  thead th {
+    padding: 11px 16px;
+    text-align: left;
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 500;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  thead th:first-child { padding-left: 20px; }
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(255,255,255,0.025); }
+  tbody td {
+    padding: 13px 16px;
+    font-size: 13px;
+    vertical-align: middle;
+  }
+  tbody td:first-child { padding-left: 20px; }
+
+  /* ── Status badges ── */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .badge::before {
+    content: "";
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+  }
+  .badge-pending  { background: var(--orange-dim); color: var(--orange); }
+  .badge-confirm  { background: var(--blue-dim);   color: var(--blue); }
+  .badge-shipped  { background: var(--gold-dim);   color: var(--gold); }
+  .badge-done     { background: var(--green-dim);  color: var(--green); }
+  .badge-cancel   { background: var(--red-dim);    color: var(--red); }
+  .badge-active   { background: var(--green-dim);  color: var(--green); }
+  .badge-inactive { background: var(--border);     color: var(--ink-soft); }
+
+  /* ── Action buttons ── */
+  .action-row { display: flex; gap: 6px; }
+  .act-btn {
+    width: 28px; height: 28px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: none;
+    color: var(--ink-soft);
+    cursor: pointer;
+    display: grid; place-items: center;
+    transition: all 0.18s;
+  }
+  .act-btn:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+  .act-btn.del:hover { border-color: var(--red); color: var(--red); background: var(--red-dim); }
+
+  /* ── Product grid ── */
+  .prod-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+    margin-top: 4px;
+  }
+  .prod-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.18s;
+  }
+  .prod-card:hover { border-color: var(--border2); }
+  .prod-img {
+    height: 100px;
+    background: var(--bg3);
+    display: grid; place-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .prod-img svg { color: var(--gold); opacity: 0.6; }
+  .prod-body { padding: 12px 14px; }
+  .prod-tag {
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-family: var(--serif);
+    font-style: italic;
+    margin-bottom: 4px;
+  }
+  .prod-name { font-size: 14px; font-weight: 500; margin-bottom: 2px; }
+  .prod-th { font-size: 11px; color: var(--ink-soft); margin-bottom: 8px; }
+  .prod-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px;
+    border-top: 1px solid var(--border);
+  }
+  .prod-price { font-family: var(--serif); font-size: 16px; color: var(--gold); }
+  .prod-scene {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    border: 1px solid var(--border2);
+    color: var(--ink-soft);
+  }
+
+  /* ── Member avatar ── */
+  .mem-avatar {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    display: grid; place-items: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gold);
+    flex-shrink: 0;
+  }
+  .mem-info { display: flex; align-items: center; gap: 10px; }
+  .mem-name { font-size: 13px; font-weight: 500; }
+  .mem-email { font-size: 11.5px; color: var(--ink-soft); }
+
+  /* ── View sections (tab routing) ── */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ── Pagination ── */
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+    border-radius: 0 0 var(--radius) var(--radius);
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+  .page-btns { display: flex; gap: 4px; }
+  .page-btn {
+    width: 28px; height: 28px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: none;
+    color: var(--ink-soft);
+    cursor: pointer;
+    font-size: 12px;
+    font-family: inherit;
+    display: grid; place-items: center;
+    transition: all 0.18s;
+  }
+  .page-btn:hover, .page-btn.active { background: var(--gold); border-color: var(--gold); color: #080c0a; }
+
+  /* ── Modal ── */
+  .modal-bg {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    display: none;
+    place-items: center;
+  }
+  .modal-bg.open { display: grid; }
+  .modal {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    width: min(520px, 92vw);
+    overflow: hidden;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+  }
+  .modal-head {
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .modal-head h3 { font-family: var(--serif); font-size: 16px; font-weight: 400; }
+  .modal-close {
+    background: none; border: none; color: var(--ink-soft);
+    cursor: pointer; padding: 4px; border-radius: 4px;
+    display: grid; place-items: center; transition: color 0.18s;
+  }
+  .modal-close:hover { color: var(--red); }
+  .modal-body { padding: 20px 22px; }
+  .modal-foot {
+    padding: 14px 22px;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: flex-end; gap: 10px;
+  }
+
+  /* ── Form fields ── */
+  .form-row { margin-bottom: 14px; }
+  .form-label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 8px 12px;
+    color: var(--ink);
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.18s;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--gold);
+  }
+  .form-select { appearance: none; cursor: pointer; }
+  .form-textarea { resize: vertical; min-height: 80px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* ── Order detail panel ── */
+  .order-detail {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .detail-box {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+  }
+  .detail-box .dl { font-size: 10.5px; color: var(--ink-soft); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 3px; }
+  .detail-box .dv { font-size: 13.5px; }
+
+  /* ── Quick stats in topbar ── */
+  .topbar-stats {
+    display: flex;
+    gap: 20px;
+    margin-left: 24px;
+  }
+  .topbar-stat {
+    text-align: center;
+  }
+  .topbar-stat .n { font-family: var(--serif); font-size: 18px; color: var(--gold); line-height: 1; }
+  .topbar-stat .l { font-size: 9.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-soft); margin-top: 2px; }
+
+  /* ── Mini chart bar ── */
+  .mini-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 28px;
+    margin-top: 8px;
+  }
+  .mini-bar {
+    flex: 1;
+    background: var(--gold);
+    opacity: 0.35;
+    border-radius: 2px 2px 0 0;
+    transition: opacity 0.2s;
+  }
+  .mini-bar:last-child { opacity: 0.9; }
+  .mini-bar:nth-last-child(2) { opacity: 0.65; }
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--green);
+    color: var(--green);
+    padding: 10px 18px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    display: flex; align-items: center; gap: 8px;
+    transform: translateY(60px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 300;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+</style>
+</head>
+<body>
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <span class="glyph">縁</span>
+    <div>
+      <div class="name">ANIBOUND</div>
+      <span class="badge">Admin Panel</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section">หลัก</div>
+    <div class="nav-item active" data-view="dashboard">
+      <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="1" y="1" width="6" height="6" rx="1"/>
+        <rect x="9" y="1" width="6" height="6" rx="1"/>
+        <rect x="1" y="9" width="6" height="6" rx="1"/>
+        <rect x="9" y="9" width="6" height="6" rx="1"/>
+      </svg>
+      Dashboard
+    </div>
+
+    <div class="nav-section">จัดการ</div>
+    <div class="nav-item" data-view="orders">
+      <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M2 2h2l2 8h6l2-6H5"/>
+        <circle cx="7" cy="13" r="1"/>
+        <circle cx="11" cy="13" r="1"/>
+      </svg>
+      ออเดอร์
+      <span class="badge-count">5</span>
+    </div>
+    <div class="nav-item" data-view="members">
+      <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="8" cy="5" r="3"/>
+        <path d="M2 14c0-3 2.7-5 6-5s6 2 6 5"/>
+      </svg>
+      สมาชิก
+    </div>
+    <div class="nav-item" data-view="products">
+      <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M2 4l6-2 6 2v8l-6 2-6-2V4z"/>
+        <path d="M8 2v12M2 4l6 2 6-2"/>
+      </svg>
+      สินค้า
+    </div>
+
+    <div class="nav-section">ระบบ</div>
+    <div class="nav-item" data-view="settings">
+      <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="8" cy="8" r="2.5"/>
+        <path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.2 3.2l1.4 1.4M11.4 11.4l1.4 1.4M11.4 3.2l-1.4 1.4M3.2 11.4l1.4 1.4" stroke-linecap="round"/>
+      </svg>
+      ตั้งค่า
+    </div>
+  </nav>
+
+  <div class="sidebar-foot">
+    <div class="avatar">A</div>
+    <div class="info">
+      <div class="uname">Admin</div>
+      <div class="role">Super Admin</div>
+    </div>
+    <button class="logout-btn" title="ออกจากระบบ">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M6 2H3a1 1 0 00-1 1v10a1 1 0 001 1h3M10 11l3-3-3-3M13 8H6" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+</aside>
+
+<!-- ═══ MAIN ═══ -->
+<div class="main">
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <div>
+      <div class="page-title" id="pageTitle">Dashboard</div>
+      <div class="breadcrumb">
+        <span>Anibound</span>
+        <span>›</span>
+        <span id="breadcrumb">ภาพรวม</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="date" id="topDate"></div>
+      <button class="notif-btn" title="การแจ้งเตือน">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M8 1a5 5 0 015 5v3l1.5 2H1.5L3 9V6a5 5 0 015-5z"/>
+          <path d="M6.5 13.5a1.5 1.5 0 003 0"/>
+        </svg>
+        <span class="dot"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+
+    <!-- ── VIEW: DASHBOARD ── -->
+    <div class="view active" id="view-dashboard">
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="label">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 2h2l2 8h6l2-6H5"/><circle cx="7" cy="13" r="1"/><circle cx="11" cy="13" r="1"/></svg>
+            ออเดอร์ทั้งหมด
+          </div>
+          <div class="value">128</div>
+          <div class="delta">↑ +12 จากเดือนที่แล้ว</div>
+          <div class="mini-chart">
+            <div class="mini-bar" style="height:40%"></div>
+            <div class="mini-bar" style="height:60%"></div>
+            <div class="mini-bar" style="height:45%"></div>
+            <div class="mini-bar" style="height:80%"></div>
+            <div class="mini-bar" style="height:55%"></div>
+            <div class="mini-bar" style="height:70%"></div>
+            <div class="mini-bar" style="height:90%"></div>
+          </div>
+          <div class="bg-glyph">縁</div>
+        </div>
+        <div class="stat-card green">
+          <div class="label">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1v14M4 4h7a3 3 0 010 6H5a3 3 0 000 6h7"/></svg>
+            ยอดขาย (เดือนนี้)
+          </div>
+          <div class="value">฿84,290</div>
+          <div class="delta">↑ +18% จากเดือนที่แล้ว</div>
+          <div class="mini-chart">
+            <div class="mini-bar" style="height:30%; background:var(--green)"></div>
+            <div class="mini-bar" style="height:50%; background:var(--green)"></div>
+            <div class="mini-bar" style="height:65%; background:var(--green)"></div>
+            <div class="mini-bar" style="height:55%; background:var(--green)"></div>
+            <div class="mini-bar" style="height:75%; background:var(--green)"></div>
+            <div class="mini-bar" style="height:85%; background:var(--green)"></div>
+            <div class="mini-bar" style="height:100%; background:var(--green)"></div>
+          </div>
+        </div>
+        <div class="stat-card blue">
+          <div class="label">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3 2.7-5 6-5s6 2 6 5"/></svg>
+            สมาชิก
+          </div>
+          <div class="value">342</div>
+          <div class="delta">↑ +24 ใหม่เดือนนี้</div>
+          <div class="mini-chart">
+            <div class="mini-bar" style="height:50%; background:var(--blue)"></div>
+            <div class="mini-bar" style="height:60%; background:var(--blue)"></div>
+            <div class="mini-bar" style="height:55%; background:var(--blue)"></div>
+            <div class="mini-bar" style="height:70%; background:var(--blue)"></div>
+            <div class="mini-bar" style="height:65%; background:var(--blue)"></div>
+            <div class="mini-bar" style="height:80%; background:var(--blue)"></div>
+            <div class="mini-bar" style="height:95%; background:var(--blue)"></div>
+          </div>
+        </div>
+        <div class="stat-card orange">
+          <div class="label">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4l6-2 6 2v8l-6 2-6-2V4z"/></svg>
+            สินค้าทั้งหมด
+          </div>
+          <div class="value">24</div>
+          <div class="delta">↑ +6 ชิ้นใหม่ล่าสุด</div>
+          <div class="mini-chart">
+            <div class="mini-bar" style="height:60%; background:var(--orange)"></div>
+            <div class="mini-bar" style="height:60%; background:var(--orange)"></div>
+            <div class="mini-bar" style="height:60%; background:var(--orange)"></div>
+            <div class="mini-bar" style="height:75%; background:var(--orange)"></div>
+            <div class="mini-bar" style="height:75%; background:var(--orange)"></div>
+            <div class="mini-bar" style="height:75%; background:var(--orange)"></div>
+            <div class="mini-bar" style="height:100%; background:var(--orange)"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent orders -->
+      <div class="section-head">
+        <h2>ออเดอร์ล่าสุด</h2>
+        <span class="count">5 รายการ รอดำเนินการ</span>
+        <div class="section-head-right">
+          <button class="btn btn-ghost btn-sm" onclick="switchView('orders')">ดูทั้งหมด →</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>ลูกค้า</th>
+              <th>สินค้า</th>
+              <th>ยอด</th>
+              <th>สถานะ</th>
+              <th>วันที่</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="dashOrderTbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── VIEW: ORDERS ── -->
+    <div class="view" id="view-orders">
+      <div class="section-head">
+        <h2>ออเดอร์ทั้งหมด</h2>
+        <span class="count" id="orderCount">0 รายการ</span>
+      </div>
+      <div class="ctrl-bar">
+        <div class="search-box">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg>
+          <input type="text" placeholder="ค้นหา Order ID หรือชื่อลูกค้า…" id="orderSearch" oninput="filterOrders()">
+        </div>
+        <div class="filter-tabs" id="orderStatusTabs">
+          <button class="filter-tab active" data-status="all" onclick="setOrderFilter(this,'all')">ทั้งหมด</button>
+          <button class="filter-tab" data-status="pending"  onclick="setOrderFilter(this,'pending')">รอยืนยัน</button>
+          <button class="filter-tab" data-status="confirm"  onclick="setOrderFilter(this,'confirm')">ยืนยันแล้ว</button>
+          <button class="filter-tab" data-status="shipped"  onclick="setOrderFilter(this,'shipped')">จัดส่งแล้ว</button>
+          <button class="filter-tab" data-status="done"     onclick="setOrderFilter(this,'done')">สำเร็จ</button>
+          <button class="filter-tab" data-status="cancel"   onclick="setOrderFilter(this,'cancel')">ยกเลิก</button>
+        </div>
+        <button class="btn btn-ghost btn-sm" style="margin-left:auto">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M4 8h8M6 12h4"/></svg>
+          Export
+        </button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>ลูกค้า</th>
+              <th>สินค้า</th>
+              <th>ยอดรวม</th>
+              <th>สถานะ</th>
+              <th>วันที่สั่ง</th>
+              <th>จัดการ</th>
+            </tr>
+          </thead>
+          <tbody id="orderTbody"></tbody>
+        </table>
+        <div class="pagination">
+          <span id="orderPagInfo">แสดง 1–10 จาก 0 รายการ</span>
+          <div class="page-btns">
+            <button class="page-btn">‹</button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">›</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── VIEW: MEMBERS ── -->
+    <div class="view" id="view-members">
+      <div class="section-head">
+        <h2>สมาชิกทั้งหมด</h2>
+        <span class="count" id="memberCount">0 คน</span>
+        <div class="section-head-right">
+          <button class="btn btn-primary btn-sm">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v12M2 8h12" stroke-linecap="round"/></svg>
+            เพิ่มสมาชิก
+          </button>
+        </div>
+      </div>
+      <div class="ctrl-bar">
+        <div class="search-box">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg>
+          <input type="text" placeholder="ค้นหาชื่อหรืออีเมล…" id="memberSearch" oninput="filterMembers()">
+        </div>
+        <div class="filter-tabs">
+          <button class="filter-tab active" onclick="setMemberFilter(this,'all')">ทั้งหมด</button>
+          <button class="filter-tab" onclick="setMemberFilter(this,'active')">ใช้งานอยู่</button>
+          <button class="filter-tab" onclick="setMemberFilter(this,'inactive')">ไม่ใช้งาน</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>สมาชิก</th>
+              <th>วันที่สมัคร</th>
+              <th>ออเดอร์</th>
+              <th>ยอดซื้อรวม</th>
+              <th>สถานะ</th>
+              <th>จัดการ</th>
+            </tr>
+          </thead>
+          <tbody id="memberTbody"></tbody>
+        </table>
+        <div class="pagination">
+          <span id="memberPagInfo">แสดง 1–10 จาก 0 คน</span>
+          <div class="page-btns">
+            <button class="page-btn">‹</button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">›</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── VIEW: PRODUCTS ── -->
+    <div class="view" id="view-products">
+      <div class="section-head">
+        <h2>สินค้าทั้งหมด</h2>
+        <span class="count" id="productCount">0 ชิ้น</span>
+        <div class="section-head-right">
+          <button class="btn btn-primary btn-sm" onclick="openProductModal()">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v12M2 8h12" stroke-linecap="round"/></svg>
+            เพิ่มสินค้า
+          </button>
+        </div>
+      </div>
+      <div class="ctrl-bar">
+        <div class="search-box">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg>
+          <input type="text" placeholder="ค้นหาชื่อสินค้า…" id="productSearch" oninput="filterProducts()">
+        </div>
+        <div class="filter-tabs" id="prodCatTabs">
+          <button class="filter-tab active" onclick="setProdFilter(this,'all')">ทั้งหมด</button>
+          <button class="filter-tab" onclick="setProdFilter(this,'อาหาร')">อาหาร</button>
+          <button class="filter-tab" onclick="setProdFilter(this,'ของใช้')">ของใช้</button>
+          <button class="filter-tab" onclick="setProdFilter(this,'ของเล่น')">ของเล่น</button>
+          <button class="filter-tab" onclick="setProdFilter(this,'เสื้อ')">เสื้อ</button>
+        </div>
+        <div style="display:flex;gap:6px;margin-left:auto">
+          <button class="btn btn-ghost btn-sm" id="viewGrid" onclick="setProdView('grid')" style="background:var(--gold-dim);border-color:var(--gold);color:var(--gold)">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+          </button>
+          <button class="btn btn-ghost btn-sm" id="viewList" onclick="setProdView('list')">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+          </button>
+        </div>
+      </div>
+      <div id="productGrid" class="prod-grid"></div>
+      <div id="productTable" class="table-wrap" style="display:none">
+        <table>
+          <thead>
+            <tr>
+              <th>สินค้า</th>
+              <th>หมวด</th>
+              <th>Biome</th>
+              <th>ราคา</th>
+              <th>จัดการ</th>
+            </tr>
+          </thead>
+          <tbody id="productTbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── VIEW: SETTINGS ── -->
+    <div class="view" id="view-settings">
+      <div class="section-head"><h2>ตั้งค่าระบบ</h2></div>
+      <div class="table-wrap" style="padding:28px 24px;max-width:480px">
+        <div class="form-row">
+          <label class="form-label">ชื่อร้าน</label>
+          <input class="form-input" value="Anibound — 縁">
+        </div>
+        <div class="form-row">
+          <label class="form-label">อีเมลแจ้งเตือน</label>
+          <input class="form-input" value="admin@anibound.co">
+        </div>
+        <div class="form-row">
+          <label class="form-label">ค่าส่งขั้นต่ำฟรี (บาท)</label>
+          <input class="form-input" type="number" value="890">
+        </div>
+        <div class="form-row">
+          <label class="form-label">ส่วนลดสมาชิกใหม่ (%)</label>
+          <input class="form-input" type="number" value="10">
+        </div>
+        <div class="form-row">
+          <label class="form-label">โหมด Maintenance</label>
+          <select class="form-select">
+            <option>ปิด (ไซต์ทำงานปกติ)</option>
+            <option>เปิด (แสดงหน้า Coming Soon)</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" onclick="showToast('บันทึกการตั้งค่าเรียบร้อย ✓')">บันทึกการตั้งค่า</button>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- ═══ ORDER DETAIL MODAL ═══ -->
+<div class="modal-bg" id="orderModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modalOrderTitle">ออเดอร์ #ANB-0001</h3>
+      <button class="modal-close" onclick="closeModal('orderModal')">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="order-detail" id="orderDetailBody"></div>
+      <label class="form-label">เปลี่ยนสถานะ</label>
+      <select class="form-select" id="orderStatusSelect">
+        <option value="pending">รอยืนยัน</option>
+        <option value="confirm">ยืนยันแล้ว</option>
+        <option value="shipped">จัดส่งแล้ว</option>
+        <option value="done">สำเร็จ</option>
+        <option value="cancel">ยกเลิก</option>
+      </select>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('orderModal')">ปิด</button>
+      <button class="btn btn-primary" onclick="saveOrderStatus()">บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PRODUCT MODAL ═══ -->
+<div class="modal-bg" id="productModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="productModalTitle">เพิ่มสินค้าใหม่</h3>
+      <button class="modal-close" onclick="closeModal('productModal')">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="prodEditId">
+      <div class="form-row">
+        <label class="form-label">ชื่อสินค้า (EN)</label>
+        <input class="form-input" id="pName" placeholder="Field Collar">
+      </div>
+      <div class="form-row">
+        <label class="form-label">ชื่อภาษาไทย</label>
+        <input class="form-input" id="pTh" placeholder="ปลอกคอนักสำรวจ">
+      </div>
+      <div class="form-grid">
+        <div class="form-row">
+          <label class="form-label">หมวดหมู่</label>
+          <select class="form-select" id="pCat">
+            <option>อาหาร</option>
+            <option>ของใช้</option>
+            <option>ของเล่น</option>
+            <option>เสื้อ</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Biome</label>
+          <select class="form-select" id="pScene">
+            <option value="jungle">ป่า (Jungle)</option>
+            <option value="sea">ทะเล (Ocean)</option>
+            <option value="wetland">บึง (Wetland)</option>
+            <option value="meadow">ทุ่ง (Meadow)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="form-row">
+          <label class="form-label">ราคา (฿)</label>
+          <input class="form-input" id="pPrice" type="number" placeholder="0">
+        </div>
+        <div class="form-row">
+          <label class="form-label">Tag / Edition</label>
+          <input class="form-input" id="pTag" placeholder="Earth Edition">
+        </div>
+      </div>
+      <div class="form-row">
+        <label class="form-label">รายละเอียด</label>
+        <textarea class="form-textarea" id="pDesc" placeholder="รายละเอียดสินค้า…"></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('productModal')">ยกเลิก</button>
+      <button class="btn btn-primary" onclick="saveProduct()">บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TOAST ═══ -->
+<div class="toast" id="toast">
+  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8l4 4 8-8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+// ─── Data ───
+const orders = [
+  { id:'ANB-0128', name:'วิภาวี สุขใจ',    items:'Dawn Bed × 1',         price:2490, status:'pending',  date:'26 พ.ค. 69' },
+  { id:'ANB-0127', name:'ธนัช โกมลรัตน์',  items:'Salmon Recipe × 2',    price:1780, status:'pending',  date:'26 พ.ค. 69' },
+  { id:'ANB-0126', name:'พิมพ์ นวลอนงค์',  items:'Field Collar × 1, Trail Tee × 1', price:2180, status:'pending', date:'25 พ.ค. 69' },
+  { id:'ANB-0125', name:'สุทธิพร เมืองรัก', items:'Float Toy × 3',        price:1140, status:'pending',  date:'25 พ.ค. 69' },
+  { id:'ANB-0124', name:'กรกช บุญยมาลี',   items:'Meadow Mat × 1',       price:1890, status:'pending',  date:'24 พ.ค. 69' },
+  { id:'ANB-0123', name:'ณัชชา วงค์สมบัติ', items:'Expedition Bowl × 2', price:1180, status:'confirm',  date:'24 พ.ค. 69' },
+  { id:'ANB-0122', name:'เบญจมาศ รุ่งเรือง',items:'Rope Toy × 1',        price:350,  status:'shipped',  date:'23 พ.ค. 69' },
+  { id:'ANB-0121', name:'ปัทมา ชัยฤทธิ์',  items:'Tideline Lead × 1',   price:790,  status:'shipped',  date:'22 พ.ค. 69' },
+  { id:'ANB-0120', name:'ชานน สุดาพร',     items:'Bark Treat × 4',       price:640,  status:'done',     date:'20 พ.ค. 69' },
+  { id:'ANB-0119', name:'รัตนา เกื้อกูล',   items:'Reed Harness × 1',    price:1190, status:'done',     date:'19 พ.ค. 69' },
+  { id:'ANB-0118', name:'วรัญญา ประเสริฐ',  items:'Wave Collar × 1',     price:990,  status:'done',     date:'18 พ.ค. 69' },
+  { id:'ANB-0117', name:'ปิยะดา หนูสอน',   items:'Tuna Stew × 2',       price:1440, status:'cancel',   date:'17 พ.ค. 69' },
+  { id:'ANB-0116', name:'สมชาย กองแก้ว',   items:'Heron Wand × 2',      price:440,  status:'done',     date:'15 พ.ค. 69' },
+];
+
+const members = [
+  { name:'วิภาวี สุขใจ',     email:'wiphawee@gmail.com',   joined:'12 ม.ค. 69', orders:4,  spent:8240,  status:'active' },
+  { name:'ธนัช โกมลรัตน์',  email:'thanat@gmail.com',      joined:'18 ม.ค. 69', orders:2,  spent:3560,  status:'active' },
+  { name:'พิมพ์ นวลอนงค์',  email:'pim@hotmail.com',        joined:'2 ก.พ. 69',  orders:7,  spent:14890, status:'active' },
+  { name:'สุทธิพร เมืองรัก', email:'suttiporn@gmail.com',  joined:'14 ก.พ. 69', orders:1,  spent:1140,  status:'active' },
+  { name:'กรกช บุญยมาลี',   email:'korakot@gmail.com',     joined:'1 มี.ค. 69',  orders:3,  spent:5670,  status:'active' },
+  { name:'ณัชชา วงค์สมบัติ', email:'natcha@gmail.com',     joined:'8 มี.ค. 69',  orders:6,  spent:9820,  status:'active' },
+  { name:'เบญจมาศ รุ่งเรือง', email:'benjamas@gmail.com',  joined:'22 มี.ค. 69', orders:2,  spent:1890,  status:'inactive'},
+  { name:'ปัทมา ชัยฤทธิ์',  email:'patama@gmail.com',      joined:'5 เม.ย. 69',  orders:1,  spent:790,   status:'active' },
+  { name:'ชานน สุดาพร',     email:'chanon@gmail.com',       joined:'10 เม.ย. 69', orders:5,  spent:7240,  status:'active' },
+  { name:'รัตนา เกื้อกูล',   email:'rattana@gmail.com',    joined:'14 เม.ย. 69', orders:2,  spent:2380,  status:'active' },
+  { name:'วรัญญา ประเสริฐ',  email:'waranya@gmail.com',    joined:'20 เม.ย. 69', orders:3,  spent:4120,  status:'inactive'},
+  { name:'ปิยะดา หนูสอน',   email:'piyada@gmail.com',      joined:'1 พ.ค. 69',   orders:1,  spent:0,     status:'inactive'},
+];
+
+const products = [
+  { id:'j1', name:'Field Collar',      th:'ปลอกคอนักสำรวจ',    cat:'ของใช้',  scene:'jungle',  price:1290, tag:'Earth Edition' },
+  { id:'j2', name:'Expedition Bowl',   th:'ชามเดินทาง',         cat:'ของใช้',  scene:'jungle',  price:590,  tag:'Stoneware' },
+  { id:'j3', name:'Trail Tee',         th:'เสื้อยืดเจ้าของ',    cat:'เสื้อ',   scene:'jungle',  price:890,  tag:"Owner's Wear" },
+  { id:'j4', name:'Bark Treat',        th:'ขนมสุนัขธรรมชาติ',   cat:'อาหาร',  scene:'jungle',  price:160,  tag:'Natural Snack' },
+  { id:'j5', name:'Trail Bandana',     th:'ผ้าพันคอนักสำรวจ',   cat:'เสื้อ',   scene:'jungle',  price:290,  tag:"Owner's Wear" },
+  { id:'j6', name:'Rope Toy',          th:'ของเล่นเชือกป่า',     cat:'ของเล่น', scene:'jungle',  price:350,  tag:'Jungle Play' },
+  { id:'s1', name:'Salmon Recipe',     th:'อาหารแมว ซัลม่อน',   cat:'อาหาร',  scene:'sea',     price:890,  tag:'Cat food' },
+  { id:'s2', name:'Tideline Lead',     th:'สายจูงลายคลื่น',      cat:'ของใช้',  scene:'sea',     price:790,  tag:'Marine canvas' },
+  { id:'s3', name:'Float Toy',         th:'ของเล่นลอยน้ำ',       cat:'ของเล่น', scene:'sea',     price:380,  tag:'Buoyant' },
+  { id:'s4', name:'Tuna Stew',         th:'อาหารสุนัข ทูน่า',   cat:'อาหาร',  scene:'sea',     price:720,  tag:'Dog food' },
+  { id:'s5', name:'Wave Collar',       th:'ปลอกคอลายคลื่น',      cat:'ของใช้',  scene:'sea',     price:990,  tag:'Marine Edition' },
+  { id:'s6', name:'Drift Toy',         th:'ของเล่นลากน้ำ',        cat:'ของเล่น', scene:'sea',     price:280,  tag:'Ocean Play' },
+  { id:'w1', name:'Dawn Bed',          th:'ที่นอนสีหมอก',         cat:'ของใช้',  scene:'wetland', price:2490, tag:'Cloud cotton' },
+  { id:'w2', name:'Marsh Treats',      th:'ขนมรสเป็ดป่า',         cat:'อาหาร',  scene:'wetland', price:180,  tag:'Slow-baked' },
+  { id:'w3', name:'Reed Harness',      th:'สายอกสีฟาง',           cat:'ของใช้',  scene:'wetland', price:1190, tag:'Adjustable' },
+  { id:'w4', name:'Duck Grain',        th:'อาหารสุนัข รสเป็ด',   cat:'อาหาร',  scene:'wetland', price:390,  tag:'Dog food' },
+  { id:'w5', name:'Mist Poncho',       th:'เสื้อกันฝนบาง',         cat:'เสื้อ',   scene:'wetland', price:680,  tag:"Owner's Wear" },
+  { id:'w6', name:'Heron Wand',        th:'ของเล่นไม้ปลาย',        cat:'ของเล่น', scene:'wetland', price:220,  tag:'Wetland Play' },
+  { id:'m1', name:'Chase Toy',         th:'ของเล่นชี้ส์',          cat:'ของเล่น', scene:'meadow',  price:420,  tag:'Felted wool' },
+  { id:'m2', name:'Meadow Mat',        th:'ที่นอนผ้าฝ้าย',          cat:'ของใช้',  scene:'meadow',  price:1890, tag:'Cotton weave' },
+  { id:'m3', name:'Honeyed Snack',     th:'ขนมรสน้ำผึ้ง',           cat:'อาหาร',  scene:'meadow',  price:220,  tag:'Limited' },
+  { id:'m4', name:'Clover Kibble',     th:'อาหารแมว รสหญ้าทุ่ง',  cat:'อาหาร',  scene:'meadow',  price:450,  tag:'Cat food' },
+  { id:'m5', name:'Grass Lead',        th:'สายจูงลายทุ่ง',           cat:'ของใช้',  scene:'meadow',  price:890,  tag:'Meadow canvas' },
+  { id:'m6', name:'Sun Collar',        th:'ปลอกคอสีทอง',             cat:'ของใช้',  scene:'meadow',  price:990,  tag:'Meadow Edition' },
+];
+
+// ─── State ───
+let orderFilter   = 'all';
+let memberFilter  = 'all';
+let prodFilter    = 'all';
+let prodView      = 'grid';
+let currentOrderId = null;
+
+// ─── Status helpers ───
+const statusLabel = { pending:'รอยืนยัน', confirm:'ยืนยันแล้ว', shipped:'จัดส่งแล้ว', done:'สำเร็จ', cancel:'ยกเลิก' };
+const statusBadge = { pending:'badge-pending', confirm:'badge-confirm', shipped:'badge-shipped', done:'badge-done', cancel:'badge-cancel' };
+const sceneLabel  = { jungle:'ป่า', sea:'ทะเล', wetland:'บึง', meadow:'ทุ่ง' };
+
+// ─── Navigation ───
+function switchView(name) {
+  document.querySelectorAll('.nav-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.view === name);
+  });
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  const titles = { dashboard:'Dashboard', orders:'ออเดอร์', members:'สมาชิก', products:'สินค้า', settings:'ตั้งค่า' };
+  const crumbs = { dashboard:'ภาพรวม', orders:'จัดการออเดอร์', members:'จัดการสมาชิก', products:'จัดการสินค้า', settings:'ตั้งค่าระบบ' };
+  document.getElementById('pageTitle').textContent  = titles[name]  || name;
+  document.getElementById('breadcrumb').textContent = crumbs[name]  || name;
+  if (name === 'orders')   renderOrders();
+  if (name === 'members')  renderMembers();
+  if (name === 'products') renderProducts();
+}
+document.querySelectorAll('.nav-item[data-view]').forEach(el => {
+  el.addEventListener('click', () => switchView(el.dataset.view));
+});
+
+// ─── Order row builder ───
+function orderRow(o, showAllCols = true) {
+  return `<tr>
+    <td><span style="font-family:var(--serif);color:var(--gold);font-size:12px">${o.id}</span></td>
+    <td>${o.name}</td>
+    <td style="color:var(--ink-soft);font-size:12.5px;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${o.items}</td>
+    <td style="font-family:var(--serif)">฿${o.price.toLocaleString()}</td>
+    <td><span class="badge ${statusBadge[o.status]}">${statusLabel[o.status]}</span></td>
+    <td style="color:var(--ink-soft);font-size:12px">${o.date}</td>
+    <td>
+      <div class="action-row">
+        <button class="act-btn" title="ดูรายละเอียด" onclick="openOrderModal('${o.id}')">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><line x1="8" y1="5" x2="8" y2="8"/><circle cx="8" cy="11" r="0.5" fill="currentColor"/></svg>
+        </button>
+        <button class="act-btn" title="แก้ไข" onclick="openOrderModal('${o.id}')">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 2l3 3-9 9H2v-3L11 2z"/></svg>
+        </button>
+      </div>
+    </td>
+  </tr>`;
+}
+
+// ─── Dashboard orders ───
+function renderDashOrders() {
+  const pending = orders.filter(o => o.status === 'pending').slice(0,5);
+  document.getElementById('dashOrderTbody').innerHTML = pending.map(o => orderRow(o)).join('');
+}
+
+// ─── Orders view ───
+function setOrderFilter(btn, val) {
+  document.querySelectorAll('#orderStatusTabs .filter-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  orderFilter = val;
+  filterOrders();
+}
+function filterOrders() {
+  const q = document.getElementById('orderSearch').value.toLowerCase();
+  const filtered = orders.filter(o => {
+    const matchStatus = orderFilter === 'all' || o.status === orderFilter;
+    const matchQ = o.id.toLowerCase().includes(q) || o.name.includes(q);
+    return matchStatus && matchQ;
+  });
+  document.getElementById('orderTbody').innerHTML = filtered.map(o => orderRow(o)).join('');
+  document.getElementById('orderCount').textContent = filtered.length + ' รายการ';
+  document.getElementById('orderPagInfo').textContent = `แสดง 1–${Math.min(10,filtered.length)} จาก ${filtered.length} รายการ`;
+}
+function renderOrders() { filterOrders(); }
+
+// ─── Members view ───
+let memberFilterVal = 'all';
+function setMemberFilter(btn, val) {
+  btn.closest('.filter-tabs').querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  memberFilterVal = val;
+  filterMembers();
+}
+function filterMembers() {
+  const q = document.getElementById('memberSearch').value.toLowerCase();
+  const filtered = members.filter(m => {
+    const matchStatus = memberFilterVal === 'all' || m.status === memberFilterVal;
+    const matchQ = m.name.includes(q) || m.email.includes(q);
+    return matchStatus && matchQ;
+  });
+  document.getElementById('memberTbody').innerHTML = filtered.map(m => `
+    <tr>
+      <td>
+        <div class="mem-info">
+          <div class="mem-avatar">${m.name[0]}</div>
+          <div>
+            <div class="mem-name">${m.name}</div>
+            <div class="mem-email">${m.email}</div>
+          </div>
+        </div>
+      </td>
+      <td style="color:var(--ink-soft);font-size:12px">${m.joined}</td>
+      <td style="font-family:var(--serif)">${m.orders}</td>
+      <td style="font-family:var(--serif)">฿${m.spent.toLocaleString()}</td>
+      <td><span class="badge badge-${m.status}">${m.status === 'active' ? 'ใช้งานอยู่' : 'ไม่ใช้งาน'}</span></td>
+      <td>
+        <div class="action-row">
+          <button class="act-btn" title="ดู">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><line x1="8" y1="5" x2="8" y2="8"/><circle cx="8" cy="11" r="0.5" fill="currentColor"/></svg>
+          </button>
+          <button class="act-btn del" title="ระงับ" onclick="showToast('ระงับสมาชิก ${m.name} แล้ว')">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><line x1="5" y1="8" x2="11" y2="8"/></svg>
+          </button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+  document.getElementById('memberCount').textContent = filtered.length + ' คน';
+  document.getElementById('memberPagInfo').textContent = `แสดง 1–${Math.min(10,filtered.length)} จาก ${filtered.length} คน`;
+}
+function renderMembers() { filterMembers(); }
+
+// ─── Products view ───
+function setProdFilter(btn, val) {
+  document.querySelectorAll('#prodCatTabs .filter-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  prodFilter = val;
+  filterProducts();
+}
+function filterProducts() {
+  const q = document.getElementById('productSearch').value.toLowerCase();
+  const filtered = products.filter(p => {
+    const matchCat = prodFilter === 'all' || p.cat === prodFilter;
+    const matchQ = p.name.toLowerCase().includes(q) || p.th.includes(q);
+    return matchCat && matchQ;
+  });
+  document.getElementById('productCount').textContent = filtered.length + ' ชิ้น';
+
+  // Grid view
+  document.getElementById('productGrid').innerHTML = filtered.map(p => `
+    <div class="prod-card">
+      <div class="prod-img">
+        <svg width="36" height="36" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M2 4l6-2 6 2v8l-6 2-6-2V4z" transform="translate(12,8) scale(1)"/>
+        </svg>
+      </div>
+      <div class="prod-body">
+        <div class="prod-tag">${p.tag}</div>
+        <div class="prod-name">${p.name}</div>
+        <div class="prod-th">${p.th}</div>
+      </div>
+      <div class="prod-footer">
+        <div class="prod-price">฿${p.price.toLocaleString()}</div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span class="prod-scene">${sceneLabel[p.scene]}</span>
+          <button class="act-btn" title="แก้ไข" onclick="openProductModal('${p.id}')">
+            <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 2l3 3-9 9H2v-3L11 2z"/></svg>
+          </button>
+          <button class="act-btn del" title="ลบ" onclick="deleteProduct('${p.id}')">
+            <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M5 4V2h6v2M6 7v6M10 7v6M3 4l1 10h8l1-10"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  // List view
+  document.getElementById('productTbody').innerHTML = filtered.map(p => `
+    <tr>
+      <td>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:28px;height:28px;background:var(--bg3);border:1px solid var(--border);border-radius:4px;display:grid;place-items:center">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="var(--gold)" stroke-width="1.2"><path d="M2 4l6-2 6 2v8l-6 2-6-2V4z"/></svg>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:500">${p.name}</div>
+            <div style="font-size:11px;color:var(--ink-soft)">${p.th}</div>
+          </div>
+        </div>
+      </td>
+      <td><span class="badge badge-confirm" style="background:var(--gold-dim);color:var(--gold)">${p.cat}</span></td>
+      <td style="color:var(--ink-soft);font-size:12px">${sceneLabel[p.scene]}</td>
+      <td style="font-family:var(--serif)">฿${p.price.toLocaleString()}</td>
+      <td>
+        <div class="action-row">
+          <button class="act-btn" onclick="openProductModal('${p.id}')">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 2l3 3-9 9H2v-3L11 2z"/></svg>
+          </button>
+          <button class="act-btn del" onclick="deleteProduct('${p.id}')">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M5 4V2h6v2M6 7v6M10 7v6M3 4l1 10h8l1-10"/></svg>
+          </button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+function setProdView(v) {
+  prodView = v;
+  document.getElementById('productGrid').style.display  = v === 'grid' ? 'grid' : 'none';
+  document.getElementById('productTable').style.display = v === 'list' ? 'block' : 'none';
+  const gBtn = document.getElementById('viewGrid');
+  const lBtn = document.getElementById('viewList');
+  [gBtn, lBtn].forEach(b => { b.style.background=''; b.style.borderColor=''; b.style.color=''; });
+  const active = v === 'grid' ? gBtn : lBtn;
+  active.style.background    = 'var(--gold-dim)';
+  active.style.borderColor   = 'var(--gold)';
+  active.style.color         = 'var(--gold)';
+}
+function renderProducts() { filterProducts(); }
+
+// ─── Order modal ───
+function openOrderModal(id) {
+  const o = orders.find(x => x.id === id);
+  if (!o) return;
+  currentOrderId = id;
+  document.getElementById('modalOrderTitle').textContent = 'ออเดอร์ ' + o.id;
+  document.getElementById('orderDetailBody').innerHTML = `
+    <div class="detail-box"><div class="dl">ลูกค้า</div><div class="dv">${o.name}</div></div>
+    <div class="detail-box"><div class="dl">วันที่สั่ง</div><div class="dv">${o.date}</div></div>
+    <div class="detail-box"><div class="dl">สินค้า</div><div class="dv" style="font-size:12.5px">${o.items}</div></div>
+    <div class="detail-box"><div class="dl">ยอดรวม</div><div class="dv" style="font-family:var(--serif);color:var(--gold);font-size:17px">฿${o.price.toLocaleString()}</div></div>
+  `;
+  document.getElementById('orderStatusSelect').value = o.status;
+  document.getElementById('orderModal').classList.add('open');
+}
+function saveOrderStatus() {
+  const o = orders.find(x => x.id === currentOrderId);
+  if (o) {
+    o.status = document.getElementById('orderStatusSelect').value;
+    closeModal('orderModal');
+    renderOrders();
+    renderDashOrders();
+    showToast('อัปเดตสถานะออเดอร์ ' + o.id + ' แล้ว ✓');
+  }
+}
+
+// ─── Product modal ───
+function openProductModal(id) {
+  const p = id ? products.find(x => x.id === id) : null;
+  document.getElementById('productModalTitle').textContent = p ? 'แก้ไขสินค้า' : 'เพิ่มสินค้าใหม่';
+  document.getElementById('prodEditId').value  = p ? p.id : '';
+  document.getElementById('pName').value       = p ? p.name  : '';
+  document.getElementById('pTh').value         = p ? p.th    : '';
+  document.getElementById('pTag').value        = p ? p.tag   : '';
+  document.getElementById('pPrice').value      = p ? p.price : '';
+  document.getElementById('pDesc').value       = '';
+  if (p) {
+    document.getElementById('pCat').value   = p.cat;
+    document.getElementById('pScene').value = p.scene;
+  }
+  document.getElementById('productModal').classList.add('open');
+}
+function saveProduct() {
+  const id    = document.getElementById('prodEditId').value;
+  const name  = document.getElementById('pName').value.trim();
+  const th    = document.getElementById('pTh').value.trim();
+  const cat   = document.getElementById('pCat').value;
+  const scene = document.getElementById('pScene').value;
+  const price = parseInt(document.getElementById('pPrice').value) || 0;
+  const tag   = document.getElementById('pTag').value.trim();
+  if (!name) { alert('กรุณากรอกชื่อสินค้า'); return; }
+  if (id) {
+    const p = products.find(x => x.id === id);
+    if (p) Object.assign(p, { name, th, cat, scene, price, tag });
+    showToast('แก้ไขสินค้า "' + name + '" แล้ว ✓');
+  } else {
+    products.push({ id: 'new' + Date.now(), name, th, cat, scene, price, tag });
+    showToast('เพิ่มสินค้า "' + name + '" แล้ว ✓');
+  }
+  closeModal('productModal');
+  renderProducts();
+}
+function deleteProduct(id) {
+  const idx = products.findIndex(x => x.id === id);
+  if (idx >= 0) {
+    const name = products[idx].name;
+    products.splice(idx, 1);
+    renderProducts();
+    showToast('ลบสินค้า "' + name + '" แล้ว');
+  }
+}
+
+// ─── Modal close ───
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+document.querySelectorAll('.modal-bg').forEach(bg => {
+  bg.addEventListener('click', e => { if (e.target === bg) bg.classList.remove('open'); });
+});
+
+// ─── Toast ───
+let toastTimer;
+function showToast(msg) {
+  clearTimeout(toastTimer);
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ─── Date ───
+document.getElementById('topDate').textContent = new Date().toLocaleDateString('th-TH', {
+  weekday:'short', year:'numeric', month:'short', day:'numeric'
+});
+
+// ─── Init ───
+renderDashOrders();
+</script>
+
+</body>
+</html>
