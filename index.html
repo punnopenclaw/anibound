@@ -1219,7 +1219,7 @@
     .scene-nav button span:not(.num) { display: none; }
     .scene h2 { font-size: clamp(42px, 13vw, 72px); }
     .jungle-croc { width: 280px; }
-    .fk-grid { grid-template-columns: 1fr; }
+    .fk-card { min-width: clamp(240px, 80vw, 320px); }
     .cart-drawer { width: 100%; }
   }
 
@@ -1227,7 +1227,7 @@
   .field-kit {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 36px clamp(24px, 5vw, 80px) 80px;
+    padding: 36px 0 80px;
     border-top: 1px solid rgba(255,255,255,0.12);
     position: relative;
     z-index: 10;
@@ -1237,8 +1237,9 @@
     display: flex;
     align-items: baseline;
     gap: 18px;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
     flex-wrap: wrap;
+    padding: 0 clamp(24px, 5vw, 80px);
   }
   .fk-head .lbl {
     font-size: 10.5px;
@@ -1260,11 +1261,75 @@
     opacity: 0.65;
     margin-left: auto;
   }
-  .fk-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
+  /* Category tabs */
+  .fk-cats {
+    display: flex;
+    gap: 8px;
+    padding: 0 clamp(24px, 5vw, 80px);
+    margin-bottom: 20px;
+    flex-wrap: wrap;
   }
+  .fk-cat {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: inherit;
+    padding: 5px 14px;
+    border-radius: 999px;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: inherit;
+    opacity: 0.6;
+    transition: all 0.2s;
+  }
+  .scene.light-scene .fk-cat { border-color: rgba(0,0,0,0.2); }
+  .fk-cat:hover { opacity: 0.9; }
+  .fk-cat.active {
+    background: var(--scene-accent);
+    border-color: var(--scene-accent);
+    color: #0a0e0c;
+    opacity: 1;
+    font-weight: 600;
+  }
+  /* Scroll wrapper + arrows */
+  .fk-scroll-wrap {
+    position: relative;
+  }
+  .fk-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 5;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--scene-accent);
+    border: none;
+    color: #0a0e0c;
+    display: grid; place-items: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s;
+    font-size: 16px;
+    line-height: 1;
+  }
+  .fk-scroll-wrap:hover .fk-arrow { opacity: 0.85; }
+  .fk-arrow:hover { opacity: 1 !important; }
+  .fk-arrow.prev { left: clamp(4px, 1.5vw, 20px); }
+  .fk-arrow.next { right: clamp(4px, 1.5vw, 20px); }
+  .fk-arrow:disabled { opacity: 0 !important; cursor: default; }
+  /* Horizontal scroll grid */
+  .fk-grid {
+    display: flex;
+    overflow-x: auto;
+    gap: 16px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 8px clamp(24px, 5vw, 80px) 16px;
+  }
+  .fk-grid::-webkit-scrollbar { display: none; }
+  .fk-card.hidden { display: none; }
   .fk-card {
     background: rgba(255,255,255,0.04);
     border: 1px solid rgba(255,255,255,0.1);
@@ -1277,6 +1342,9 @@
     backdrop-filter: blur(8px);
     transition: all 0.3s ease;
     cursor: pointer;
+    min-width: clamp(260px, 38vw, 400px);
+    flex-shrink: 0;
+    scroll-snap-align: start;
   }
   .scene.light-scene .fk-card {
     background: rgba(255,255,255,0.32);
@@ -1769,64 +1837,131 @@
       <span class="fk-title">ของใช้แห่งป่าดงดิบ</span>
       <span class="fk-sub">— forest gear for the bond —</span>
     </div>
-    <div class="fk-grid">
+    <div class="fk-cats">
+      <button class="fk-cat active" data-cat="all">ทั้งหมด</button>
+      <button class="fk-cat" data-cat="อาหาร">อาหาร</button>
+      <button class="fk-cat" data-cat="ของใช้">ของใช้</button>
+      <button class="fk-cat" data-cat="ของเล่น">ของเล่น</button>
+      <button class="fk-cat" data-cat="เสื้อ">เสื้อ</button>
+    </div>
+    <div class="fk-scroll-wrap">
+      <button class="fk-arrow prev" aria-label="Previous">&#8592;</button>
+      <button class="fk-arrow next" aria-label="Next">&#8594;</button>
+      <div class="fk-grid">
 
-      <div class="fk-card" data-id="j1" data-name="Field Collar" data-tag="Earth Edition" data-th="ปลอกคอนักสำรวจ" data-price="1290">
-        <div class="fk-icon">
-          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
-            <circle cx="24" cy="26" r="13"/>
-            <rect x="22.5" y="11" width="3" height="5" fill="currentColor" stroke="none"/>
-            <line x1="20" y1="14" x2="28" y2="14"/>
-            <circle cx="24" cy="36" r="2.2" fill="currentColor" stroke="none"/>
-          </svg>
+        <div class="fk-card" data-id="j1" data-name="Field Collar" data-tag="Earth Edition" data-th="ปลอกคอนักสำรวจ" data-price="1290" data-cat="ของใช้">
+          <div class="fk-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="24" cy="26" r="13"/>
+              <rect x="22.5" y="11" width="3" height="5" fill="currentColor" stroke="none"/>
+              <line x1="20" y1="14" x2="28" y2="14"/>
+              <circle cx="24" cy="36" r="2.2" fill="currentColor" stroke="none"/>
+            </svg>
+          </div>
+          <div class="fk-info">
+            <div class="fk-tag">Earth Edition</div>
+            <div class="fk-name">Field Collar</div>
+            <div class="fk-th">ปลอกคอนักสำรวจ · หนังย้อมเปลือกไม้</div>
+          </div>
+          <div class="fk-add">
+            <div class="fk-price">฿1,290</div>
+            <button class="fk-add-btn">+ Add</button>
+          </div>
         </div>
-        <div class="fk-info">
-          <div class="fk-tag">Earth Edition</div>
-          <div class="fk-name">Field Collar</div>
-          <div class="fk-th">ปลอกคอนักสำรวจ · หนังย้อมเปลือกไม้</div>
+
+        <div class="fk-card" data-id="j2" data-name="Expedition Bowl" data-tag="Stoneware" data-th="ชามเดินทาง" data-price="590" data-cat="ของใช้">
+          <div class="fk-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M 8 22 Q 24 30 40 22 L 36 38 Q 24 41 12 38 Z"/>
+              <ellipse cx="24" cy="22" rx="16" ry="3.5"/>
+            </svg>
+          </div>
+          <div class="fk-info">
+            <div class="fk-tag">Stoneware</div>
+            <div class="fk-name">Expedition Bowl</div>
+            <div class="fk-th">ชามเดินทาง · หินกล้วยไม้</div>
+          </div>
+          <div class="fk-add">
+            <div class="fk-price">฿590</div>
+            <button class="fk-add-btn">+ Add</button>
+          </div>
         </div>
-        <div class="fk-add">
-          <div class="fk-price">฿1,290</div>
-          <button class="fk-add-btn">+ Add</button>
+
+        <div class="fk-card" data-id="j3" data-name="Trail Tee" data-tag="Owner's Wear" data-th="เสื้อเดินป่า" data-price="890" data-cat="เสื้อ">
+          <div class="fk-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M 14 14 L 18 10 L 30 10 L 34 14 L 40 18 L 36 24 L 34 22 L 34 40 L 14 40 L 14 22 L 12 24 L 8 18 Z"/>
+              <path d="M 18 10 Q 24 14 30 10"/>
+            </svg>
+          </div>
+          <div class="fk-info">
+            <div class="fk-tag">Owner's Wear</div>
+            <div class="fk-name">Trail Tee</div>
+            <div class="fk-th">เสื้อยืดเจ้าของ · ฝ้ายหนัก 240gsm</div>
+          </div>
+          <div class="fk-add">
+            <div class="fk-price">฿890</div>
+            <button class="fk-add-btn">+ Add</button>
+          </div>
         </div>
+
+        <div class="fk-card" data-id="j4" data-name="Bark Treat" data-tag="Natural Snack" data-th="ขนมสุนัขธรรมชาติ" data-price="160" data-cat="อาหาร">
+          <div class="fk-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M16 28 Q20 18 24 22 Q28 18 32 28 Q34 36 24 38 Q14 36 16 28Z"/>
+              <path d="M24 22 L24 14" stroke-linecap="round"/>
+              <path d="M20 17 L24 14 L28 17" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="fk-info">
+            <div class="fk-tag">Natural Snack</div>
+            <div class="fk-name">Bark Treat</div>
+            <div class="fk-th">ขนมสุนัขธรรมชาติ · ไม่มีสารเติมแต่ง</div>
+          </div>
+          <div class="fk-add">
+            <div class="fk-price">฿160</div>
+            <button class="fk-add-btn">+ Add</button>
+          </div>
+        </div>
+
+        <div class="fk-card" data-id="j5" data-name="Trail Bandana" data-tag="Owner's Wear" data-th="ผ้าพันคอนักสำรวจ" data-price="290" data-cat="เสื้อ">
+          <div class="fk-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M10 16 L24 34 L38 16 Q24 10 10 16Z"/>
+              <path d="M10 16 Q24 20 38 16"/>
+            </svg>
+          </div>
+          <div class="fk-info">
+            <div class="fk-tag">Owner's Wear</div>
+            <div class="fk-name">Trail Bandana</div>
+            <div class="fk-th">ผ้าพันคอนักสำรวจ · ผ้าฝ้ายย้อมธรรมชาติ</div>
+          </div>
+          <div class="fk-add">
+            <div class="fk-price">฿290</div>
+            <button class="fk-add-btn">+ Add</button>
+          </div>
+        </div>
+
+        <div class="fk-card" data-id="j6" data-name="Rope Toy" data-tag="Jungle Play" data-th="ของเล่นเชือกป่า" data-price="350" data-cat="ของเล่น">
+          <div class="fk-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 36 Q18 20 24 28 Q30 36 36 20" stroke-linecap="round"/>
+              <circle cx="12" cy="36" r="3"/>
+              <circle cx="36" cy="20" r="3"/>
+            </svg>
+          </div>
+          <div class="fk-info">
+            <div class="fk-tag">Jungle Play</div>
+            <div class="fk-name">Rope Toy</div>
+            <div class="fk-th">ของเล่นเชือกป่า · เส้นใยธรรมชาติ</div>
+          </div>
+          <div class="fk-add">
+            <div class="fk-price">฿350</div>
+            <button class="fk-add-btn">+ Add</button>
+          </div>
+        </div>
+
       </div>
-
-      <div class="fk-card" data-id="j2" data-name="Expedition Bowl" data-tag="Stoneware" data-th="ชามเดินทาง" data-price="590">
-        <div class="fk-icon">
-          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M 8 22 Q 24 30 40 22 L 36 38 Q 24 41 12 38 Z"/>
-            <ellipse cx="24" cy="22" rx="16" ry="3.5"/>
-          </svg>
-        </div>
-        <div class="fk-info">
-          <div class="fk-tag">Stoneware</div>
-          <div class="fk-name">Expedition Bowl</div>
-          <div class="fk-th">ชามเดินทาง · หินกล้วยไม้</div>
-        </div>
-        <div class="fk-add">
-          <div class="fk-price">฿590</div>
-          <button class="fk-add-btn">+ Add</button>
-        </div>
-      </div>
-
-      <div class="fk-card" data-id="j3" data-name="Trail Tee" data-tag="Owner's wear" data-th="เสื้อเดินป่า" data-price="890">
-        <div class="fk-icon">
-          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M 14 14 L 18 10 L 30 10 L 34 14 L 40 18 L 36 24 L 34 22 L 34 40 L 14 40 L 14 22 L 12 24 L 8 18 Z"/>
-            <path d="M 18 10 Q 24 14 30 10"/>
-          </svg>
-        </div>
-        <div class="fk-info">
-          <div class="fk-tag">Owner's wear</div>
-          <div class="fk-name">Trail Tee</div>
-          <div class="fk-th">เสื้อยืดเจ้าของ · ฝ้ายหนัก 240gsm</div>
-        </div>
-        <div class="fk-add">
-          <div class="fk-price">฿890</div>
-          <button class="fk-add-btn">+ Add</button>
-        </div>
-      </div>
-
     </div>
   </div>
 </section>
@@ -2048,69 +2183,137 @@
       <span class="fk-title">ของใช้แห่งทะเลลึก</span>
       <span class="fk-sub">— ocean gear for the bond —</span>
     </div>
-    <div class="fk-grid">
+    <div class="fk-cats">
+      <button class="fk-cat active" data-cat="all">ทั้งหมด</button>
+      <button class="fk-cat" data-cat="อาหาร">อาหาร</button>
+      <button class="fk-cat" data-cat="ของใช้">ของใช้</button>
+      <button class="fk-cat" data-cat="ของเล่น">ของเล่น</button>
+      <button class="fk-cat" data-cat="เสื้อ">เสื้อ</button>
+    </div>
+    <div class="fk-scroll-wrap">
+      <button class="fk-arrow prev" aria-label="Previous">&#8592;</button>
+      <button class="fk-arrow next" aria-label="Next">&#8594;</button>
+      <div class="fk-grid">
 
-      <div class="fk-card" data-id="s1" data-name="Salmon Recipe" data-tag="Cat food · 1.2kg" data-th="อาหารแมว ซัลม่อน" data-price="890">
-        <div class="fk-icon">
-          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M 14 14 L 34 14 L 36 40 L 12 40 Z"/>
-            <line x1="14" y1="14" x2="20" y2="9"/>
-            <line x1="34" y1="14" x2="28" y2="9"/>
-            <line x1="20" y1="9" x2="28" y2="9"/>
-            <rect x="19" y="22" width="10" height="8" stroke-width="1.2"/>
-            <line x1="19" y1="26" x2="29" y2="26" stroke-width="0.8"/>
-          </svg>
+        <div class="fk-card" data-id="s1" data-name="Salmon Recipe" data-tag="Cat food · 1.2kg" data-th="อาหารแมว ซัลม่อน" data-price="890" data-cat="อาหาร">
+          <div class="fk-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M 14 14 L 34 14 L 36 40 L 12 40 Z"/>
+              <line x1="14" y1="14" x2="20" y2="9"/>
+              <line x1="34" y1="14" x2="28" y2="9"/>
+              <line x1="20" y1="9" x2="28" y2="9"/>
+              <rect x="19" y="22" width="10" height="8" stroke-width="1.2"/>
+              <line x1="19" y1="26" x2="29" y2="26" stroke-width="0.8"/>
+            </svg>
+          </div>
+          <div class="fk-info">
+            <div class="fk-tag">Cat food · 1.2kg</div>
+            <div class="fk-name">Salmon Recipe</div>
+            <div class="fk-th">อาหารแมว ซัลม่อนฮอกไกโด · grain-free</div>
+          </div>
+          <div class="fk-add">
+            <div class="fk-price">฿890</div>
+            <button class="fk-add-btn">+ Add</button>
+          </div>
         </div>
-        <div class="fk-info">
-          <div class="fk-tag">Cat food · 1.2kg</div>
-          <div class="fk-name">Salmon Recipe</div>
-          <div class="fk-th">อาหารแมว ซัลม่อนฮอกไกโด · grain-free</div>
+
+        <div class="fk-card" data-id="s2" data-name="Tideline Lead" data-tag="Marine canvas" data-th="สายจูงลายคลื่น" data-price="790" data-cat="ของใช้">
+          <div class="fk-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M 10 10 Q 26 6 30 22 Q 32 36 22 40 Q 14 41 12 36"/>
+              <circle cx="10" cy="10" r="2.5"/>
+              <rect x="18" y="38" width="8" height="5" rx="2"/>
+            </svg>
+          </div>
+          <div class="fk-info">
+            <div class="fk-tag">Marine canvas</div>
+            <div class="fk-name">Tideline Lead</div>
+            <div class="fk-th">สายจูงลายคลื่น · กันน้ำ</div>
+          </div>
+          <div class="fk-add">
+            <div class="fk-price">฿790</div>
+            <button class="fk-add-btn">+ Add</button>
+          </div>
         </div>
-        <div class="fk-add">
-          <div class="fk-price">฿890</div>
-          <button class="fk-add-btn">+ Add</button>
+
+        <div class="fk-card" data-id="s3" data-name="Float Toy" data-tag="Buoyant" data-th="ของเล่นลอยน้ำ" data-price="380" data-cat="ของเล่น">
+          <div class="fk-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="24" cy="22" r="11"/>
+              <path d="M 13 22 Q 24 15 35 22"/>
+              <path d="M 13 22 Q 24 29 35 22"/>
+              <ellipse cx="24" cy="38" rx="14" ry="2.5" stroke-dasharray="2 2"/>
+            </svg>
+          </div>
+          <div class="fk-info">
+            <div class="fk-tag">Buoyant</div>
+            <div class="fk-name">Float Toy</div>
+            <div class="fk-th">ของเล่นลอยน้ำ · ทนเคี้ยว</div>
+          </div>
+          <div class="fk-add">
+            <div class="fk-price">฿380</div>
+            <button class="fk-add-btn">+ Add</button>
+          </div>
         </div>
+
+        <div class="fk-card" data-id="s4" data-name="Tuna Stew" data-tag="Dog food · 1kg" data-th="อาหารสุนัข ทูน่า" data-price="720" data-cat="อาหาร">
+          <div class="fk-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M10 28 Q10 18 24 16 Q38 18 38 28 Q38 38 24 40 Q10 38 10 28Z"/>
+              <path d="M16 24 Q24 20 32 24"/>
+              <path d="M18 30 Q24 27 30 30"/>
+            </svg>
+          </div>
+          <div class="fk-info">
+            <div class="fk-tag">Dog food · 1kg</div>
+            <div class="fk-name">Tuna Stew</div>
+            <div class="fk-th">อาหารสุนัข ทูน่าโอเชียน · ไม่มีสี</div>
+          </div>
+          <div class="fk-add">
+            <div class="fk-price">฿720</div>
+            <button class="fk-add-btn">+ Add</button>
+          </div>
+        </div>
+
+        <div class="fk-card" data-id="s5" data-name="Wave Collar" data-tag="Marine Edition" data-th="ปลอกคอลายคลื่น" data-price="990" data-cat="ของใช้">
+          <div class="fk-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="24" cy="26" r="13"/>
+              <path d="M14 22 Q18 18 22 22 Q26 26 30 22 Q34 18 36 22"/>
+              <circle cx="24" cy="36" r="2.2" fill="currentColor" stroke="none"/>
+            </svg>
+          </div>
+          <div class="fk-info">
+            <div class="fk-tag">Marine Edition</div>
+            <div class="fk-name">Wave Collar</div>
+            <div class="fk-th">ปลอกคอลายคลื่น · ไนลอนกันน้ำ</div>
+          </div>
+          <div class="fk-add">
+            <div class="fk-price">฿990</div>
+            <button class="fk-add-btn">+ Add</button>
+          </div>
+        </div>
+
+        <div class="fk-card" data-id="s6" data-name="Drift Toy" data-tag="Ocean Play" data-th="ของเล่นลากน้ำ" data-price="280" data-cat="ของเล่น">
+          <div class="fk-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 32 Q20 12 28 24 Q32 30 36 20" stroke-linecap="round"/>
+              <circle cx="36" cy="20" r="4"/>
+              <path d="M12 36 Q24 40 36 36" stroke-dasharray="2 2"/>
+            </svg>
+          </div>
+          <div class="fk-info">
+            <div class="fk-tag">Ocean Play</div>
+            <div class="fk-name">Drift Toy</div>
+            <div class="fk-th">ของเล่นลากน้ำ · ยางธรรมชาติ</div>
+          </div>
+          <div class="fk-add">
+            <div class="fk-price">฿280</div>
+            <button class="fk-add-btn">+ Add</button>
+          </div>
+        </div>
+
       </div>
-
-      <div class="fk-card" data-id="s2" data-name="Tideline Lead" data-tag="Marine canvas" data-th="สายจูงลายคลื่น" data-price="790">
-        <div class="fk-icon">
-          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M 10 10 Q 26 6 30 22 Q 32 36 22 40 Q 14 41 12 36"/>
-            <circle cx="10" cy="10" r="2.5"/>
-            <rect x="18" y="38" width="8" height="5" rx="2"/>
-          </svg>
-        </div>
-        <div class="fk-info">
-          <div class="fk-tag">Marine canvas</div>
-          <div class="fk-name">Tideline Lead</div>
-          <div class="fk-th">สายจูงลายคลื่น · กันน้ำ</div>
-        </div>
-        <div class="fk-add">
-          <div class="fk-price">฿790</div>
-          <button class="fk-add-btn">+ Add</button>
-        </div>
-      </div>
-
-      <div class="fk-card" data-id="s3" data-name="Float Toy" data-tag="Buoyant" data-th="ของเล่นลอยน้ำ" data-price="380">
-        <div class="fk-icon">
-          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
-            <circle cx="24" cy="22" r="11"/>
-            <path d="M 13 22 Q 24 15 35 22"/>
-            <path d="M 13 22 Q 24 29 35 22"/>
-            <ellipse cx="24" cy="38" rx="14" ry="2.5" stroke-dasharray="2 2"/>
-          </svg>
-        </div>
-        <div class="fk-info">
-          <div class="fk-tag">Buoyant</div>
-          <div class="fk-name">Float Toy</div>
-          <div class="fk-th">ของเล่นลอยน้ำ · ทนเคี้ยว</div>
-        </div>
-        <div class="fk-add">
-          <div class="fk-price">฿380</div>
-          <button class="fk-add-btn">+ Add</button>
-        </div>
-      </div>
-
     </div>
   </div>
 </section>
@@ -2252,67 +2455,134 @@
       <span class="fk-title">ของใช้แห่งบึงเช้า</span>
       <span class="fk-sub">— wetland gear for the bond —</span>
     </div>
-    <div class="fk-grid">
+    <div class="fk-cats">
+      <button class="fk-cat active" data-cat="all">ทั้งหมด</button>
+      <button class="fk-cat" data-cat="อาหาร">อาหาร</button>
+      <button class="fk-cat" data-cat="ของใช้">ของใช้</button>
+      <button class="fk-cat" data-cat="ของเล่น">ของเล่น</button>
+      <button class="fk-cat" data-cat="เสื้อ">เสื้อ</button>
+    </div>
+    <div class="fk-scroll-wrap">
+      <button class="fk-arrow prev" aria-label="Previous">&#8592;</button>
+      <button class="fk-arrow next" aria-label="Next">&#8594;</button>
+      <div class="fk-grid">
 
-      <div class="fk-card" data-id="w1" data-name="Dawn Bed" data-tag="Cloud cotton" data-th="ที่นอนสีหมอก" data-price="2490">
-        <div class="fk-icon">
-          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
-            <ellipse cx="24" cy="32" rx="18" ry="9"/>
-            <ellipse cx="24" cy="32" rx="13" ry="5"/>
-            <path d="M 6 28 Q 24 18 42 28"/>
-          </svg>
+        <div class="fk-card" data-id="w1" data-name="Dawn Bed" data-tag="Cloud cotton" data-th="ที่นอนสีหมอก" data-price="2490" data-cat="ของใช้">
+          <div class="fk-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <ellipse cx="24" cy="32" rx="18" ry="9"/>
+              <ellipse cx="24" cy="32" rx="13" ry="5"/>
+              <path d="M 6 28 Q 24 18 42 28"/>
+            </svg>
+          </div>
+          <div class="fk-info">
+            <div class="fk-tag">Cloud cotton</div>
+            <div class="fk-name">Dawn Bed</div>
+            <div class="fk-th">ที่นอนสีหมอกเช้า · ขนาด M/L</div>
+          </div>
+          <div class="fk-add">
+            <div class="fk-price">฿2,490</div>
+            <button class="fk-add-btn">+ Add</button>
+          </div>
         </div>
-        <div class="fk-info">
-          <div class="fk-tag">Cloud cotton</div>
-          <div class="fk-name">Dawn Bed</div>
-          <div class="fk-th">ที่นอนสีหมอกเช้า · ขนาด M/L</div>
-        </div>
-        <div class="fk-add">
-          <div class="fk-price">฿2,490</div>
-          <button class="fk-add-btn">+ Add</button>
-        </div>
-      </div>
 
-      <div class="fk-card" data-id="w2" data-name="Marsh Treats" data-tag="Slow-baked" data-th="ขนมรสเป็ด" data-price="180">
-        <div class="fk-icon">
-          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M 14 14 Q 14 11 17 11 L 31 11 Q 34 11 34 14 L 34 40 L 14 40 Z"/>
-            <line x1="14" y1="20" x2="34" y2="20"/>
-            <circle cx="20" cy="28" r="1.5" fill="currentColor"/>
-            <circle cx="26" cy="32" r="1.5" fill="currentColor"/>
-            <circle cx="22" cy="34" r="1.5" fill="currentColor"/>
-            <circle cx="28" cy="26" r="1.2" fill="currentColor"/>
-          </svg>
+        <div class="fk-card" data-id="w2" data-name="Marsh Treats" data-tag="Slow-baked" data-th="ขนมรสเป็ด" data-price="180" data-cat="อาหาร">
+          <div class="fk-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M 14 14 Q 14 11 17 11 L 31 11 Q 34 11 34 14 L 34 40 L 14 40 Z"/>
+              <line x1="14" y1="20" x2="34" y2="20"/>
+              <circle cx="20" cy="28" r="1.5" fill="currentColor"/>
+              <circle cx="26" cy="32" r="1.5" fill="currentColor"/>
+              <circle cx="22" cy="34" r="1.5" fill="currentColor"/>
+              <circle cx="28" cy="26" r="1.2" fill="currentColor"/>
+            </svg>
+          </div>
+          <div class="fk-info">
+            <div class="fk-tag">Slow-baked</div>
+            <div class="fk-name">Marsh Treats</div>
+            <div class="fk-th">ขนมรสเป็ดป่า · grain-free</div>
+          </div>
+          <div class="fk-add">
+            <div class="fk-price">฿180</div>
+            <button class="fk-add-btn">+ Add</button>
+          </div>
         </div>
-        <div class="fk-info">
-          <div class="fk-tag">Slow-baked</div>
-          <div class="fk-name">Marsh Treats</div>
-          <div class="fk-th">ขนมรสเป็ดป่า · grain-free</div>
-        </div>
-        <div class="fk-add">
-          <div class="fk-price">฿180</div>
-          <button class="fk-add-btn">+ Add</button>
-        </div>
-      </div>
 
-      <div class="fk-card" data-id="w3" data-name="Reed Harness" data-tag="Adjustable" data-th="สายอกสีฟาง" data-price="1190">
-        <div class="fk-icon">
-          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M 12 20 L 36 20 L 34 36 L 14 36 Z"/>
-            <path d="M 18 20 L 18 12 L 30 12 L 30 20"/>
-            <circle cx="24" cy="28" r="3"/>
-          </svg>
+        <div class="fk-card" data-id="w3" data-name="Reed Harness" data-tag="Adjustable" data-th="สายอกสีฟาง" data-price="1190" data-cat="ของใช้">
+          <div class="fk-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M 12 20 L 36 20 L 34 36 L 14 36 Z"/>
+              <path d="M 18 20 L 18 12 L 30 12 L 30 20"/>
+              <circle cx="24" cy="28" r="3"/>
+            </svg>
+          </div>
+          <div class="fk-info">
+            <div class="fk-tag">Adjustable</div>
+            <div class="fk-name">Reed Harness</div>
+            <div class="fk-th">สายอกสีฟาง · นุ่ม ไม่กัดผิว</div>
+          </div>
+          <div class="fk-add">
+            <div class="fk-price">฿1,190</div>
+            <button class="fk-add-btn">+ Add</button>
+          </div>
         </div>
-        <div class="fk-info">
-          <div class="fk-tag">Adjustable</div>
-          <div class="fk-name">Reed Harness</div>
-          <div class="fk-th">สายอกสีฟาง · นุ่ม ไม่กัดผิว</div>
+
+        <div class="fk-card" data-id="w4" data-name="Duck Grain" data-tag="Dog food · 1.5kg" data-th="อาหารสุนัข รสเป็ด" data-price="390" data-cat="อาหาร">
+          <div class="fk-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M10 34 Q10 20 24 18 Q38 20 38 34 Q38 40 24 40 Q10 40 10 34Z"/>
+              <path d="M18 26 Q24 22 30 26"/>
+              <path d="M20 32 Q24 29 28 32"/>
+            </svg>
+          </div>
+          <div class="fk-info">
+            <div class="fk-tag">Dog food · 1.5kg</div>
+            <div class="fk-name">Duck Grain</div>
+            <div class="fk-th">อาหารสุนัข รสเป็ดแม่น้ำ · ไม่มีสารปรุงแต่ง</div>
+          </div>
+          <div class="fk-add">
+            <div class="fk-price">฿390</div>
+            <button class="fk-add-btn">+ Add</button>
+          </div>
         </div>
-        <div class="fk-add">
-          <div class="fk-price">฿1,190</div>
-          <button class="fk-add-btn">+ Add</button>
+
+        <div class="fk-card" data-id="w5" data-name="Mist Poncho" data-tag="Owner's Wear" data-th="เสื้อกันฝนบาง" data-price="680" data-cat="เสื้อ">
+          <div class="fk-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 18 L20 10 L28 10 L36 18 L32 22 L30 20 L30 42 L18 42 L18 20 L16 22Z"/>
+              <path d="M20 10 Q24 14 28 10"/>
+              <path d="M14 28 Q18 24 22 28"/>
+            </svg>
+          </div>
+          <div class="fk-info">
+            <div class="fk-tag">Owner's Wear</div>
+            <div class="fk-name">Mist Poncho</div>
+            <div class="fk-th">เสื้อกันฝนบาง · ผ้า ripstop น้ำหนักเบา</div>
+          </div>
+          <div class="fk-add">
+            <div class="fk-price">฿680</div>
+            <button class="fk-add-btn">+ Add</button>
+          </div>
         </div>
-      </div>
+
+        <div class="fk-card" data-id="w6" data-name="Heron Wand" data-tag="Wetland Play" data-th="ของเล่นนกกระสา" data-price="220" data-cat="ของเล่น">
+          <div class="fk-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <line x1="12" y1="40" x2="36" y2="16" stroke-linecap="round"/>
+              <path d="M36 16 Q40 10 34 12 Q38 8 32 14" stroke-linecap="round"/>
+              <circle cx="28" cy="36" r="4"/>
+            </svg>
+          </div>
+          <div class="fk-info">
+            <div class="fk-tag">Wetland Play</div>
+            <div class="fk-name">Heron Wand</div>
+            <div class="fk-th">ของเล่นไม้ปลาย · ขนนกเทียม</div>
+          </div>
+          <div class="fk-add">
+            <div class="fk-price">฿220</div>
+            <button class="fk-add-btn">+ Add</button>
+          </div>
+        </div>
 
     </div>
   </div>
@@ -2478,66 +2748,138 @@
       <span class="fk-title">ของใช้แห่งทุ่งกว้าง</span>
       <span class="fk-sub">— meadow gear for the bond —</span>
     </div>
-    <div class="fk-grid">
+    <div class="fk-cats">
+      <button class="fk-cat active" data-cat="all">ทั้งหมด</button>
+      <button class="fk-cat" data-cat="อาหาร">อาหาร</button>
+      <button class="fk-cat" data-cat="ของใช้">ของใช้</button>
+      <button class="fk-cat" data-cat="ของเล่น">ของเล่น</button>
+      <button class="fk-cat" data-cat="เสื้อ">เสื้อ</button>
+    </div>
+    <div class="fk-scroll-wrap">
+      <button class="fk-arrow prev" aria-label="Previous">&#8592;</button>
+      <button class="fk-arrow next" aria-label="Next">&#8594;</button>
+      <div class="fk-grid">
 
-      <div class="fk-card" data-id="m1" data-name="Chase Toy" data-tag="Felted wool" data-th="ของเล่นชี้ส์" data-price="420">
-        <div class="fk-icon">
-          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M 8 18 Q 8 13 13 13 Q 18 13 18 18 L 30 18 Q 30 13 35 13 Q 40 13 40 18 Q 40 22 36 23 Q 40 24 40 28 Q 40 33 35 33 Q 30 33 30 28 L 18 28 Q 18 33 13 33 Q 8 33 8 28 Q 8 24 12 23 Q 8 22 8 18 Z"/>
-          </svg>
+        <div class="fk-card" data-id="m1" data-name="Chase Toy" data-tag="Felted wool" data-th="ของเล่นชี้ส์" data-price="420" data-cat="ของเล่น">
+          <div class="fk-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M 8 18 Q 8 13 13 13 Q 18 13 18 18 L 30 18 Q 30 13 35 13 Q 40 13 40 18 Q 40 22 36 23 Q 40 24 40 28 Q 40 33 35 33 Q 30 33 30 28 L 18 28 Q 18 33 13 33 Q 8 33 8 28 Q 8 24 12 23 Q 8 22 8 18 Z"/>
+            </svg>
+          </div>
+          <div class="fk-info">
+            <div class="fk-tag">Felted wool</div>
+            <div class="fk-name">Chase Toy</div>
+            <div class="fk-th">ของเล่นชี้ส์ · มีแคทนิป</div>
+          </div>
+          <div class="fk-add">
+            <div class="fk-price">฿420</div>
+            <button class="fk-add-btn">+ Add</button>
+          </div>
         </div>
-        <div class="fk-info">
-          <div class="fk-tag">Felted wool</div>
-          <div class="fk-name">Chase Toy</div>
-          <div class="fk-th">ของเล่นชี้ส์ · มีแคทนิป</div>
+
+        <div class="fk-card" data-id="m2" data-name="Meadow Mat" data-tag="Cotton weave" data-th="ที่นอนผ้าฝ้าย" data-price="1890" data-cat="ของใช้">
+          <div class="fk-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="8" y="15" width="32" height="20" rx="2"/>
+              <line x1="8" y1="22" x2="40" y2="22"/>
+              <line x1="8" y1="28" x2="40" y2="28"/>
+              <line x1="15" y1="15" x2="15" y2="35"/>
+              <line x1="33" y1="15" x2="33" y2="35"/>
+            </svg>
+          </div>
+          <div class="fk-info">
+            <div class="fk-tag">Cotton weave</div>
+            <div class="fk-name">Meadow Mat</div>
+            <div class="fk-th">ที่นอนผ้าฝ้าย · ทอลาย herringbone</div>
+          </div>
+          <div class="fk-add">
+            <div class="fk-price">฿1,890</div>
+            <button class="fk-add-btn">+ Add</button>
+          </div>
         </div>
-        <div class="fk-add">
-          <div class="fk-price">฿420</div>
-          <button class="fk-add-btn">+ Add</button>
+
+        <div class="fk-card" data-id="m3" data-name="Honeyed Snack" data-tag="Limited" data-th="ขนมรสน้ำผึ้ง" data-price="220" data-cat="อาหาร">
+          <div class="fk-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M 16 14 L 32 14 L 34 18 L 34 38 Q 34 42 30 42 L 18 42 Q 14 42 14 38 L 14 18 Z"/>
+              <line x1="14" y1="22" x2="34" y2="22"/>
+              <path d="M 20 30 Q 24 34 28 30 Q 26 33 24 33 Q 22 33 20 30 Z" fill="currentColor"/>
+              <line x1="22" y1="27" x2="26" y2="27" stroke-width="0.8"/>
+            </svg>
+          </div>
+          <div class="fk-info">
+            <div class="fk-tag">Limited</div>
+            <div class="fk-name">Honeyed Snack</div>
+            <div class="fk-th">ขนมรสน้ำผึ้งและหญ้าอ่อน · 80g</div>
+          </div>
+          <div class="fk-add">
+            <div class="fk-price">฿220</div>
+            <button class="fk-add-btn">+ Add</button>
+          </div>
         </div>
+
+        <div class="fk-card" data-id="m4" data-name="Clover Kibble" data-tag="Cat food · 1kg" data-th="อาหารแมว รสหญ้าทุ่ง" data-price="450" data-cat="อาหาร">
+          <div class="fk-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="20" cy="22" r="7"/>
+              <circle cx="30" cy="26" r="6"/>
+              <circle cx="24" cy="34" r="5"/>
+              <path d="M24 34 L24 42" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="fk-info">
+            <div class="fk-tag">Cat food · 1kg</div>
+            <div class="fk-name">Clover Kibble</div>
+            <div class="fk-th">อาหารแมว รสหญ้าทุ่ง · high protein</div>
+          </div>
+          <div class="fk-add">
+            <div class="fk-price">฿450</div>
+            <button class="fk-add-btn">+ Add</button>
+          </div>
+        </div>
+
+        <div class="fk-card" data-id="m5" data-name="Grass Lead" data-tag="Meadow canvas" data-th="สายจูงลายทุ่ง" data-price="890" data-cat="ของใช้">
+          <div class="fk-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M 10 38 Q 14 20 24 16 Q 34 20 38 38"/>
+              <line x1="16" y1="38" x2="32" y2="38"/>
+              <circle cx="10" cy="38" r="2.5"/>
+              <circle cx="38" cy="38" r="2.5"/>
+            </svg>
+          </div>
+          <div class="fk-info">
+            <div class="fk-tag">Meadow canvas</div>
+            <div class="fk-name">Grass Lead</div>
+            <div class="fk-th">สายจูงลายทุ่งหญ้า · ผ้า canvas ทอมือ</div>
+          </div>
+          <div class="fk-add">
+            <div class="fk-price">฿890</div>
+            <button class="fk-add-btn">+ Add</button>
+          </div>
+        </div>
+
+        <div class="fk-card" data-id="m6" data-name="Sun Collar" data-tag="Meadow Edition" data-th="ปลอกคอสีทอง" data-price="990" data-cat="ของใช้">
+          <div class="fk-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="24" cy="26" r="13"/>
+              <rect x="22.5" y="11" width="3" height="5" fill="currentColor" stroke="none"/>
+              <line x1="20" y1="14" x2="28" y2="14"/>
+              <circle cx="24" cy="36" r="2.2" fill="currentColor" stroke="none"/>
+              <path d="M18 22 Q24 19 30 22"/>
+            </svg>
+          </div>
+          <div class="fk-info">
+            <div class="fk-tag">Meadow Edition</div>
+            <div class="fk-name">Sun Collar</div>
+            <div class="fk-th">ปลอกคอสีทองทุ่ง · หนังฟอกธรรมชาติ</div>
+          </div>
+          <div class="fk-add">
+            <div class="fk-price">฿990</div>
+            <button class="fk-add-btn">+ Add</button>
+          </div>
+        </div>
+
       </div>
-
-      <div class="fk-card" data-id="m2" data-name="Meadow Mat" data-tag="Cotton weave" data-th="ที่นอนผ้าฝ้าย" data-price="1890">
-        <div class="fk-icon">
-          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
-            <rect x="8" y="15" width="32" height="20" rx="2"/>
-            <line x1="8" y1="22" x2="40" y2="22"/>
-            <line x1="8" y1="28" x2="40" y2="28"/>
-            <line x1="15" y1="15" x2="15" y2="35"/>
-            <line x1="33" y1="15" x2="33" y2="35"/>
-          </svg>
-        </div>
-        <div class="fk-info">
-          <div class="fk-tag">Cotton weave</div>
-          <div class="fk-name">Meadow Mat</div>
-          <div class="fk-th">ที่นอนผ้าฝ้าย · ทอลาย herringbone</div>
-        </div>
-        <div class="fk-add">
-          <div class="fk-price">฿1,890</div>
-          <button class="fk-add-btn">+ Add</button>
-        </div>
-      </div>
-
-      <div class="fk-card" data-id="m3" data-name="Honeyed Snack" data-tag="Limited" data-th="ขนมรสน้ำผึ้ง" data-price="220">
-        <div class="fk-icon">
-          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M 16 14 L 32 14 L 34 18 L 34 38 Q 34 42 30 42 L 18 42 Q 14 42 14 38 L 14 18 Z"/>
-            <line x1="14" y1="22" x2="34" y2="22"/>
-            <path d="M 20 30 Q 24 34 28 30 Q 26 33 24 33 Q 22 33 20 30 Z" fill="currentColor"/>
-            <line x1="22" y1="27" x2="26" y2="27" stroke-width="0.8"/>
-          </svg>
-        </div>
-        <div class="fk-info">
-          <div class="fk-tag">Limited</div>
-          <div class="fk-name">Honeyed Snack</div>
-          <div class="fk-th">ขนมรสน้ำผึ้งและหญ้าอ่อน · 80g</div>
-        </div>
-        <div class="fk-add">
-          <div class="fk-price">฿220</div>
-          <button class="fk-add-btn">+ Add</button>
-        </div>
-      </div>
-
     </div>
   </div>
 </section>
@@ -2876,6 +3218,49 @@
 
   // Initial render
   renderCart();
+
+  // ─────────── Field Kit: Category filter + Arrow scroll ───────────
+  document.querySelectorAll('.field-kit').forEach(kit => {
+    const cats = kit.querySelectorAll('.fk-cat');
+    const grid = kit.querySelector('.fk-grid');
+    const prevBtn = kit.querySelector('.fk-arrow.prev');
+    const nextBtn = kit.querySelector('.fk-arrow.next');
+
+    // Category filter
+    cats.forEach(btn => {
+      btn.addEventListener('click', () => {
+        cats.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const selected = btn.dataset.cat;
+        kit.querySelectorAll('.fk-card').forEach(card => {
+          if (selected === 'all' || card.dataset.cat === selected) {
+            card.classList.remove('hidden');
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+        if (grid) grid.scrollTo({ left: 0, behavior: 'smooth' });
+      });
+    });
+
+    // Arrow navigation
+    if (grid && prevBtn && nextBtn) {
+      const scrollAmt = () => grid.clientWidth * 0.75;
+      prevBtn.addEventListener('click', () => {
+        grid.scrollBy({ left: -scrollAmt(), behavior: 'smooth' });
+      });
+      nextBtn.addEventListener('click', () => {
+        grid.scrollBy({ left: scrollAmt(), behavior: 'smooth' });
+      });
+      // Disable arrows at edges
+      const updateArrows = () => {
+        prevBtn.disabled = grid.scrollLeft <= 4;
+        nextBtn.disabled = grid.scrollLeft + grid.clientWidth >= grid.scrollWidth - 4;
+      };
+      grid.addEventListener('scroll', updateArrows, { passive: true });
+      updateArrows();
+    }
+  });
 </script>
 
 </body>
