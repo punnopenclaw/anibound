@@ -1563,7 +1563,7 @@ function renderImgSlots() {
         ondragover="imgDragOver(event)"
         ondragleave="imgDragLeave(event)"
         ondrop="imgDrop(event,${i})">
-        <img src="${src}">
+        <img src="${src}" onerror="productImages[${i}]=null;renderImgSlots()">
         <button class="img-del-btn" onclick="event.stopPropagation();removeImg(${i})">×</button>
       </div>`;
     }
