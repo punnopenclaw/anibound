@@ -1742,7 +1742,12 @@
   .pd-name { font-size: clamp(18px,3vw,24px); font-weight: 700; color: #ece4d2; line-height: 1.25; }
   .pd-th { font-size: 13px; color: rgba(255,255,255,0.45); margin-top: -4px; }
   .pd-price { font-size: clamp(22px,4vw,30px); font-family: var(--serif,'Georgia',serif); color: #c9a96e; font-weight: 700; margin-top: 4px; }
-  .pd-desc { font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.75; flex: 1; }
+  .pd-divider { height: 1px; background: rgba(255,255,255,0.08); margin: 4px 0; }
+  .pd-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pd-chip { font-size: 11px; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.6); letter-spacing: 0.05em; }
+  .pd-chip.gold { border-color: rgba(201,169,110,0.4); color: #c9a96e; }
+  .pd-section-label { font-size: 10px; letter-spacing: 0.12em; color: rgba(255,255,255,0.35); text-transform: uppercase; margin-bottom: 4px; }
+  .pd-desc { font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.8; }
   .pd-add-btn {
     background: #c9a96e; color: #07120d; border: none; border-radius: 10px;
     padding: 14px 20px; font-size: 14px; font-weight: 700;
@@ -3322,7 +3327,18 @@
     document.getElementById('pdName').textContent  = card.dataset.name  || '';
     document.getElementById('pdTh').textContent    = card.dataset.th    || '';
     document.getElementById('pdPrice').textContent = '฿' + Number(card.dataset.price || 0).toLocaleString();
-    document.getElementById('pdDesc').textContent  = card.dataset.desc  || '';
+
+    // Chips (category, pet type)
+    const chips = [];
+    if (card.dataset.cat) chips.push(`<span class="pd-chip">${card.dataset.cat}</span>`);
+    if (card.dataset.pet) chips.push(`<span class="pd-chip gold">🐾 ${card.dataset.pet}</span>`);
+    document.getElementById('pdChips').innerHTML = chips.join('');
+
+    // Description
+    const desc = card.dataset.desc || '';
+    const descWrap = document.getElementById('pdDescWrap');
+    document.getElementById('pdDesc').textContent = desc;
+    descWrap.style.display = desc ? 'block' : 'none';
 
     // Images
     const pdImgs = document.getElementById('pdImgs');
@@ -3494,11 +3510,16 @@
     <button class="pd-close" onclick="closePD()">×</button>
     <div class="pd-imgs" id="pdImgs"></div>
     <div class="pd-info">
-      <div class="pd-tag"  id="pdTag"></div>
-      <div class="pd-name" id="pdName"></div>
-      <div class="pd-th"   id="pdTh"></div>
+      <div class="pd-tag"   id="pdTag"></div>
+      <div class="pd-name"  id="pdName"></div>
+      <div class="pd-th"    id="pdTh"></div>
       <div class="pd-price" id="pdPrice"></div>
-      <div class="pd-desc"  id="pdDesc"></div>
+      <div class="pd-divider"></div>
+      <div class="pd-chips" id="pdChips"></div>
+      <div id="pdDescWrap" style="display:none">
+        <div class="pd-section-label">รายละเอียด</div>
+        <div class="pd-desc" id="pdDesc"></div>
+      </div>
       <button class="pd-add-btn" id="pdAddBtn">+ เพิ่มลงตะกร้า</button>
     </div>
   </div>
@@ -3516,7 +3537,7 @@
     try {
       const { data, error } = await supabase
         .from('products')
-        .select('id, name, name_th, category, biome, price, tag, images')
+        .select('id, name, name_th, category, biome, price, tag, images, description, pet_type')
         .eq('active', true)
         .order('created_at', { ascending: false })
       if (error || !data || data.length === 0) return
@@ -3546,7 +3567,8 @@
             : `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 16l16-8 16 8v16l-16 8-16-8V16z"/></svg>`
           const imagesJson = JSON.stringify(p.images || []).replace(/"/g, '&quot;')
           const descE = (p.description || '').replace(/"/g, '&quot;')
-          return `<div class="fk-card" data-id="${p.id}" data-name="${nameE}" data-tag="${tagE}" data-th="${thE}" data-price="${p.price}" data-cat="${catTh}" data-images="${imagesJson}" data-desc="${descE}" onclick="openProductDetail(this)">
+          const petE  = (p.pet_type    || '').replace(/"/g, '&quot;')
+          return `<div class="fk-card" data-id="${p.id}" data-name="${nameE}" data-tag="${tagE}" data-th="${thE}" data-price="${p.price}" data-cat="${catTh}" data-images="${imagesJson}" data-desc="${descE}" data-pet="${petE}" onclick="openProductDetail(this)">
             <div class="fk-icon">${iconHtml}</div>
             <div class="fk-info">
               <div class="fk-tag">${tag}</div>
