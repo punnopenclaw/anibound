@@ -1683,18 +1683,20 @@ function dataURLtoBlob(dataURL) {
 }
 
 async function uploadProductImages(productId) {
+  const sb = window.supabase;
   return Promise.all(productImages.map(async (src, i) => {
     if (!src) return null;
     if (!src.startsWith('data:')) return src;
     try {
-      const resized = await resizeImage(src);
-      const blob  = dataURLtoBlob(resized);
-      const path  = `${productId}/${i}_${Date.now()}.jpg`;
-      const { error } = await supabase.storage
+      const resized  = await resizeImage(src);
+      const blob     = dataURLtoBlob(resized);
+      const ext      = blob.type === 'image/png' ? 'png' : 'jpg';
+      const path     = `${productId}/${i}_${Date.now()}.${ext}`;
+      const { error } = await sb.storage
         .from('product-images')
-        .upload(path, blob, { contentType: 'image/jpeg', upsert: true });
+        .upload(path, blob, { contentType: blob.type, upsert: true });
       if (error) { console.error('storage upload:', error.message); return null; }
-      const { data: { publicUrl } } = supabase.storage.from('product-images').getPublicUrl(path);
+      const { data: { publicUrl } } = sb.storage.from('product-images').getPublicUrl(path);
       return publicUrl;
     } catch (e) { console.error('uploadImg err:', e); return null; }
   }));
