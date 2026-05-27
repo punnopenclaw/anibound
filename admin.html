@@ -1241,7 +1241,8 @@
 // ─── Data (โหลดจาก Supabase) ───
 let orders   = [];
 let members  = [];
-let products = [];
+let products = JSON.parse(localStorage.getItem('anibound_products') || '[]');
+function persistProducts() { localStorage.setItem('anibound_products', JSON.stringify(products)); }
 
 // ─── State ───
 let orderFilter   = 'all';
@@ -1669,6 +1670,7 @@ function saveProduct() {
     products.push({ id: 'new' + Date.now(), name, th, cat, scene, price, tag, pet, images });
     showToast('เพิ่มสินค้า "' + name + '" แล้ว ✓');
   }
+  persistProducts();
   closeModal('productModal');
   renderProducts();
 }
@@ -1677,6 +1679,7 @@ function deleteProduct(id) {
   if (idx >= 0) {
     const name = products[idx].name;
     products.splice(idx, 1);
+    persistProducts();
     renderProducts();
     showToast('ลบสินค้า "' + name + '" แล้ว');
   }
