@@ -1693,33 +1693,39 @@ async function uploadProductImages(productId) {
 }
 
 async function saveProduct() {
-  const id    = document.getElementById('prodEditId').value;
-  const name  = document.getElementById('pName').value.trim();
-  const th    = document.getElementById('pTh').value.trim();
-  const cat   = document.getElementById('pCat').value;
-  const scene = document.getElementById('pScene').value;
-  const price = parseInt(document.getElementById('pPrice').value) || 0;
-  const tag   = document.getElementById('pTag').value.trim();
-  const pet   = document.getElementById('pPet').value === '__add__' ? '' : document.getElementById('pPet').value;
-  const desc  = document.getElementById('pDesc').value.trim();
-  if (!name) { alert('กรุณากรอกชื่อสินค้า'); return; }
+  try {
+    if (!window.supabase) { alert('ระบบยังโหลดไม่เสร็จ กรุณารอแล้วลองใหม่'); return; }
+    const id    = document.getElementById('prodEditId').value;
+    const name  = document.getElementById('pName').value.trim();
+    const th    = document.getElementById('pTh').value.trim();
+    const cat   = document.getElementById('pCat').value;
+    const scene = document.getElementById('pScene').value;
+    const price = parseInt(document.getElementById('pPrice').value) || 0;
+    const tag   = document.getElementById('pTag').value.trim();
+    const pet   = document.getElementById('pPet').value === '__add__' ? '' : document.getElementById('pPet').value;
+    const desc  = document.getElementById('pDesc').value.trim();
+    if (!name) { alert('กรุณากรอกชื่อสินค้า'); return; }
 
-  const pid = id || ('tmp_' + Date.now());
-  const uploadedImgs = await uploadProductImages(pid);
-  const images = uploadedImgs.filter(Boolean);
-  const row = { name, name_th: th, category: cat, biome: scene, price, tag, pet_type: pet, description: desc, images };
+    const pid = id || ('tmp_' + Date.now());
+    const uploadedImgs = await uploadProductImages(pid);
+    const images = uploadedImgs.filter(Boolean);
+    const row = { name, name_th: th, category: cat, biome: scene, price, tag, pet_type: pet, description: desc, images };
 
-  if (id) {
-    const { error } = await supabase.from('products').update(row).eq('id', id);
-    if (error) { alert('บันทึกไม่สำเร็จ: ' + error.message); return; }
-    showToast('แก้ไขสินค้า "' + name + '" แล้ว ✓');
-  } else {
-    const { error } = await supabase.from('products').insert(row);
-    if (error) { alert('บันทึกไม่สำเร็จ: ' + error.message); return; }
-    showToast('เพิ่มสินค้า "' + name + '" แล้ว ✓');
+    if (id) {
+      const { error } = await window.supabase.from('products').update(row).eq('id', id);
+      if (error) { alert('บันทึกไม่สำเร็จ: ' + error.message); return; }
+      showToast('แก้ไขสินค้า "' + name + '" แล้ว ✓');
+    } else {
+      const { error } = await window.supabase.from('products').insert(row);
+      if (error) { alert('บันทึกไม่สำเร็จ: ' + error.message); return; }
+      showToast('เพิ่มสินค้า "' + name + '" แล้ว ✓');
+    }
+    closeModal('productModal');
+    if (window.loadProducts) window.loadProducts();
+  } catch(e) {
+    alert('เกิดข้อผิดพลาด: ' + e.message);
+    console.error('saveProduct error:', e);
   }
-  closeModal('productModal');
-  renderProducts();
 }
 async function deleteProduct(id) {
   const p = products.find(x => x.id === id);
