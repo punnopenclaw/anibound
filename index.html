@@ -1365,6 +1365,7 @@
   }
   .scene.light-scene .fk-icon { background: rgba(255,255,255,0.5); border-color: rgba(0,0,0,0.1); }
   .fk-icon svg { width: 48px; height: 48px; color: var(--scene-accent); }
+  .fk-icon img { width: 100%; height: 100%; object-fit: cover; border-radius: 4px; display: block; }
   .fk-info { min-width: 0; }
   .fk-tag {
     font-family: var(--serif);
@@ -3376,9 +3377,62 @@
   });
 </script>
 
-<!-- ─────────── Supabase Auth: Profile nav ─────────── -->
+<!-- ─────────── Supabase Auth: Profile nav + Shop Products ─────────── -->
 <script type="module">
   import { supabase, getSession, signOut } from './supabase-client.js'
+
+  // ── Map: biome (DB) → scene id (HTML) ──────────────────────────
+  const BIOME_SCENE = { forest: 'jungle', coast: 'sea', river: 'wetland', highland: 'meadow' }
+  const CAT_TH = { food: 'อาหาร', toy: 'ของเล่น', care: 'ของใช้', acc: 'ของใช้', plant: 'ของใช้', home: 'ของใช้' }
+
+  async function loadShopProducts() {
+    try {
+      const { data, error } = await supabase
+        .from('products')
+        .select('id, name, name_th, category, biome, price, tag, images')
+        .eq('active', true)
+        .order('created_at', { ascending: false })
+      if (error || !data || data.length === 0) return
+
+      // Group by biome
+      const byBiome = {}
+      data.forEach(p => { if (p.biome) (byBiome[p.biome] = byBiome[p.biome] || []).push(p) })
+
+      Object.entries(BIOME_SCENE).forEach(([biome, sceneId]) => {
+        const products = byBiome[biome]
+        if (!products || products.length === 0) return  // keep hardcoded if no matching products
+
+        const section = document.getElementById(sceneId)
+        if (!section) return
+        const grid = section.querySelector('.fk-grid')
+        if (!grid) return
+
+        grid.innerHTML = products.map(p => {
+          const img    = (p.images || []).find(Boolean)
+          const catTh  = CAT_TH[p.category] || 'ของใช้'
+          const tag    = p.tag || catTh
+          const nameE  = (p.name    || '').replace(/"/g, '&quot;')
+          const thE    = (p.name_th || '').replace(/"/g, '&quot;')
+          const tagE   = tag.replace(/"/g, '&quot;')
+          const iconHtml = img
+            ? `<img src="${img}" alt="${nameE}" loading="lazy">`
+            : `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 16l16-8 16 8v16l-16 8-16-8V16z"/></svg>`
+          return `<div class="fk-card" data-id="${p.id}" data-name="${nameE}" data-tag="${tagE}" data-th="${thE}" data-price="${p.price}" data-cat="${catTh}" onclick="addToCart(this)">
+            <div class="fk-icon">${iconHtml}</div>
+            <div class="fk-info">
+              <div class="fk-tag">${tag}</div>
+              <div class="fk-name">${p.name}</div>
+              <div class="fk-th">${p.name_th || ''}</div>
+            </div>
+            <div class="fk-add">
+              <div class="fk-price">฿${Number(p.price).toLocaleString()}</div>
+              <button class="fk-add-btn" onclick="event.stopPropagation();addToCart(this.closest('.fk-card'))">+ ADD</button>
+            </div>
+          </div>`
+        }).join('')
+      })
+    } catch(e) { console.warn('loadShopProducts:', e) }
+  }
 
   async function initAuth() {
     const session = await getSession()
@@ -3442,6 +3496,7 @@
   })
 
   initAuth()
+  loadShopProducts()
 </script>
 
 </body>
