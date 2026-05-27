@@ -1665,18 +1665,30 @@ function openProductModal(id) {
   renderImgSlots();
   document.getElementById('productModal').classList.add('open');
 }
+function dataURLtoBlob(dataURL) {
+  const [header, b64] = dataURL.split(',');
+  const mime = header.match(/:(.*?);/)[1];
+  const bin  = atob(b64);
+  const arr  = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+  return new Blob([arr], { type: mime });
+}
+
 async function uploadProductImages(productId) {
   return Promise.all(productImages.map(async (src, i) => {
     if (!src) return null;
-    if (!src.startsWith('data:')) return src;  // already a storage URL
-    const resized = await resizeImage(src);
-    const res = await fetch(resized);
-    const blob = await res.blob();
-    const path = `${productId}/${i}_${Date.now()}.jpg`;
-    const { error } = await supabase.storage.from('product-images').upload(path, blob, { contentType: 'image/jpeg', upsert: true });
-    if (error) { console.error('upload img:', error); return null; }
-    const { data: { publicUrl } } = supabase.storage.from('product-images').getPublicUrl(path);
-    return publicUrl;
+    if (!src.startsWith('data:')) return src;
+    try {
+      const resized = await resizeImage(src);
+      const blob  = dataURLtoBlob(resized);
+      const path  = `${productId}/${i}_${Date.now()}.jpg`;
+      const { error } = await supabase.storage
+        .from('product-images')
+        .upload(path, blob, { contentType: 'image/jpeg', upsert: true });
+      if (error) { console.error('storage upload:', error.message); return null; }
+      const { data: { publicUrl } } = supabase.storage.from('product-images').getPublicUrl(path);
+      return publicUrl;
+    } catch (e) { console.error('uploadImg err:', e); return null; }
   }));
 }
 
