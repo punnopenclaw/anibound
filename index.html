@@ -3381,8 +3381,8 @@
 <script type="module">
   import { supabase, getSession, signOut } from './supabase-client.js'
 
-  // ── Map: biome (DB) → scene id (HTML) ──────────────────────────
-  const BIOME_SCENE = { forest: 'jungle', coast: 'sea', river: 'wetland', highland: 'meadow' }
+  // ── Map: biome (DB) = scene id (HTML) — ค่าเหมือนกันทุกตัว ──────
+  const BIOME_SCENE = { jungle: 'jungle', sea: 'sea', wetland: 'wetland', meadow: 'meadow' }
   const CAT_TH = { food: 'อาหาร', toy: 'ของเล่น', care: 'ของใช้', acc: 'ของใช้', plant: 'ของใช้', home: 'ของใช้' }
 
   async function loadShopProducts() {
