@@ -619,6 +619,27 @@
   .form-select { appearance: none; cursor: pointer; }
   .form-textarea { resize: vertical; min-height: 80px; }
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .img-upload-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .img-slot {
+    aspect-ratio: 1; border: 1.5px dashed var(--border); border-radius: 8px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    cursor: pointer; position: relative; overflow: hidden;
+    transition: border-color .15s, background .15s; color: var(--ink-soft); font-size: 11px; gap: 4px;
+  }
+  .img-slot:hover, .img-slot.drag-over { border-color: var(--gold); background: var(--gold-dim); }
+  .img-slot.has-img { border-style: solid; border-color: var(--border); cursor: grab; }
+  .img-slot.has-img:active { cursor: grabbing; }
+  .img-slot.drag-over { outline: 2px solid var(--gold); outline-offset: -2px; }
+  .img-slot img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+  .img-slot:first-child { border-color: var(--gold); }
+  .img-slot:first-child:not(.has-img)::after { content: 'รูปหลัก'; font-size: 10px; color: var(--gold); }
+  .img-del-btn {
+    position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; border-radius: 50%;
+    background: rgba(0,0,0,.65); color: #fff; border: none; font-size: 14px; line-height: 1;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity .15s;
+  }
+  .img-slot.has-img:hover .img-del-btn { opacity: 1; }
   .pet-select-wrap { display: flex; flex-direction: column; gap: 8px; }
   .pet-add-row { display: none; flex-direction: row; gap: 8px; align-items: center; }
   .pet-add-row .form-input { flex: 1; }
@@ -1020,6 +1041,9 @@
           <button class="filter-tab" onclick="setProdFilter(this,'ของเล่น')">ของเล่น</button>
           <button class="filter-tab" onclick="setProdFilter(this,'เสื้อ')">เสื้อ</button>
         </div>
+        <select class="form-select" id="petFilterSelect" onchange="setPetFilter(this.value)" style="height:32px;font-size:12px;padding:0 28px 0 10px;min-width:130px">
+          <option value="all">สัตว์เลี้ยง: ทั้งหมด</option>
+        </select>
         <div style="display:flex;gap:6px;margin-left:auto">
           <button class="btn btn-ghost btn-sm" id="viewGrid" onclick="setProdView('grid')" style="background:var(--gold-dim);border-color:var(--gold);color:var(--gold)">
             <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
@@ -1157,6 +1181,11 @@
         </div>
       </div>
       <div class="form-row">
+        <label class="form-label">รูปสินค้า <span style="color:var(--ink-soft);font-weight:400">(สูงสุด 6 ใบ)</span></label>
+        <div class="img-upload-grid" id="imgUploadGrid"></div>
+        <input type="file" id="imgFileInput" accept="image/*" style="display:none">
+      </div>
+      <div class="form-row">
         <label class="form-label">สัตว์เลี้ยง</label>
         <div class="pet-select-wrap">
           <select class="form-select" id="pPet" onchange="onPetSelectChange()">
@@ -1203,6 +1232,7 @@ let products = [];
 let orderFilter   = 'all';
 let memberFilter  = 'all';
 let prodFilter    = 'all';
+let prodPetFilter = 'all';
 let prodView      = 'grid';
 let currentOrderId = null;
 
@@ -1332,12 +1362,27 @@ function setProdFilter(btn, val) {
   prodFilter = val;
   filterProducts();
 }
+function setPetFilter(val) {
+  prodPetFilter = val;
+  filterProducts();
+}
+function refreshPetFilterOptions() {
+  const sel = document.getElementById('petFilterSelect');
+  const current = sel.value;
+  const petLabels = { dog:'หมา', cat:'แมว', bird:'นก', fish:'ปลา', rabbit:'กระต่าย', hamster:'แฮมสเตอร์' };
+  const used = [...new Set(products.map(p => p.pet).filter(Boolean))];
+  sel.innerHTML = '<option value="all">สัตว์เลี้ยง: ทั้งหมด</option>' +
+    used.map(v => `<option value="${v}">${petLabels[v] || v}</option>`).join('');
+  sel.value = used.includes(current) ? current : 'all';
+  if (sel.value !== current) { prodPetFilter = 'all'; }
+}
 function filterProducts() {
   const q = document.getElementById('productSearch').value.toLowerCase();
   const filtered = products.filter(p => {
     const matchCat = prodFilter === 'all' || p.cat === prodFilter;
+    const matchPet = prodPetFilter === 'all' || p.pet === prodPetFilter;
     const matchQ = p.name.toLowerCase().includes(q) || p.th.includes(q);
-    return matchCat && matchQ;
+    return matchCat && matchPet && matchQ;
   });
   document.getElementById('productCount').textContent = filtered.length + ' ชิ้น';
 
@@ -1411,7 +1456,7 @@ function setProdView(v) {
   active.style.borderColor   = 'var(--gold)';
   active.style.color         = 'var(--gold)';
 }
-function renderProducts() { filterProducts(); }
+function renderProducts() { refreshPetFilterOptions(); filterProducts(); }
 
 // ─── Order modal ───
 function openOrderModal(id) {
@@ -1440,6 +1485,81 @@ function saveOrderStatus() {
 }
 
 // ─── Product modal ───
+// ─── Product image upload ───
+let productImages = [null,null,null,null,null,null];
+let imgDragSrc = -1;
+
+function renderImgSlots() {
+  const grid = document.getElementById('imgUploadGrid');
+  if (!grid) return;
+  grid.innerHTML = productImages.map((src, i) => {
+    if (src) {
+      return `<div class="img-slot has-img" draggable="true"
+        ondragstart="imgDragStart(event,${i})"
+        ondragover="imgDragOver(event)"
+        ondragleave="imgDragLeave(event)"
+        ondrop="imgDrop(event,${i})">
+        <img src="${src}">
+        <button class="img-del-btn" onclick="event.stopPropagation();removeImg(${i})">×</button>
+      </div>`;
+    }
+    return `<div class="img-slot" onclick="imgSlotClick(${i})"
+      ondragover="imgDragOver(event)"
+      ondragleave="imgDragLeave(event)"
+      ondrop="imgDrop(event,${i})">
+      <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 3v10M3 8h10" stroke-linecap="round"/></svg>
+    </div>`;
+  }).join('');
+}
+function imgSlotClick(i) {
+  const inp = document.getElementById('imgFileInput');
+  inp._target = i;
+  inp.click();
+}
+function imgDragStart(e, i) {
+  imgDragSrc = i;
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', String(i));
+}
+function imgDragOver(e) {
+  e.preventDefault();
+  e.currentTarget.classList.add('drag-over');
+}
+function imgDragLeave(e) {
+  e.currentTarget.classList.remove('drag-over');
+}
+function imgDrop(e, targetIdx) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+    const file = e.dataTransfer.files[0];
+    if (!file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = ev => { productImages[targetIdx] = ev.target.result; renderImgSlots(); };
+    reader.readAsDataURL(file);
+  } else if (imgDragSrc >= 0 && imgDragSrc !== targetIdx) {
+    const tmp = productImages[imgDragSrc];
+    productImages[imgDragSrc] = productImages[targetIdx];
+    productImages[targetIdx] = tmp;
+    imgDragSrc = -1;
+    renderImgSlots();
+  }
+}
+function removeImg(i) {
+  productImages[i] = null;
+  renderImgSlots();
+}
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('imgFileInput').addEventListener('change', function() {
+    if (!this.files[0]) return;
+    const reader = new FileReader();
+    const idx = this._target;
+    reader.onload = ev => { productImages[idx] = ev.target.result; renderImgSlots(); };
+    reader.readAsDataURL(this.files[0]);
+    this.value = '';
+  });
+});
+
 // ─── Pet type dropdown ───
 function onPetSelectChange() {
   const sel = document.getElementById('pPet');
@@ -1483,6 +1603,8 @@ function openProductModal(id) {
   } else {
     document.getElementById('pPet').value = '';
   }
+  productImages = p && p.images ? [...p.images, ...Array(6).fill(null)].slice(0,6) : [null,null,null,null,null,null];
+  renderImgSlots();
   document.getElementById('productModal').classList.add('open');
 }
 function saveProduct() {
@@ -1493,14 +1615,15 @@ function saveProduct() {
   const scene = document.getElementById('pScene').value;
   const price = parseInt(document.getElementById('pPrice').value) || 0;
   const tag   = document.getElementById('pTag').value.trim();
-  const pet   = document.getElementById('pPet').value === '__add__' ? '' : document.getElementById('pPet').value;
+  const pet    = document.getElementById('pPet').value === '__add__' ? '' : document.getElementById('pPet').value;
+  const images = productImages.filter(Boolean);
   if (!name) { alert('กรุณากรอกชื่อสินค้า'); return; }
   if (id) {
     const p = products.find(x => x.id === id);
-    if (p) Object.assign(p, { name, th, cat, scene, price, tag, pet });
+    if (p) Object.assign(p, { name, th, cat, scene, price, tag, pet, images });
     showToast('แก้ไขสินค้า "' + name + '" แล้ว ✓');
   } else {
-    products.push({ id: 'new' + Date.now(), name, th, cat, scene, price, tag, pet });
+    products.push({ id: 'new' + Date.now(), name, th, cat, scene, price, tag, pet, images });
     showToast('เพิ่มสินค้า "' + name + '" แล้ว ✓');
   }
   closeModal('productModal');
