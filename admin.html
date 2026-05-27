@@ -1817,7 +1817,8 @@ renderDashOrders();
 <!-- ─── Supabase: โหลดข้อมูลจริง ─── -->
 <script type="module">
 import { supabase } from './supabase-client.js'
-window.supabase = supabase   // expose ให้ script ปกติเข้าถึงได้
+window.supabase      = supabase
+window.loadProducts  = loadProducts   // expose ให้ renderProducts() เรียกได้
 
 async function loadAll() {
   await Promise.all([loadOrders(), loadMembers(), loadProducts()])
