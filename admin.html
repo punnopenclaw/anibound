@@ -1652,7 +1652,7 @@ function openProductModal(id) {
   document.getElementById('pTh').value         = p ? p.th    : '';
   document.getElementById('pTag').value        = p ? p.tag   : '';
   document.getElementById('pPrice').value      = p ? p.price : '';
-  document.getElementById('pDesc').value       = '';
+  document.getElementById('pDesc').value       = p ? (p.desc || '') : '';
   document.getElementById('petAddRow').style.display = 'none';
   if (p) {
     document.getElementById('pCat').value   = p.cat;
@@ -1689,12 +1689,13 @@ async function saveProduct() {
   const price = parseInt(document.getElementById('pPrice').value) || 0;
   const tag   = document.getElementById('pTag').value.trim();
   const pet   = document.getElementById('pPet').value === '__add__' ? '' : document.getElementById('pPet').value;
+  const desc  = document.getElementById('pDesc').value.trim();
   if (!name) { alert('กรุณากรอกชื่อสินค้า'); return; }
 
   const pid = id || ('tmp_' + Date.now());
   const uploadedImgs = await uploadProductImages(pid);
   const images = uploadedImgs.filter(Boolean);
-  const row = { name, name_th: th, category: cat, biome: scene, price, tag, pet_type: pet, images };
+  const row = { name, name_th: th, category: cat, biome: scene, price, tag, pet_type: pet, description: desc, images };
 
   if (id) {
     const { error } = await supabase.from('products').update(row).eq('id', id);
@@ -1876,10 +1877,11 @@ async function loadProducts() {
     cat:    p.category   || '',
     scene:  p.biome      || '',
     price:  Number(p.price) || 0,
-    tag:    p.tag        || '',
-    pet:    p.pet_type   || '',
-    images: p.images     || [],
-    stock:  p.stock      || 0,
+    tag:    p.tag         || '',
+    pet:    p.pet_type    || '',
+    desc:   p.description || '',
+    images: p.images      || [],
+    stock:  p.stock       || 0,
   }))
   renderProducts()
 }
