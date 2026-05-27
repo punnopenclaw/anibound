@@ -619,6 +619,10 @@
   .form-select { appearance: none; cursor: pointer; }
   .form-textarea { resize: vertical; min-height: 80px; }
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .pet-select-wrap { display: flex; flex-direction: column; gap: 8px; }
+  .pet-add-row { display: none; flex-direction: row; gap: 8px; align-items: center; }
+  .pet-add-row .form-input { flex: 1; }
+  .pet-add-row .btn { flex-shrink: 0; }
 
   /* ── Order detail panel ── */
   .order-detail {
@@ -1153,6 +1157,25 @@
         </div>
       </div>
       <div class="form-row">
+        <label class="form-label">สัตว์เลี้ยง</label>
+        <div class="pet-select-wrap">
+          <select class="form-select" id="pPet" onchange="onPetSelectChange()">
+            <option value="">-- เลือกสัตว์เลี้ยง --</option>
+            <option value="dog">หมา (Dog)</option>
+            <option value="cat">แมว (Cat)</option>
+            <option value="bird">นก (Bird)</option>
+            <option value="fish">ปลา (Fish)</option>
+            <option value="rabbit">กระต่าย (Rabbit)</option>
+            <option value="hamster">แฮมสเตอร์ (Hamster)</option>
+            <option value="__add__">➕ เพิ่มประเภทใหม่…</option>
+          </select>
+          <div class="pet-add-row" id="petAddRow">
+            <input class="form-input" id="petAddInput" placeholder="ชื่อสัตว์เลี้ยงใหม่…" onkeydown="if(event.key==='Enter'){event.preventDefault();addPetType();}">
+            <button class="btn btn-primary" type="button" onclick="addPetType()">เพิ่ม</button>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
         <label class="form-label">รายละเอียด</label>
         <textarea class="form-textarea" id="pDesc" placeholder="รายละเอียดสินค้า…"></textarea>
       </div>
@@ -1417,6 +1440,32 @@ function saveOrderStatus() {
 }
 
 // ─── Product modal ───
+// ─── Pet type dropdown ───
+function onPetSelectChange() {
+  const sel = document.getElementById('pPet');
+  const row = document.getElementById('petAddRow');
+  if (sel.value === '__add__') {
+    row.style.display = 'flex';
+    document.getElementById('petAddInput').focus();
+  } else {
+    row.style.display = 'none';
+  }
+}
+function addPetType() {
+  const input = document.getElementById('petAddInput');
+  const val = input.value.trim();
+  if (!val) return;
+  const sel = document.getElementById('pPet');
+  const addOpt = sel.querySelector('option[value="__add__"]');
+  const opt = document.createElement('option');
+  opt.value = val.toLowerCase().replace(/\s+/g, '_');
+  opt.textContent = val;
+  sel.insertBefore(opt, addOpt);
+  sel.value = opt.value;
+  input.value = '';
+  document.getElementById('petAddRow').style.display = 'none';
+}
+
 function openProductModal(id) {
   const p = id ? products.find(x => x.id === id) : null;
   document.getElementById('productModalTitle').textContent = p ? 'แก้ไขสินค้า' : 'เพิ่มสินค้าใหม่';
@@ -1426,9 +1475,13 @@ function openProductModal(id) {
   document.getElementById('pTag').value        = p ? p.tag   : '';
   document.getElementById('pPrice').value      = p ? p.price : '';
   document.getElementById('pDesc').value       = '';
+  document.getElementById('petAddRow').style.display = 'none';
   if (p) {
     document.getElementById('pCat').value   = p.cat;
     document.getElementById('pScene').value = p.scene;
+    document.getElementById('pPet').value   = p.pet || '';
+  } else {
+    document.getElementById('pPet').value = '';
   }
   document.getElementById('productModal').classList.add('open');
 }
@@ -1440,13 +1493,14 @@ function saveProduct() {
   const scene = document.getElementById('pScene').value;
   const price = parseInt(document.getElementById('pPrice').value) || 0;
   const tag   = document.getElementById('pTag').value.trim();
+  const pet   = document.getElementById('pPet').value === '__add__' ? '' : document.getElementById('pPet').value;
   if (!name) { alert('กรุณากรอกชื่อสินค้า'); return; }
   if (id) {
     const p = products.find(x => x.id === id);
-    if (p) Object.assign(p, { name, th, cat, scene, price, tag });
+    if (p) Object.assign(p, { name, th, cat, scene, price, tag, pet });
     showToast('แก้ไขสินค้า "' + name + '" แล้ว ✓');
   } else {
-    products.push({ id: 'new' + Date.now(), name, th, cat, scene, price, tag });
+    products.push({ id: 'new' + Date.now(), name, th, cat, scene, price, tag, pet });
     showToast('เพิ่มสินค้า "' + name + '" แล้ว ✓');
   }
   closeModal('productModal');
