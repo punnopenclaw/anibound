@@ -1482,13 +1482,19 @@ function resizeImage(dataUrl, max = 900) {
   return new Promise(resolve => {
     if (!dataUrl || !dataUrl.startsWith('data:')) { resolve(dataUrl); return; }
     const img = new Image();
+    const done = (result) => resolve(result);
+    const timer = setTimeout(() => done(dataUrl), 8000); // fallback ถ้า hang
     img.onload = () => {
-      let w = img.width, h = img.height;
-      if (w > max || h > max) { const r = Math.min(max/w, max/h); w = Math.round(w*r); h = Math.round(h*r); }
-      const c = document.createElement('canvas'); c.width = w; c.height = h;
-      c.getContext('2d').drawImage(img, 0, 0, w, h);
-      resolve(c.toDataURL('image/jpeg', 0.82));
+      clearTimeout(timer);
+      try {
+        let w = img.width, h = img.height;
+        if (w > max || h > max) { const r = Math.min(max/w, max/h); w = Math.round(w*r); h = Math.round(h*r); }
+        const c = document.createElement('canvas'); c.width = w; c.height = h;
+        c.getContext('2d').drawImage(img, 0, 0, w, h);
+        done(c.toDataURL('image/jpeg', 0.82));
+      } catch(e) { done(dataUrl); }
     };
+    img.onerror = () => { clearTimeout(timer); done(dataUrl); };
     img.src = dataUrl;
   });
 }
@@ -1693,7 +1699,6 @@ async function uploadProductImages(productId) {
 }
 
 async function saveProduct() {
-  alert('🔔 saveProduct called! supabase=' + (typeof window.supabase));
   try {
     if (!window.supabase) { alert('ระบบยังโหลดไม่เสร็จ กรุณารอแล้วลองใหม่'); return; }
     const id    = document.getElementById('prodEditId').value;
