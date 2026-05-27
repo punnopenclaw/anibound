@@ -1693,6 +1693,7 @@ async function uploadProductImages(productId) {
 }
 
 async function saveProduct() {
+  alert('🔔 saveProduct called! supabase=' + (typeof window.supabase));
   try {
     if (!window.supabase) { alert('ระบบยังโหลดไม่เสร็จ กรุณารอแล้วลองใหม่'); return; }
     const id    = document.getElementById('prodEditId').value;
