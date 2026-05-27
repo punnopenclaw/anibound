@@ -1665,6 +1665,21 @@ function openProductModal(id) {
   renderImgSlots();
   document.getElementById('productModal').classList.add('open');
 }
+async function uploadProductImages(productId) {
+  return Promise.all(productImages.map(async (src, i) => {
+    if (!src) return null;
+    if (!src.startsWith('data:')) return src;  // already a storage URL
+    const resized = await resizeImage(src);
+    const res = await fetch(resized);
+    const blob = await res.blob();
+    const path = `${productId}/${i}_${Date.now()}.jpg`;
+    const { error } = await supabase.storage.from('product-images').upload(path, blob, { contentType: 'image/jpeg', upsert: true });
+    if (error) { console.error('upload img:', error); return null; }
+    const { data: { publicUrl } } = supabase.storage.from('product-images').getPublicUrl(path);
+    return publicUrl;
+  }));
+}
+
 async function saveProduct() {
   const id    = document.getElementById('prodEditId').value;
   const name  = document.getElementById('pName').value.trim();
@@ -1676,7 +1691,9 @@ async function saveProduct() {
   const pet   = document.getElementById('pPet').value === '__add__' ? '' : document.getElementById('pPet').value;
   if (!name) { alert('กรุณากรอกชื่อสินค้า'); return; }
 
-  const images = await Promise.all(productImages.filter(Boolean).map(src => resizeImage(src)));
+  const pid = id || ('tmp_' + Date.now());
+  const uploadedImgs = await uploadProductImages(pid);
+  const images = uploadedImgs.filter(Boolean);
   const row = { name, name_th: th, category: cat, biome: scene, price, tag, pet_type: pet, images };
 
   if (id) {
