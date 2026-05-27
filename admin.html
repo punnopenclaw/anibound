@@ -1489,7 +1489,10 @@ function resizeImage(dataUrl, max = 900) {
         let w = img.width, h = img.height;
         if (w > max || h > max) { const r = Math.min(max/w, max/h); w = Math.round(w*r); h = Math.round(h*r); }
         const c = document.createElement('canvas'); c.width = w; c.height = h;
-        c.getContext('2d').drawImage(img, 0, 0, w, h);
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, w, h);
+        ctx.drawImage(img, 0, 0, w, h);
         done(c.toDataURL('image/jpeg', 0.82));
       } catch(e) { done(dataUrl); }
     };
