@@ -1241,8 +1241,7 @@
 // ─── Data (โหลดจาก Supabase) ───
 let orders   = [];
 let members  = [];
-let products = JSON.parse(localStorage.getItem('anibound_products') || '[]');
-function persistProducts() { localStorage.setItem('anibound_products', JSON.stringify(products)); }
+let products = [];
 
 // ─── State ───
 let orderFilter   = 'all';
@@ -1477,7 +1476,22 @@ function setProdView(v) {
   active.style.borderColor   = 'var(--gold)';
   active.style.color         = 'var(--gold)';
 }
-function renderProducts() { refreshPetFilterOptions(); filterProducts(); }
+function renderProducts() { loadProducts(); }
+
+function resizeImage(dataUrl, max = 900) {
+  return new Promise(resolve => {
+    if (!dataUrl || !dataUrl.startsWith('data:')) { resolve(dataUrl); return; }
+    const img = new Image();
+    img.onload = () => {
+      let w = img.width, h = img.height;
+      if (w > max || h > max) { const r = Math.min(max/w, max/h); w = Math.round(w*r); h = Math.round(h*r); }
+      const c = document.createElement('canvas'); c.width = w; c.height = h;
+      c.getContext('2d').drawImage(img, 0, 0, w, h);
+      resolve(c.toDataURL('image/jpeg', 0.82));
+    };
+    img.src = dataUrl;
+  });
+}
 
 // ─── Order modal ───
 function openOrderModal(id) {
@@ -1651,7 +1665,7 @@ function openProductModal(id) {
   renderImgSlots();
   document.getElementById('productModal').classList.add('open');
 }
-function saveProduct() {
+async function saveProduct() {
   const id    = document.getElementById('prodEditId').value;
   const name  = document.getElementById('pName').value.trim();
   const th    = document.getElementById('pTh').value.trim();
@@ -1659,30 +1673,30 @@ function saveProduct() {
   const scene = document.getElementById('pScene').value;
   const price = parseInt(document.getElementById('pPrice').value) || 0;
   const tag   = document.getElementById('pTag').value.trim();
-  const pet    = document.getElementById('pPet').value === '__add__' ? '' : document.getElementById('pPet').value;
-  const images = productImages.filter(Boolean);
+  const pet   = document.getElementById('pPet').value === '__add__' ? '' : document.getElementById('pPet').value;
   if (!name) { alert('กรุณากรอกชื่อสินค้า'); return; }
+
+  const images = await Promise.all(productImages.filter(Boolean).map(src => resizeImage(src)));
+  const row = { name, name_th: th, category: cat, biome: scene, price, tag, pet_type: pet, images };
+
   if (id) {
-    const p = products.find(x => x.id === id);
-    if (p) Object.assign(p, { name, th, cat, scene, price, tag, pet, images });
+    const { error } = await supabase.from('products').update(row).eq('id', id);
+    if (error) { alert('บันทึกไม่สำเร็จ: ' + error.message); return; }
     showToast('แก้ไขสินค้า "' + name + '" แล้ว ✓');
   } else {
-    products.push({ id: 'new' + Date.now(), name, th, cat, scene, price, tag, pet, images });
+    const { error } = await supabase.from('products').insert(row);
+    if (error) { alert('บันทึกไม่สำเร็จ: ' + error.message); return; }
     showToast('เพิ่มสินค้า "' + name + '" แล้ว ✓');
   }
-  persistProducts();
   closeModal('productModal');
   renderProducts();
 }
-function deleteProduct(id) {
-  const idx = products.findIndex(x => x.id === id);
-  if (idx >= 0) {
-    const name = products[idx].name;
-    products.splice(idx, 1);
-    persistProducts();
-    renderProducts();
-    showToast('ลบสินค้า "' + name + '" แล้ว');
-  }
+async function deleteProduct(id) {
+  const p = products.find(x => x.id === id);
+  const { error } = await supabase.from('products').delete().eq('id', id);
+  if (error) { alert('ลบไม่สำเร็จ: ' + error.message); return; }
+  showToast('ลบสินค้า "' + (p ? p.name : '') + '" แล้ว');
+  renderProducts();
 }
 
 // ─── Modal close ───
@@ -1838,14 +1852,16 @@ async function loadProducts() {
     .order('created_at', { ascending: false })
   if (error) { console.warn('products:', error.message); return; }
   products = (data || []).map(p => ({
-    id:    p.id,
-    name:  p.name,
-    th:    p.name_th || '',
-    cat:   p.category,
-    scene: p.biome || '',
-    price: p.price,
-    tag:   p.description || '',
-    stock: p.stock,
+    id:     p.id,
+    name:   p.name,
+    th:     p.name_th    || '',
+    cat:    p.category   || '',
+    scene:  p.biome      || '',
+    price:  Number(p.price) || 0,
+    tag:    p.tag        || '',
+    pet:    p.pet_type   || '',
+    images: p.images     || [],
+    stock:  p.stock      || 0,
   }))
   renderProducts()
 }
