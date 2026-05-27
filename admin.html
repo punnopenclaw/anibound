@@ -1905,7 +1905,7 @@ async function loadProducts() {
     tag:    p.tag         || '',
     pet:    p.pet_type    || '',
     desc:   p.description || '',
-    images: p.images      || [],
+    images: (p.images || []).filter(img => img && img.startsWith('http')),
     stock:  p.stock       || 0,
   }))
   renderProducts()
