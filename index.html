@@ -1336,13 +1336,13 @@
     border-radius: 4px;
     padding: 18px;
     display: grid;
-    grid-template-columns: 80px 1fr auto;
+    grid-template-columns: 80px minmax(0,1fr) auto;
     gap: 18px;
     align-items: center;
     backdrop-filter: blur(8px);
     transition: all 0.3s ease;
     cursor: pointer;
-    min-width: clamp(260px, 38vw, 400px);
+    width: clamp(260px, 38vw, 380px);
     flex-shrink: 0;
     scroll-snap-align: start;
   }
