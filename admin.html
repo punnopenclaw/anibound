@@ -1180,6 +1180,7 @@
             <option value="jungle">ป่า (Jungle)</option>
             <option value="sea">ทะเล (Ocean)</option>
             <option value="wetland">บึง (Wetland)</option>
+            <option value="highland">เขาสูง (Highland)</option>
             <option value="meadow">ทุ่ง (Meadow)</option>
           </select>
         </div>
@@ -1253,7 +1254,7 @@ let currentOrderId = null;
 // ─── Status helpers ───
 const statusLabel = { pending:'รอยืนยัน', confirm:'ยืนยันแล้ว', shipped:'จัดส่งแล้ว', done:'สำเร็จ', cancel:'ยกเลิก' };
 const statusBadge = { pending:'badge-pending', confirm:'badge-confirm', shipped:'badge-shipped', done:'badge-done', cancel:'badge-cancel' };
-const sceneLabel  = { jungle:'ป่า', sea:'ทะเล', wetland:'บึง', meadow:'ทุ่ง' };
+const sceneLabel  = { jungle:'ป่า', sea:'ทะเล', wetland:'บึง', meadow:'ทุ่ง', highland:'เขา' };
 
 // ─── Navigation ───
 function switchView(name) {

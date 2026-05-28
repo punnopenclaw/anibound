@@ -1699,6 +1699,116 @@
   .cart-toast .dot { width: 6px; height: 6px; border-radius: 50%; background: #7fc77f; box-shadow: 0 0 8px #7fc77f; }
   .cart-toast .it { font-family: var(--serif); font-style: italic; color: #d4a574; }
 
+  /* ─────────── SCENE 5: HIGHLAND ─────────── */
+  #highland {
+    --scene-bg: #161e28;
+    --scene-accent: #90bfaa;
+    background: linear-gradient(180deg,
+      #0b1018 0%,
+      #131b26 25%,
+      #182430 50%,
+      #1c2e28 75%,
+      #162018 100%);
+    color: #d4e8df;
+  }
+  #highland.scene { color: #d4e8df; }
+
+  /* Stars */
+  .hl-star {
+    position: absolute; border-radius: 50%;
+    background: rgba(220,240,232,0.85);
+    animation: hlTwinkle var(--d,3s) ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+  @keyframes hlTwinkle {
+    from { opacity: 0.15; transform: scale(0.8); }
+    to   { opacity: 0.9;  transform: scale(1.2); }
+  }
+
+  /* Far mountain range */
+  .hl-peak-far {
+    position: absolute; bottom: 28%; left: -2%; right: -2%; z-index: 1;
+    pointer-events: none; opacity: 0.45;
+  }
+  /* Near mountain range */
+  .hl-peak-near {
+    position: absolute; bottom: 14%; left: -2%; right: -2%; z-index: 2;
+    pointer-events: none; opacity: 0.75;
+  }
+  /* Rocky ground */
+  .hl-ground {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 20%;
+    background: linear-gradient(180deg, #1e2c22 0%, #151e18 60%, #0e1510 100%);
+    z-index: 5;
+  }
+  .hl-ground::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 40% at 30% 0%, rgba(100,160,120,0.06),transparent),
+                radial-gradient(ellipse 40% 60% at 75% 0%, rgba(80,120,100,0.06),transparent);
+  }
+
+  /* Mist layers */
+  .hl-mist {
+    position: absolute; left: -15%; right: -15%; z-index: 3;
+    height: 50px; border-radius: 50%;
+    background: rgba(200,225,215,0.06);
+    filter: blur(18px);
+    pointer-events: none;
+    animation: hlMist var(--d,20s) ease-in-out infinite alternate;
+  }
+  @keyframes hlMist {
+    from { transform: translateX(-6%) scaleX(1);   opacity: var(--oa,0.6); }
+    to   { transform: translateX(6%)  scaleX(1.08); opacity: var(--ob,0.25); }
+  }
+
+  /* Pine trees */
+  .hl-pine {
+    position: absolute; bottom: 18%; z-index: 4; pointer-events: none;
+  }
+  .hl-pine svg { display: block; }
+
+  /* Serow (กวางผา) */
+  .hl-serow {
+    position: absolute; z-index: 6; pointer-events: none;
+    animation: hlSerGraze 5s ease-in-out infinite alternate;
+  }
+  @keyframes hlSerGraze {
+    from { transform: translateX(0) scaleX(1); }
+    to   { transform: translateX(12px) scaleX(1); }
+  }
+
+  /* Mushrooms */
+  .hl-shroom {
+    position: absolute; z-index: 6; pointer-events: none;
+    animation: hlShroomBob var(--d,4s) ease-in-out infinite alternate;
+  }
+  @keyframes hlShroomBob {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-3px); }
+  }
+
+  /* Rocks */
+  .hl-rock {
+    position: absolute; bottom: 19%; z-index: 5;
+    border-radius: 40% 50% 30% 45%;
+    pointer-events: none;
+    background: #2a3830;
+  }
+
+  /* Moon */
+  .hl-moon {
+    position: absolute; top: 10%; right: 12%; z-index: 1;
+    width: 64px; height: 64px; border-radius: 50%;
+    background: radial-gradient(circle at 40% 40%, #e8f4ee, #c0d8cc);
+    box-shadow: 0 0 30px rgba(192,216,204,0.25), 0 0 60px rgba(192,216,204,0.1);
+    pointer-events: none;
+    animation: hlMoonGlow 8s ease-in-out infinite alternate;
+  }
+  @keyframes hlMoonGlow {
+    from { box-shadow: 0 0 24px rgba(192,216,204,0.2), 0 0 50px rgba(192,216,204,0.08); }
+    to   { box-shadow: 0 0 40px rgba(192,216,204,0.35), 0 0 80px rgba(192,216,204,0.15); }
+  }
+
   /* ─────────── Product Detail Modal ─────────── */
   .pd-overlay {
     position: fixed; inset: 0; background: rgba(0,0,0,0.75);
@@ -1830,6 +1940,7 @@
     <button data-target="sea"><span class="num">02</span><span>ทะเล</span></button>
     <button data-target="wetland"><span class="num">03</span><span>บึง</span></button>
     <button data-target="meadow"><span class="num">04</span><span>ทุ่ง</span></button>
+    <button data-target="highland"><span class="num">05</span><span>เขา</span></button>
   </nav>
   <div class="nav-actions">
     <!-- Profile button (login link when logged out, dropdown when logged in) -->
@@ -1933,6 +2044,11 @@
         <span class="bn">04 · meadow</span>
         <span class="bt">ทุ่งกว้าง</span>
         <span class="bs">where the sun stays</span>
+      </div>
+      <div class="bcell">
+        <span class="bn">05 · highland</span>
+        <span class="bt">เขาสูง</span>
+        <span class="bs">mist above the stone</span>
       </div>
     </div>
   </div>
@@ -3107,6 +3223,345 @@
 </section>
 
 
+<!-- ─────────── SCENE 5: HIGHLAND ─────────── -->
+<section id="highland" class="scene" data-scene="highland" data-nav="dark">
+  <div class="backdrop">
+
+    <!-- Moon -->
+    <div class="hl-moon"></div>
+
+    <!-- Stars -->
+    <div class="hl-star" style="width:2px;height:2px;top:6%;left:18%;--d:2.4s"></div>
+    <div class="hl-star" style="width:3px;height:3px;top:9%;left:32%;--d:3.1s"></div>
+    <div class="hl-star" style="width:2px;height:2px;top:5%;left:48%;--d:2.7s"></div>
+    <div class="hl-star" style="width:2px;height:2px;top:12%;left:62%;--d:4s"></div>
+    <div class="hl-star" style="width:3px;height:3px;top:7%;left:75%;--d:2.2s"></div>
+    <div class="hl-star" style="width:2px;height:2px;top:14%;left:88%;--d:3.6s"></div>
+    <div class="hl-star" style="width:2px;height:2px;top:4%;left:8%;--d:5s"></div>
+    <div class="hl-star" style="width:1.5px;height:1.5px;top:16%;left:55%;--d:2.9s"></div>
+    <div class="hl-star" style="width:2px;height:2px;top:8%;left:40%;--d:3.8s"></div>
+    <div class="hl-star" style="width:2px;height:2px;top:11%;left:22%;--d:4.5s"></div>
+
+    <!-- Far mountains -->
+    <svg class="hl-peak-far" viewBox="0 0 1600 300" preserveAspectRatio="none">
+      <path d="M0 300 L0 200 L80 140 L160 180 L260 90 L360 150 L440 80 L520 130 L620 60 L700 110 L800 40 L880 100 L960 70 L1040 120 L1140 50 L1220 95 L1300 65 L1380 120 L1460 85 L1600 150 L1600 300 Z"
+            fill="#2a3c4a" />
+    </svg>
+
+    <!-- Near mountains -->
+    <svg class="hl-peak-near" viewBox="0 0 1600 300" preserveAspectRatio="none">
+      <path d="M0 300 L0 220 L100 160 L200 210 L320 100 L420 170 L500 110 L580 160 L680 70 L780 140 L860 90 L940 145 L1020 80 L1120 150 L1200 100 L1300 160 L1380 105 L1460 155 L1600 190 L1600 300 Z"
+            fill="#1e2e26" />
+    </svg>
+
+    <!-- Mist layers -->
+    <div class="hl-mist" style="top:38%;height:55px;--d:22s;--oa:0.5;--ob:0.2"></div>
+    <div class="hl-mist" style="top:44%;height:40px;--d:17s;--oa:0.4;--ob:0.15"></div>
+    <div class="hl-mist" style="top:52%;height:65px;--d:26s;--oa:0.35;--ob:0.1"></div>
+
+    <!-- Pine trees -->
+    <div class="hl-pine" style="left:3%">
+      <svg width="28" height="70" viewBox="0 0 28 70" fill="none">
+        <polygon points="14,2 28,30 0,30" fill="#1a2e20" opacity="0.9"/>
+        <polygon points="14,14 28,42 0,42" fill="#162818" opacity="0.9"/>
+        <polygon points="14,26 28,58 0,58" fill="#122214" opacity="0.95"/>
+        <rect x="11" y="58" width="6" height="12" fill="#0e1c10"/>
+      </svg>
+    </div>
+    <div class="hl-pine" style="left:7%">
+      <svg width="22" height="55" viewBox="0 0 22 55" fill="none">
+        <polygon points="11,2 22,22 0,22" fill="#1e3224"/>
+        <polygon points="11,12 22,34 0,34" fill="#182c1e"/>
+        <polygon points="11,22 22,46 0,46" fill="#142618"/>
+        <rect x="8" y="46" width="5" height="9" fill="#101e12"/>
+      </svg>
+    </div>
+    <div class="hl-pine" style="left:11%">
+      <svg width="32" height="80" viewBox="0 0 32 80" fill="none">
+        <polygon points="16,2 32,34 0,34" fill="#192a1e" opacity="0.95"/>
+        <polygon points="16,16 32,48 0,48" fill="#15241a"/>
+        <polygon points="16,30 32,64 0,64" fill="#111e16"/>
+        <rect x="13" y="64" width="7" height="16" fill="#0d1812"/>
+      </svg>
+    </div>
+    <div class="hl-pine" style="right:4%">
+      <svg width="26" height="65" viewBox="0 0 26 65" fill="none">
+        <polygon points="13,2 26,28 0,28" fill="#1b2e22"/>
+        <polygon points="13,14 26,40 0,40" fill="#162818"/>
+        <polygon points="13,26 26,54 0,54" fill="#122214"/>
+        <rect x="10" y="54" width="5" height="11" fill="#0e1c10"/>
+      </svg>
+    </div>
+    <div class="hl-pine" style="right:9%">
+      <svg width="20" height="50" viewBox="0 0 20 50" fill="none">
+        <polygon points="10,2 20,20 0,20" fill="#1e3224"/>
+        <polygon points="10,10 20,30 0,30" fill="#182c1e"/>
+        <polygon points="10,20 20,42 0,42" fill="#142618"/>
+        <rect x="7" y="42" width="5" height="8" fill="#101e12"/>
+      </svg>
+    </div>
+
+    <!-- Rocks -->
+    <div class="hl-rock" style="width:70px;height:28px;left:20%;bottom:18%;border-radius:45% 55% 40% 50%"></div>
+    <div class="hl-rock" style="width:45px;height:20px;left:23%;bottom:19%;background:#222e28;border-radius:50% 40% 55% 35%"></div>
+    <div class="hl-rock" style="width:90px;height:32px;right:22%;bottom:18%;border-radius:40% 55% 35% 50%"></div>
+    <div class="hl-rock" style="width:55px;height:22px;right:18%;bottom:19%;background:#1e2a24;border-radius:55% 40% 50% 45%"></div>
+
+    <!-- กวางผา (Serow) -->
+    <svg class="hl-serow" style="bottom:19%;left:28%;width:100px;height:70px" viewBox="0 0 100 70" aria-label="กวางผา">
+      <!-- shadow -->
+      <ellipse cx="50" cy="67" rx="28" ry="3" fill="#0a1208" opacity="0.4"/>
+      <!-- body -->
+      <ellipse cx="46" cy="46" rx="26" ry="14" fill="#4a5c48"/>
+      <!-- neck -->
+      <ellipse cx="66" cy="36" rx="8" ry="12" fill="#506050" transform="rotate(-15 66 36)"/>
+      <!-- head -->
+      <ellipse cx="72" cy="26" rx="11" ry="9" fill="#526252"/>
+      <!-- snout -->
+      <ellipse cx="81" cy="29" rx="5" ry="4" fill="#4a5848"/>
+      <!-- horns -->
+      <path d="M70 18 Q68 8 65 6" stroke="#3a4838" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <path d="M74 17 Q74 7 72 5" stroke="#3a4838" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <!-- horn tips curve back -->
+      <path d="M65 6 Q62 4 63 8" stroke="#3a4838" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <path d="M72 5 Q70 3 71 7" stroke="#3a4838" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <!-- ear -->
+      <ellipse cx="67" cy="20" rx="4" ry="6" fill="#4a5848" transform="rotate(20 67 20)"/>
+      <!-- eye -->
+      <circle cx="76" cy="24" r="2" fill="#0a100a"/>
+      <circle cx="77" cy="23" r="0.6" fill="#fff" opacity="0.8"/>
+      <!-- nose -->
+      <ellipse cx="83" cy="31" rx="1.5" ry="1" fill="#2a3028"/>
+      <!-- legs -->
+      <line x1="34" y1="56" x2="30" y2="68" stroke="#3a4838" stroke-width="3" stroke-linecap="round"/>
+      <line x1="42" y1="57" x2="40" y2="68" stroke="#3a4838" stroke-width="3" stroke-linecap="round"/>
+      <line x1="54" y1="57" x2="56" y2="68" stroke="#3a4838" stroke-width="3" stroke-linecap="round"/>
+      <line x1="62" y1="56" x2="66" y2="68" stroke="#3a4838" stroke-width="3" stroke-linecap="round"/>
+      <!-- hooves -->
+      <ellipse cx="30" cy="68.5" rx="3" ry="1.5" fill="#2a3028"/>
+      <ellipse cx="40" cy="68.5" rx="3" ry="1.5" fill="#2a3028"/>
+      <ellipse cx="56" cy="68.5" rx="3" ry="1.5" fill="#2a3028"/>
+      <ellipse cx="66" cy="68.5" rx="3" ry="1.5" fill="#2a3028"/>
+      <!-- tail -->
+      <ellipse cx="22" cy="43" rx="5" ry="4" fill="#606858" transform="rotate(-20 22 43)"/>
+    </svg>
+
+    <!-- เห็ด (Mushrooms) -->
+    <svg class="hl-shroom" style="bottom:20%;right:28%;width:40px;height:50px;--d:3.5s" viewBox="0 0 40 50">
+      <!-- stem -->
+      <path d="M14 28 Q12 42 11 48 L29 48 Q28 42 26 28Z" fill="#d4c89a"/>
+      <!-- cap -->
+      <ellipse cx="20" cy="25" rx="18" ry="12" fill="#c05030"/>
+      <!-- cap underside -->
+      <ellipse cx="20" cy="27" rx="15" ry="5" fill="#e8c8a0"/>
+      <!-- spots -->
+      <circle cx="14" cy="19" r="3" fill="#f0e0c0" opacity="0.8"/>
+      <circle cx="24" cy="18" r="2.5" fill="#f0e0c0" opacity="0.8"/>
+      <circle cx="20" cy="24" r="2" fill="#f0e0c0" opacity="0.7"/>
+      <circle cx="10" cy="24" r="1.8" fill="#f0e0c0" opacity="0.6"/>
+      <circle cx="30" cy="23" r="1.5" fill="#f0e0c0" opacity="0.6"/>
+    </svg>
+    <svg class="hl-shroom" style="bottom:20%;right:32%;width:26px;height:34px;--d:5s" viewBox="0 0 40 50">
+      <path d="M14 28 Q12 42 11 48 L29 48 Q28 42 26 28Z" fill="#c8bc8e"/>
+      <ellipse cx="20" cy="25" rx="18" ry="12" fill="#8a6030"/>
+      <ellipse cx="20" cy="27" rx="15" ry="5" fill="#d8b888"/>
+      <circle cx="15" cy="20" r="2.5" fill="#f0d8a0" opacity="0.8"/>
+      <circle cx="24" cy="19" r="2" fill="#f0d8a0" opacity="0.8"/>
+      <circle cx="20" cy="25" r="1.5" fill="#f0d8a0" opacity="0.6"/>
+    </svg>
+    <svg class="hl-shroom" style="bottom:19.5%;left:38%;width:22px;height:28px;--d:4.2s" viewBox="0 0 40 50">
+      <path d="M14 28 Q12 42 11 48 L29 48 Q28 42 26 28Z" fill="#cec4a0"/>
+      <ellipse cx="20" cy="25" rx="18" ry="12" fill="#b87840"/>
+      <ellipse cx="20" cy="27" rx="15" ry="5" fill="#dcc8a0"/>
+      <circle cx="13" cy="22" r="2" fill="#efe0b8" opacity="0.8"/>
+      <circle cx="26" cy="21" r="1.8" fill="#efe0b8" opacity="0.8"/>
+    </svg>
+
+    <!-- Rocky ground -->
+    <div class="hl-ground"></div>
+
+  </div><!-- /backdrop -->
+
+  <div class="copy">
+    <div class="copy-left">
+      <div class="meta">
+        <span class="scene-num">05 / v</span>
+        <span class="line"></span>
+        <span>เขาสูง · highland</span>
+      </div>
+      <h2>เขาสูง<br/>กับ <em>สายหมอก</em><br/>และ <em>กวาง</em>.</h2>
+      <p class="thai-sub">ลมเย็นพัดผ่านหน้าผา กวางผาเหยียบหิน กลิ่นดินชื้นและเห็ดป่า.</p>
+      <p class="body-copy">
+        บนยอดเขาที่อากาศบางเฉียบ — กวางผาหยุดมองผ่านสันหมอก
+        เห็ดแดงจุดขาวซ่อนอยู่ใต้รากสน เสียงเท้ากระทบหินก้อง
+        ในความเงียบที่แผ่ออกไปไม่มีสิ้นสุด.
+      </p>
+      <div class="field-card">
+        <div class="lbl">field note · บันทึก</div>
+        <div class="rows">
+          <div><div class="k">elev</div><div class="v">2,180<small>m</small></div></div>
+          <div><div class="k">temp</div><div class="v">8<small>°C</small></div></div>
+          <div><div class="k">mist</div><div class="v">dawn</div></div>
+          <div><div class="k">fauna</div><div class="v">serow</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="copy-right">
+      <p class="quote">
+        หมอกไม่ปิดบัง —<br/>
+        มันเพียงสอนให้เรา<br/>เห็นในระยะใกล้.
+        <span class="quote-author">— highland field notes, iii.</span>
+      </p>
+      <div class="coord">
+        <div><div>lat</div><div class="v">18°34′ N</div></div>
+        <div><div>long</div><div class="v">98°48′ E</div></div>
+        <div><div>elev</div><div class="v">2,180 m</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="field-kit">
+    <div class="fk-head">
+      <span class="lbl">field kit</span>
+      <span class="fk-title">ของใช้แห่งเขาสูง</span>
+      <span class="fk-sub">— highland gear for the bond —</span>
+    </div>
+    <div class="fk-cats">
+      <button class="fk-cat active" data-cat="all">ทั้งหมด</button>
+      <button class="fk-cat" data-cat="อาหาร">อาหาร</button>
+      <button class="fk-cat" data-cat="ของใช้">ของใช้</button>
+      <button class="fk-cat" data-cat="ของเล่น">ของเล่น</button>
+      <button class="fk-cat" data-cat="เสื้อ">เสื้อ</button>
+    </div>
+    <div class="fk-scroll-wrap">
+      <button class="fk-arrow prev" aria-label="Previous">&#8592;</button>
+      <button class="fk-arrow next" aria-label="Next">&#8594;</button>
+      <div class="fk-grid">
+
+        <div class="fk-card" data-id="h1" data-name="Alpine Harness" data-tag="Highland Series" data-th="สายอกเดินเขา" data-price="1590" data-cat="ของใช้">
+          <div class="fk-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M 12 20 L 36 20 L 34 38 L 14 38 Z"/>
+              <path d="M 18 20 L 18 12 L 30 12 L 30 20"/>
+              <circle cx="24" cy="29" r="3.5"/>
+              <path d="M 14 28 L 8 24 L 8 32 L 14 30"/>
+              <path d="M 34 28 L 40 24 L 40 32 L 34 30"/>
+            </svg>
+          </div>
+          <div class="fk-info">
+            <div class="fk-tag">Highland Series</div>
+            <div class="fk-name">Alpine Harness</div>
+            <div class="fk-th">สายอกเดินเขา · ผ้า ripstop กันน้ำ</div>
+          </div>
+          <div class="fk-add">
+            <div class="fk-price">฿1,590</div>
+            <button class="fk-add-btn">+ Add</button>
+          </div>
+        </div>
+
+        <div class="fk-card" data-id="h2" data-name="Mist Treat" data-tag="Mushroom grain-free" data-th="ขนมเห็ดป่า" data-price="195" data-cat="อาหาร">
+          <div class="fk-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M14 26 Q14 14 24 13 Q34 14 34 26 Q34 32 24 32 Q14 32 14 26Z"/>
+              <path d="M16 30 Q16 40 15 44 L33 44 Q32 40 32 30"/>
+              <circle cx="20" cy="20" r="2" fill="currentColor" opacity="0.4"/>
+              <circle cx="28" cy="19" r="1.5" fill="currentColor" opacity="0.4"/>
+              <circle cx="24" cy="24" r="1.5" fill="currentColor" opacity="0.3"/>
+            </svg>
+          </div>
+          <div class="fk-info">
+            <div class="fk-tag">Mushroom grain-free</div>
+            <div class="fk-name">Mist Treat</div>
+            <div class="fk-th">ขนมเห็ดป่า · ไม่มีสารเคมี</div>
+          </div>
+          <div class="fk-add">
+            <div class="fk-price">฿195</div>
+            <button class="fk-add-btn">+ Add</button>
+          </div>
+        </div>
+
+        <div class="fk-card" data-id="h3" data-name="Stone Bowl" data-tag="Ceramic highland" data-th="ชามหินเขา" data-price="780" data-cat="ของใช้">
+          <div class="fk-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M 8 22 Q 24 32 40 22 L 36 38 Q 24 42 12 38 Z"/>
+              <ellipse cx="24" cy="22" rx="16" ry="4"/>
+              <path d="M 10 38 Q 10 44 14 44 L 34 44 Q 38 44 38 38"/>
+            </svg>
+          </div>
+          <div class="fk-info">
+            <div class="fk-tag">Ceramic highland</div>
+            <div class="fk-name">Stone Bowl</div>
+            <div class="fk-th">ชามเนื้อหิน · เผาไฟสูง 1200°C</div>
+          </div>
+          <div class="fk-add">
+            <div class="fk-price">฿780</div>
+            <button class="fk-add-btn">+ Add</button>
+          </div>
+        </div>
+
+        <div class="fk-card" data-id="h4" data-name="Summit Tee" data-tag="Owner's Wear" data-th="เสื้อยอดดอย" data-price="1290" data-cat="เสื้อ">
+          <div class="fk-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M 14 14 L 18 10 L 30 10 L 34 14 L 40 18 L 36 24 L 34 22 L 34 40 L 14 40 L 14 22 L 12 24 L 8 18 Z"/>
+              <path d="M 18 10 Q 24 14 30 10"/>
+              <path d="M 20 26 L 28 26"/>
+            </svg>
+          </div>
+          <div class="fk-info">
+            <div class="fk-tag">Owner's Wear</div>
+            <div class="fk-name">Summit Tee</div>
+            <div class="fk-th">เสื้อยอดดอย · ผ้า merino ฝ้ายเขา</div>
+          </div>
+          <div class="fk-add">
+            <div class="fk-price">฿1,290</div>
+            <button class="fk-add-btn">+ Add</button>
+          </div>
+        </div>
+
+        <div class="fk-card" data-id="h5" data-name="Rock Toy" data-tag="Highland Play" data-th="ของเล่นก้อนหิน" data-price="360" data-cat="ของเล่น">
+          <div class="fk-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M24 8 Q38 14 40 28 Q40 40 24 42 Q8 40 8 28 Q8 16 24 8Z"/>
+              <path d="M16 28 Q20 22 28 26"/>
+              <path d="M22 34 Q24 30 28 32"/>
+            </svg>
+          </div>
+          <div class="fk-info">
+            <div class="fk-tag">Highland Play</div>
+            <div class="fk-name">Rock Toy</div>
+            <div class="fk-th">ของเล่นหินธรรมชาติ · เนื้อยางธรรมชาติ</div>
+          </div>
+          <div class="fk-add">
+            <div class="fk-price">฿360</div>
+            <button class="fk-add-btn">+ Add</button>
+          </div>
+        </div>
+
+        <div class="fk-card" data-id="h6" data-name="Fog Blanket" data-tag="Highland cotton" data-th="ผ้าห่มหมอก" data-price="2190" data-cat="ของใช้">
+          <div class="fk-icon">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M 6 20 Q 6 16 10 16 Q 14 16 14 20 Q 18 16 22 20 Q 26 16 30 20 Q 34 16 38 20 Q 42 16 42 20 Q 42 24 38 24 Q 34 28 30 24 Q 26 28 22 24 Q 18 28 14 24 Q 10 28 6 24 Z"/>
+              <path d="M 10 28 Q 14 32 18 28 Q 22 32 26 28 Q 30 32 34 28 Q 38 32 42 28"/>
+              <path d="M 14 36 Q 18 40 22 36 Q 26 40 30 36 Q 34 40 38 36"/>
+            </svg>
+          </div>
+          <div class="fk-info">
+            <div class="fk-tag">Highland cotton</div>
+            <div class="fk-name">Fog Blanket</div>
+            <div class="fk-th">ผ้าห่มหมอก · ฝ้ายออร์แกนิคเนื้อหนา</div>
+          </div>
+          <div class="fk-add">
+            <div class="fk-price">฿2,190</div>
+            <button class="fk-add-btn">+ Add</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
 <!-- ─────────── OUTRO ─────────── -->
 <section id="outro" data-scene="outro" data-nav="dark">
   <div class="outro-inner">
@@ -3607,7 +4062,7 @@
   import { supabase, getSession, signOut } from './supabase-client.js'
 
   // ── Map: biome (DB) = scene id (HTML) — ค่าเหมือนกันทุกตัว ──────
-  const BIOME_SCENE = { jungle: 'jungle', sea: 'sea', wetland: 'wetland', meadow: 'meadow' }
+  const BIOME_SCENE = { jungle: 'jungle', sea: 'sea', wetland: 'wetland', meadow: 'meadow', highland: 'highland' }
   const CAT_TH = { food: 'อาหาร', toy: 'ของเล่น', care: 'ของใช้', acc: 'ของใช้', plant: 'ของใช้', home: 'ของใช้' }
 
   async function loadShopProducts() {
