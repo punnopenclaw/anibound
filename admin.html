@@ -1475,7 +1475,7 @@ function setProdView(v) {
   active.style.borderColor   = 'var(--gold)';
   active.style.color         = 'var(--gold)';
 }
-function renderProducts() { loadProducts(); }
+function renderProducts() { refreshPetFilterOptions(); filterProducts(); }
 
 function resizeImage(dataUrl, max = 900) {
   return new Promise(resolve => {
