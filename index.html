@@ -115,10 +115,16 @@
   }
   .scene-nav button:hover { opacity: 1; }
   .scene-nav button.active {
-    background: currentColor;
+    background: rgba(201,169,110,0.9);
     opacity: 1;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
   }
-  .scene-nav button.active span { color: var(--scene-bg, #0a0e0c); }
+  .scene-nav button.active span { color: #07120d; }
+  .site-nav.light .scene-nav button.active {
+    background: rgba(80,60,30,0.75);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  .site-nav.light .scene-nav button.active span { color: #f5ebd4; }
   .scene-nav button .num {
     font-family: var(--serif);
     font-style: italic;
