@@ -1379,13 +1379,20 @@
   .fk-name {
     font-family: var(--serif);
     font-size: 18px;
-    line-height: 1.5;
+    line-height: 1.4;
     margin-bottom: 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
   .fk-th {
     font-family: "Noto Serif Thai", serif;
     font-size: 12px;
     opacity: 0.6;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .fk-add { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
   .fk-price { font-family: var(--serif); font-size: 17px; }
