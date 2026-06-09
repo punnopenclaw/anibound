@@ -4090,7 +4090,6 @@
       const { data, error } = await supabase
         .from('products')
         .select('id, name, name_th, category, biome, price, tag, images, description, pet_type')
-        .eq('active', true)
         .order('created_at', { ascending: false })
       if (error || !data || data.length === 0) return
 
