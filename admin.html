@@ -1286,12 +1286,18 @@ document.querySelectorAll('.nav-item[data-view]').forEach(el => {
   el.addEventListener('click', () => switchView(el.dataset.view));
 });
 
+// ─── HTML escape (กัน stored XSS จากข้อมูลที่ผู้ใช้กรอก) ───
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c =>
+    ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+}
+
 // ─── Order row builder ───
 function orderRow(o, showAllCols = true) {
   return `<tr>
     <td><span style="font-family:var(--serif);color:var(--gold);font-size:12px">${o.id}</span></td>
-    <td>${o.name}</td>
-    <td style="color:var(--ink-soft);font-size:12.5px;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${o.items}</td>
+    <td>${esc(o.name)}</td>
+    <td style="color:var(--ink-soft);font-size:12.5px;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(o.items)}</td>
     <td style="font-family:var(--serif)">฿${o.price.toLocaleString()}</td>
     <td><span class="badge ${statusBadge[o.status]}">${statusLabel[o.status]}</span></td>
     <td style="color:var(--ink-soft);font-size:12px">${o.date}</td>
@@ -1353,10 +1359,10 @@ function filterMembers() {
     <tr>
       <td>
         <div class="mem-info">
-          <div class="mem-avatar">${m.name[0]}</div>
+          <div class="mem-avatar">${esc(m.name[0] || '')}</div>
           <div>
-            <div class="mem-name">${m.name}</div>
-            <div class="mem-email">${m.email}</div>
+            <div class="mem-name">${esc(m.name)}</div>
+            <div class="mem-email">${esc(m.email)}</div>
           </div>
         </div>
       </td>
@@ -1369,7 +1375,7 @@ function filterMembers() {
           <button class="act-btn" title="ดู">
             <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><line x1="8" y1="5" x2="8" y2="8"/><circle cx="8" cy="11" r="0.5" fill="currentColor"/></svg>
           </button>
-          <button class="act-btn del" title="ระงับ" onclick="showToast('ระงับสมาชิก ${m.name} แล้ว')">
+          <button class="act-btn del" title="ระงับ" onclick="showToast('ระงับสมาชิกแล้ว')">
             <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><line x1="5" y1="8" x2="11" y2="8"/></svg>
           </button>
         </div>
@@ -1416,7 +1422,7 @@ function filterProducts() {
   document.getElementById('productGrid').innerHTML = filtered.map(p => {
     const imgs = p.images || [];
     const imgHtml = imgs.length > 0
-      ? imgs.map((src,i) => `<img src="${src}" class="${i===0?'active':''}">`).join('') +
+      ? imgs.map((src,i) => `<img src="${esc(src)}" class="${i===0?'active':''}">`).join('') +
         (imgs.length > 1 ? `<div class="slide-dots">${imgs.map((_,i) => `<span class="slide-dot ${i===0?'active':''}"></span>`).join('')}</div>` : '')
       : `<svg width="36" height="36" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4l6-2 6 2v8l-6 2-6-2V4z" transform="translate(12,8) scale(1)"/></svg>`;
     return `
@@ -1425,9 +1431,9 @@ function filterProducts() {
         ${imgHtml}
       </div>
       <div class="prod-body">
-        <div class="prod-tag">${p.tag}</div>
-        <div class="prod-name">${p.name}</div>
-        <div class="prod-th">${p.th}</div>
+        <div class="prod-tag">${esc(p.tag)}</div>
+        <div class="prod-name">${esc(p.name)}</div>
+        <div class="prod-th">${esc(p.th)}</div>
       </div>
       <div class="prod-footer">
         <div class="prod-price">฿${p.price.toLocaleString()}</div>
@@ -1454,12 +1460,12 @@ function filterProducts() {
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="var(--gold)" stroke-width="1.2"><path d="M2 4l6-2 6 2v8l-6 2-6-2V4z"/></svg>
           </div>
           <div>
-            <div style="font-size:13px;font-weight:500">${p.name}</div>
-            <div style="font-size:11px;color:var(--ink-soft)">${p.th}</div>
+            <div style="font-size:13px;font-weight:500">${esc(p.name)}</div>
+            <div style="font-size:11px;color:var(--ink-soft)">${esc(p.th)}</div>
           </div>
         </div>
       </td>
-      <td><span class="badge badge-confirm" style="background:var(--gold-dim);color:var(--gold)">${p.cat}</span></td>
+      <td><span class="badge badge-confirm" style="background:var(--gold-dim);color:var(--gold)">${esc(p.cat)}</span></td>
       <td style="color:var(--ink-soft);font-size:12px">${sceneLabel[p.scene]}</td>
       <td style="font-family:var(--serif)">฿${p.price.toLocaleString()}</td>
       <td>
@@ -1943,7 +1949,33 @@ function updateDashboard() {
   document.getElementById('statRevenueSub').textContent  = revenue ? 'รายได้รวม (ไม่รวมยกเลิก)' : '— ยังไม่มีข้อมูล'
 }
 
-loadAll()
+// ─── Admin auth gate ───────────────────────────────────────
+// แสดง overlay ทันที กันเนื้อหา flash ก่อนตรวจสิทธิ์เสร็จ
+const _gate = document.createElement('div')
+_gate.id = 'adminGate'
+_gate.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#080c0a;color:#e2ddd4;display:grid;place-items:center;font-family:system-ui,sans-serif;text-align:center;padding:24px'
+_gate.innerHTML = '<div><div style="font-size:13px;letter-spacing:.25em;opacity:.55">ANIBOUND ADMIN</div><div style="margin-top:14px;font-size:13px;opacity:.45">กำลังตรวจสอบสิทธิ์…</div></div>'
+document.body.appendChild(_gate)
+
+async function requireAdmin() {
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) { location.replace('login.html'); return false }
+  const { data: prof, error } = await supabase
+    .from('profiles').select('is_admin').eq('id', session.user.id).single()
+  if (error || !prof || !prof.is_admin) {
+    _gate.innerHTML =
+      '<div><div style="font-size:40px">⛔</div>' +
+      '<div style="margin-top:12px;font-size:15px">ไม่มีสิทธิ์เข้าถึงหลังบ้าน</div>' +
+      '<div style="margin-top:8px;font-size:12px;opacity:.55">บัญชีนี้ไม่ใช่ผู้ดูแลระบบ</div>' +
+      '<a href="index.html" style="display:inline-block;margin-top:20px;color:#c8a97a;font-size:12px;letter-spacing:.1em;text-decoration:none">← กลับหน้าร้าน</a></div>'
+    return false
+  }
+  return true
+}
+
+;(async () => {
+  if (await requireAdmin()) { _gate.remove(); loadAll() }
+})()
 </script>
 
 </body>

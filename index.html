@@ -3853,6 +3853,10 @@
 
   let _pdImgIdx = 0;
 
+  // escape HTML (dataset อ่านกลับมาเป็นค่าดิบ ต้อง escape ก่อนใส่ innerHTML)
+  const escH = s => String(s == null ? '' : s).replace(/[&<>"']/g, c =>
+    ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+
   window.openProductDetail = function(card) {
     _pdCard    = card;
     _pdImgIdx  = 0;
@@ -3866,9 +3870,9 @@
     // Meta row (category + pet type)
     const meta = [];
     if (card.dataset.cat) meta.push(
-      `<div class="pd-meta-item"><span class="pd-meta-label">หมวดหมู่</span><span class="pd-meta-val">${card.dataset.cat}</span></div>`);
+      `<div class="pd-meta-item"><span class="pd-meta-label">หมวดหมู่</span><span class="pd-meta-val">${escH(card.dataset.cat)}</span></div>`);
     if (card.dataset.pet) meta.push(
-      `<div class="pd-meta-item"><span class="pd-meta-label">สัตว์เลี้ยง</span><span class="pd-meta-val gold">🐾 ${card.dataset.pet}</span></div>`);
+      `<div class="pd-meta-item"><span class="pd-meta-label">สัตว์เลี้ยง</span><span class="pd-meta-val gold">🐾 ${escH(card.dataset.pet)}</span></div>`);
     document.getElementById('pdMeta').innerHTML = meta.join('');
 
     // Description
@@ -3892,7 +3896,7 @@
       return;
     }
     const imgs = images.map((src, i) =>
-      `<img src="${src}" class="${i===0?'active':''}" loading="lazy">`).join('');
+      `<img src="${escH(src)}" class="${i===0?'active':''}" loading="lazy">`).join('');
     const counter = images.length > 1 ? `<div class="pd-img-count">1 / ${images.length}</div>` : '';
     const arrows = images.length > 1
       ? `<button class="pd-arr prev" onclick="pdNav(-1)">&#8592;</button>
@@ -4106,25 +4110,23 @@
         const grid = section.querySelector('.fk-grid')
         if (!grid) return
 
+        const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c =>
+          ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]))
         grid.innerHTML = products.map(p => {
           const img    = (p.images || []).find(Boolean)
           const catTh  = CAT_TH[p.category] || 'ของใช้'
           const tag    = p.tag || catTh
-          const nameE  = (p.name    || '').replace(/"/g, '&quot;')
-          const thE    = (p.name_th || '').replace(/"/g, '&quot;')
-          const tagE   = tag.replace(/"/g, '&quot;')
-          const iconHtml = img
-            ? `<img src="${img}" alt="${nameE}" loading="lazy">`
+          const imgOk  = typeof img === 'string' && /^https?:\/\//.test(img)
+          const iconHtml = imgOk
+            ? `<img src="${esc(img)}" alt="${esc(p.name)}" loading="lazy">`
             : `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 16l16-8 16 8v16l-16 8-16-8V16z"/></svg>`
-          const imagesJson = JSON.stringify(p.images || []).replace(/"/g, '&quot;')
-          const descE = (p.description || '').replace(/"/g, '&quot;')
-          const petE  = (p.pet_type    || '').replace(/"/g, '&quot;')
-          return `<div class="fk-card" data-id="${p.id}" data-name="${nameE}" data-tag="${tagE}" data-th="${thE}" data-price="${p.price}" data-cat="${catTh}" data-images="${imagesJson}" data-desc="${descE}" data-pet="${petE}" onclick="openProductDetail(this)">
+          const imagesJson = esc(JSON.stringify((p.images || []).filter(i => typeof i === 'string' && /^https?:\/\//.test(i))))
+          return `<div class="fk-card" data-id="${esc(p.id)}" data-name="${esc(p.name)}" data-tag="${esc(tag)}" data-th="${esc(p.name_th)}" data-price="${esc(p.price)}" data-cat="${esc(catTh)}" data-images="${imagesJson}" data-desc="${esc(p.description)}" data-pet="${esc(p.pet_type)}" onclick="openProductDetail(this)">
             <div class="fk-icon">${iconHtml}</div>
             <div class="fk-info">
-              <div class="fk-tag">${tag}</div>
-              <div class="fk-name">${p.name}</div>
-              <div class="fk-th">${p.name_th || ''}</div>
+              <div class="fk-tag">${esc(tag)}</div>
+              <div class="fk-name">${esc(p.name)}</div>
+              <div class="fk-th">${esc(p.name_th)}</div>
             </div>
             <div class="fk-add">
               <div class="fk-price">฿${Number(p.price).toLocaleString()}</div>
