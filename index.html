@@ -5,9 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Anibound — สายใยกับโลกป่า</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Noto+Serif+Thai:wght@300;400;500;600&family=Inter:wght@300;400;500;600&family=Noto+Sans+Thai:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  /* ─── Self-hosted fonts ─────────────────────────────────────── */
+  @font-face { font-family:'Satoshi'; src:url('fonts/Satoshi-Variable.ttf') format('truetype'); font-weight:100 900; font-style:normal; font-display:swap; }
+  @font-face { font-family:'Crimson Text'; src:url('fonts/CrimsonText-Regular.ttf') format('truetype'); font-weight:400; font-style:normal; font-display:swap; }
+  @font-face { font-family:'Crimson Text'; src:url('fonts/CrimsonText-Italic.ttf') format('truetype'); font-weight:400; font-style:italic; font-display:swap; }
+  @font-face { font-family:'Crimson Text'; src:url('fonts/CrimsonText-SemiBold.ttf') format('truetype'); font-weight:600; font-style:normal; font-display:swap; }
+  @font-face { font-family:'Crimson Text'; src:url('fonts/CrimsonText-SemiBoldItalic.ttf') format('truetype'); font-weight:600; font-style:italic; font-display:swap; }
+  @font-face { font-family:'Crimson Text'; src:url('fonts/CrimsonText-Bold.ttf') format('truetype'); font-weight:700; font-style:normal; font-display:swap; }
+  @font-face { font-family:'Mitr'; src:url('fonts/Mitr-Light.ttf') format('truetype'); font-weight:300; font-style:normal; font-display:swap; }
+  @font-face { font-family:'Mitr'; src:url('fonts/Mitr-Regular.ttf') format('truetype'); font-weight:400; font-style:normal; font-display:swap; }
+  @font-face { font-family:'Mitr'; src:url('fonts/Mitr-Medium.ttf') format('truetype'); font-weight:500; font-style:normal; font-display:swap; }
+  @font-face { font-family:'Mitr'; src:url('fonts/Mitr-SemiBold.ttf') format('truetype'); font-weight:600; font-style:normal; font-display:swap; }
+  @font-face { font-family:'IBM Plex Sans Thai'; src:url('fonts/IBMPlexSansThai-Regular.ttf') format('truetype'); font-weight:400; font-style:normal; font-display:swap; }
+  @font-face { font-family:'IBM Plex Sans Thai'; src:url('fonts/IBMPlexSansThai-Medium.ttf') format('truetype'); font-weight:500; font-style:normal; font-display:swap; }
+  @font-face { font-family:'IBM Plex Sans Thai'; src:url('fonts/IBMPlexSansThai-SemiBold.ttf') format('truetype'); font-weight:600; font-style:normal; font-display:swap; }
+  @font-face { font-family:'IBM Plex Sans Thai'; src:url('fonts/IBMPlexSansThai-Bold.ttf') format('truetype'); font-weight:700; font-style:normal; font-display:swap; }
+</style>
 
 <style>
   /* ─────────────────────────────────────────────────────────────
@@ -16,8 +30,8 @@
      ───────────────────────────────────────────────────────────── */
 
   :root {
-    --serif: "Cormorant Garamond", "Noto Serif Thai", serif;
-    --sans:  "Inter", "Noto Sans Thai", system-ui, sans-serif;
+    --serif: "Crimson Text", "Mitr", serif;
+    --sans:  "Satoshi", "IBM Plex Sans Thai", system-ui, sans-serif;
   }
   *, *::before, *::after { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
@@ -205,7 +219,7 @@
     color: var(--scene-accent);
   }
   .scene .thai-sub {
-    font-family: "Noto Serif Thai", serif;
+    font-family: "Mitr", serif;
     font-weight: 400;
     font-size: clamp(18px, 1.8vw, 22px);
     line-height: 1.5;
@@ -378,7 +392,7 @@
     letter-spacing: 0.02em;
   }
   #intro .thai-intro {
-    font-family: "Noto Serif Thai", serif;
+    font-family: "Mitr", serif;
     font-size: 17px;
     line-height: 1.7;
     max-width: 540px;
@@ -440,7 +454,7 @@
     letter-spacing: 0.01em;
   }
   #intro .biome-strip .bs {
-    font-family: "Noto Serif Thai", serif;
+    font-family: "Mitr", serif;
     font-size: 12px;
     opacity: 0.55;
     margin-top: 2px;
@@ -1124,7 +1138,7 @@
   }
   #outro h2 em { font-style: italic; color: #d4a574; }
   #outro .thai-out {
-    font-family: "Noto Serif Thai", serif;
+    font-family: "Mitr", serif;
     font-size: 17px;
     line-height: 1.75;
     opacity: 0.78;
@@ -1170,7 +1184,7 @@
   }
   #outro .biome-list .t small {
     display: block;
-    font-family: "Noto Serif Thai", serif;
+    font-family: "Mitr", serif;
     font-size: 12px;
     opacity: 0.55;
     margin-top: 3px;
@@ -1262,7 +1276,7 @@
     color: var(--scene-accent);
   }
   .fk-head .fk-sub {
-    font-family: "Noto Serif Thai", serif;
+    font-family: "Mitr", serif;
     font-size: 13px;
     opacity: 0.65;
     margin-left: auto;
@@ -1393,7 +1407,7 @@
     overflow: hidden;
   }
   .fk-th {
-    font-family: "Noto Serif Thai", serif;
+    font-family: "Mitr", serif;
     font-size: 12px;
     opacity: 0.6;
     white-space: nowrap;
