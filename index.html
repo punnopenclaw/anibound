@@ -4114,7 +4114,9 @@
           ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]))
         grid.innerHTML = products.map(p => {
           const img    = (p.images || []).find(Boolean)
-          const catTh  = CAT_TH[p.category] || 'ของใช้'
+          // category ใน DB เก็บเป็นไทยอยู่แล้ว (อาหาร/ของใช้/ของเล่น/เสื้อ)
+          // เผื่อ legacy เก็บโค้ดอังกฤษ → map ก่อน, ไม่งั้นใช้ค่าตรงๆ
+          const catTh  = CAT_TH[p.category] || p.category || 'ของใช้'
           const tag    = p.tag || catTh
           const imgOk  = typeof img === 'string' && /^https?:\/\//.test(img)
           const iconHtml = imgOk
