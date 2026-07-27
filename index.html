@@ -21,6 +21,11 @@
   @font-face { font-family:'IBM Plex Sans Thai'; src:url('fonts/IBMPlexSansThai-Medium.ttf') format('truetype'); font-weight:500; font-style:normal; font-display:swap; }
   @font-face { font-family:'IBM Plex Sans Thai'; src:url('fonts/IBMPlexSansThai-SemiBold.ttf') format('truetype'); font-weight:600; font-style:normal; font-display:swap; }
   @font-face { font-family:'IBM Plex Sans Thai'; src:url('fonts/IBMPlexSansThai-Bold.ttf') format('truetype'); font-weight:700; font-style:normal; font-display:swap; }
+  @font-face { font-family:'Stoke'; src:url('fonts/Stoke-Light.ttf') format('truetype'); font-weight:300; font-style:normal; font-display:swap; }
+  @font-face { font-family:'Stoke'; src:url('fonts/Stoke-Regular.ttf') format('truetype'); font-weight:400; font-style:normal; font-display:swap; }
+  @font-face { font-family:'Poppins'; src:url('fonts/Poppins-Regular.ttf') format('truetype'); font-weight:400; font-style:normal; font-display:swap; }
+  @font-face { font-family:'Poppins'; src:url('fonts/Poppins-Medium.ttf') format('truetype'); font-weight:500; font-style:normal; font-display:swap; }
+  @font-face { font-family:'Poppins'; src:url('fonts/Poppins-SemiBold.ttf') format('truetype'); font-weight:600; font-style:normal; font-display:swap; }
 </style>
 
 <style>
@@ -30,16 +35,29 @@
      ───────────────────────────────────────────────────────────── */
 
   :root {
-    --serif: "Crimson Text", "Mitr", serif;
-    --sans:  "Satoshi", "IBM Plex Sans Thai", system-ui, sans-serif;
+    /* ── Type system (FurFamiliar digital) ── */
+    --display: "Stoke", "Mitr", serif;              /* headline */
+    --serif:   "Crimson Text", "Mitr", serif;       /* subheadline / quotes */
+    --sans:    "Satoshi", "IBM Plex Sans Thai", system-ui, sans-serif; /* body */
+
+    /* ── FurFamiliar brand palette ── */
+    --ff-dawn:    #5e6d81;   /* Dawn Blue  — trustworthy */
+    --ff-clay:    #b86c6d;   /* Sunrise Clay — warm */
+    --ff-oat:     #faf0dd;   /* Morning Oat — cream base */
+    --ff-oat-deep:#f0e2c8;   /* slightly deeper oat for layering */
+    --ff-sky:     #79a0c4;   /* Sky */
+    --ff-forest:  #a1a469;   /* Forest */
+    --ff-grey:    #ededed;   /* Soft Grey */
+    --ff-charcoal:#3a352c;   /* warm charcoal ink */
+    --ff-ink-soft:#6b6357;   /* muted body ink */
   }
   *, *::before, *::after { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
   body {
     font-family: var(--sans);
-    background: #0a0e0c;
-    color: #ece4d2;
+    background: var(--ff-oat);
+    color: var(--ff-charcoal);
     font-size: 15px;
     line-height: 1.6;
     overflow-x: hidden;
@@ -63,8 +81,8 @@
     pointer-events: none;
   }
   .site-nav > * { pointer-events: auto; }
-  .site-nav.dark { background: linear-gradient(180deg, rgba(5,10,16,0.55), transparent); color: #f0e8d4; }
-  .site-nav.light { background: linear-gradient(180deg, rgba(245,225,180,0.45), transparent); color: #2a2418; }
+  .site-nav.dark  { background: linear-gradient(180deg, rgba(250,240,221,0.85), transparent); color: var(--ff-charcoal); }
+  .site-nav.light { background: linear-gradient(180deg, rgba(250,240,221,0.85), transparent); color: var(--ff-charcoal); }
 
   .brand-mark {
     display: flex;
@@ -103,13 +121,13 @@
   .scene-nav {
     display: flex;
     gap: 4px;
-    background: rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.5);
     padding: 5px;
     border-radius: 999px;
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.08);
+    border: 1px solid rgba(94,109,129,0.14);
   }
-  .site-nav.light .scene-nav { background: rgba(255,255,255,0.4); border-color: rgba(0,0,0,0.08); }
+  .site-nav.light .scene-nav { background: rgba(255,255,255,0.5); border-color: rgba(94,109,129,0.14); }
   .scene-nav button {
     background: none;
     border: none;
@@ -128,17 +146,14 @@
     transition: all 0.3s ease;
   }
   .scene-nav button:hover { opacity: 1; }
-  .scene-nav button.active {
-    background: rgba(201,169,110,0.9);
-    opacity: 1;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-  }
-  .scene-nav button.active span { color: #07120d; }
+  .scene-nav button.active,
   .site-nav.light .scene-nav button.active {
-    background: rgba(80,60,30,0.75);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    background: var(--ff-dawn);
+    opacity: 1;
+    box-shadow: 0 2px 10px rgba(94,109,129,0.35);
   }
-  .site-nav.light .scene-nav button.active span { color: #f5ebd4; }
+  .scene-nav button.active span,
+  .site-nav.light .scene-nav button.active span { color: #faf0dd; }
   .scene-nav button .num {
     font-family: var(--serif);
     font-style: italic;
@@ -206,7 +221,7 @@
   }
   .scene .meta .line { flex: 1; height: 1px; background: currentColor; opacity: 0.25; max-width: 80px; }
   .scene h2 {
-    font-family: var(--serif);
+    font-family: var(--display);
     font-weight: 400;
     font-size: clamp(56px, 8vw, 124px);
     line-height: 1.6;
@@ -369,7 +384,7 @@
   }
   #intro .eyebrow::before, #intro .eyebrow::after { content: "—"; opacity: 0.5; margin: 0 14px; }
   #intro h1 {
-    font-family: var(--serif);
+    font-family: var(--display);
     font-weight: 300;
     font-size: clamp(56px, 9vw, 148px);
     line-height: 1.6;
@@ -422,7 +437,7 @@
   #intro .biome-strip {
     margin-top: 80px;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 0;
     max-width: 900px;
     margin-left: auto;
@@ -1945,6 +1960,170 @@
     .pd-overlay { align-items: flex-end; padding: 0; }
   }
 </style>
+
+<style>
+  /* ═══════════════════════════════════════════════════════════════
+     FURFAMILIAR LIGHT SKIN — Healing / Warm / Artsy
+     Morning Oat base · Dawn Blue + Sunrise Clay + Forest + Sky accents
+     (override layer — retunes the original dark scenes to light)
+     ═══════════════════════════════════════════════════════════════ */
+
+  /* ── INTRO ── */
+  #intro {
+    --scene-accent: var(--ff-dawn);
+    color: var(--ff-charcoal);
+    background:
+      radial-gradient(ellipse 70% 45% at 50% 22%, rgba(94,109,129,0.10), transparent 70%),
+      radial-gradient(ellipse 80% 60% at 50% 100%, rgba(184,108,109,0.10), transparent 80%),
+      linear-gradient(180deg, #faf0dd 0%, #f5ead2 100%);
+  }
+  #intro::before {
+    background:
+      radial-gradient(ellipse 60% 40% at 50% 30%, rgba(184,108,109,0.08), transparent 70%),
+      radial-gradient(ellipse 80% 60% at 50% 100%, rgba(161,164,105,0.10), transparent 80%);
+  }
+  #intro .eyebrow,
+  #intro h1 em          { color: var(--ff-clay); }
+  #intro .start-btn     { border-color: var(--ff-dawn); color: var(--ff-dawn); }
+  #intro .start-btn:hover { background: var(--ff-dawn); color: var(--ff-oat); }
+  #intro .biome-strip   { border-top-color: rgba(94,109,129,0.20); }
+  #intro .biome-strip .bcell { border-left-color: rgba(94,109,129,0.16); }
+  #intro .biome-strip .bn { color: var(--ff-clay); }
+
+  /* ── SCENE 1 · JUNGLE (ป่า) → soft forest ── */
+  #jungle {
+    --scene-accent: var(--ff-forest);
+    color: var(--ff-charcoal);
+    background:
+      radial-gradient(ellipse 70% 50% at 30% 14%, rgba(161,164,105,0.16), transparent 60%),
+      linear-gradient(180deg, #faf0dd 0%, #f3ecd6 45%, #eef0d8 100%);
+  }
+  .jungle-canopy    { opacity: 0.5; }
+  .jungle-river     { opacity: 0.30; }
+  .vine             { opacity: 0.4; }
+  .firefly          { opacity: 0.3; }
+  .jungle-light-ray { background: linear-gradient(180deg, rgba(161,164,105,0.16), transparent 65%); }
+
+  /* ── SCENE 2 · SEA (ทะเล) → soft sky ── */
+  #sea {
+    --scene-accent: var(--ff-sky);
+    color: var(--ff-charcoal);
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 8%, rgba(121,160,196,0.20), transparent 65%),
+      linear-gradient(180deg, #faf0dd 0%, #eef2f4 55%, #e4edf4 100%);
+  }
+  .sea-rays   { opacity: 0.45; }
+  .sea-ray    { background: linear-gradient(180deg, rgba(121,160,196,0.22), transparent 70%); }
+  .fish-school{ opacity: 0.6; }
+  .seafloor   { background: linear-gradient(180deg, transparent, rgba(121,160,196,0.22) 35%, rgba(161,164,105,0.3)); }
+  .seafloor-rocks { opacity: 0.45; }
+
+  /* ── SCENE 3 · WETLAND (บึง) → warm clay ── */
+  #wetland {
+    --scene-accent: var(--ff-clay);
+    color: var(--ff-charcoal);
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 12%, rgba(184,108,109,0.14), transparent 65%),
+      linear-gradient(180deg, #faf0dd 0%, #f6e6d6 100%);
+  }
+  #wetland.scene { color: var(--ff-charcoal); }
+
+  /* ── SCENE 4 · MEADOW (ทุ่ง) → warm oat ── */
+  #meadow {
+    --scene-accent: var(--ff-clay);
+    color: var(--ff-charcoal);
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 12%, rgba(161,164,105,0.16), transparent 60%),
+      linear-gradient(180deg, #faf0dd 0%, #f7eccf 100%);
+  }
+  #meadow.scene { color: var(--ff-charcoal); }
+
+  /* ── SCENE 5 · HIGHLAND (เขา) → misty dawn ── */
+  #highland {
+    --scene-accent: var(--ff-dawn);
+    color: var(--ff-charcoal);
+    background:
+      radial-gradient(ellipse 70% 40% at 78% 16%, rgba(184,108,109,0.16), transparent 60%),
+      linear-gradient(180deg, #eef2f5 0%, #e7edf2 40%, #eef0e6 100%);
+  }
+  #highland.scene { color: var(--ff-charcoal); }
+  .hl-star   { display: none; }                         /* stars vanish at dawn */
+  .hl-mist   { background: rgba(94,109,129,0.08); }
+  .hl-ground { background: linear-gradient(180deg, #e4dcc6 0%, #d9d0b8 60%, #cfc6ac 100%); }
+  .hl-ground::before { opacity: 0.4; }
+  .hl-rock   { background: #b9b19a; }
+  .hl-peak-far  { opacity: 0.28; }
+  .hl-peak-near { opacity: 0.5; }
+  .hl-moon {                                            /* moon → soft dawn sun */
+    background: radial-gradient(circle at 40% 40%, #fdf4e2, #f2dcbc);
+    box-shadow: 0 0 40px rgba(184,108,109,0.22), 0 0 90px rgba(250,240,221,0.5);
+  }
+
+  /* ── Field-note stat card (in every scene) ── */
+  .scene .field-card,
+  .scene.light-scene .field-card {
+    background: rgba(255,255,255,0.55);
+    border-color: rgba(94,109,129,0.16);
+  }
+
+  /* ── Field kit product cards ── */
+  .fk-card {
+    background: rgba(255,255,255,0.6);
+    border-color: rgba(94,109,129,0.14);
+  }
+  .fk-add-btn { color: var(--ff-ink-soft); border-color: rgba(94,109,129,0.28); }
+  .fk-add-btn:hover,
+  .fk-card.added .fk-add-btn { color: var(--ff-oat); }
+  .nav-btn:hover { color: var(--ff-oat); }
+
+  /* ── Product detail modal → light ── */
+  .pd-overlay { background: rgba(58,53,44,0.45); }
+  .pd-modal {
+    background: var(--ff-oat);
+    border-color: rgba(94,109,129,0.18);
+    color: var(--ff-charcoal);
+  }
+  .pd-tag, .pd-meta-label, .pd-desc-label { color: var(--ff-ink-soft); }
+  .pd-name, .pd-th, .pd-desc-text, .pd-meta-val, .pd-price { color: var(--ff-charcoal); }
+  .pd-divider { background: rgba(94,109,129,0.16); }
+  .pd-close   { color: var(--ff-charcoal); }
+  .pd-imgs, .pd-no-img { background: rgba(94,109,129,0.06); }
+
+  /* ── OUTRO finale → light ── */
+  #outro {
+    --scene-accent: var(--ff-dawn);
+    color: var(--ff-charcoal);
+    background:
+      radial-gradient(ellipse 70% 50% at 50% 0%, rgba(94,109,129,0.10), transparent 70%),
+      linear-gradient(180deg, #f5ead2 0%, #faf0dd 100%);
+  }
+  #outro h2 { font-family: var(--display); }
+  #outro .outro-left .lbl,
+  #outro h2 em,
+  #outro .outro-right h4 { color: var(--ff-clay); }
+  #outro .outro-right { border-left-color: rgba(94,109,129,0.20); }
+
+  /* ── Footer → Dawn Blue anchor band ── */
+  footer.site-foot {
+    background: var(--ff-dawn);
+    border-top-color: rgba(255,255,255,0.14);
+    color: rgba(250,240,221,0.72);
+  }
+  footer.site-foot .right a:hover { color: #ffffff; }
+
+  /* ── Cart drawer → light ── */
+  .cart-drawer { background: var(--ff-oat); color: var(--ff-charcoal); border-left-color: rgba(94,109,129,0.18); }
+  .cart-head   { border-bottom-color: rgba(94,109,129,0.15); }
+  .cart-head .small { color: var(--ff-clay); }
+
+  /* ── Cart toast → light ── */
+  .cart-toast {
+    background: var(--ff-oat); color: var(--ff-charcoal);
+    border-color: rgba(94,109,129,0.28);
+    box-shadow: 0 8px 30px rgba(94,109,129,0.20);
+  }
+  .cart-toast .it { color: var(--ff-clay); }
+</style>
 </head>
 
 <body>
@@ -2035,7 +2214,7 @@
       <span class="small">— a bond with the wild —</span>
     </h1>
     <p class="thai-intro">
-      เดินทางผ่าน 4 ระบบนิเวศที่สิ่งมีชีวิตยังอาศัยอย่างเงียบงาม.
+      เดินทางผ่าน 5 ระบบนิเวศที่สิ่งมีชีวิตยังอาศัยอย่างเงียบงาม.
       ทุกฉากบอกเล่าด้วยภาพและเสียงเงียบของสายลม น้ำ และผืนดิน
       ที่หล่อเลี้ยงทั้งพวกเขา — และเรา.
     </p>
