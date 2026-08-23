@@ -27,3 +27,7 @@ npm-debug.log*
 
 # Screenshots / scratch
 screenshots/
+
+# macOS junk
+._*
+.DS_Store

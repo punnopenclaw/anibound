@@ -15,9 +15,13 @@ alter table public.products drop constraint if exists products_biome_check;
 
 -- 3. อนุญาตให้ admin panel (anon key) จัดการสินค้าได้
 --    (ป้องกันด้วย URL ของ admin.html แทน RLS ในขั้นตอนนี้)
-drop policy if exists "Admin full access products" on public.products;
-drop policy if exists "Anon can manage products"   on public.products;
+drop policy if exists "Admin full access products"      on public.products;
+drop policy if exists "Anon can manage products"        on public.products;
 drop policy if exists "Anyone can view active products" on public.products;
+drop policy if exists "Anyone can view products"        on public.products;
+drop policy if exists "Anyone can insert products"      on public.products;
+drop policy if exists "Anyone can update products"      on public.products;
+drop policy if exists "Anyone can delete products"      on public.products;
 
 create policy "Anyone can view products"    on public.products for select using (true);
 create policy "Anyone can insert products"  on public.products for insert with check (true);
